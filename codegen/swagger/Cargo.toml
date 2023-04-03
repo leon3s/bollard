@@ -1,6 +1,6 @@
 [package]
 name = "bollard-next-stubs"
-version = "1.42.0-rc.8"
+version = "1.42.0-rc.9"
 authors = [ "Bollard contributors" ]
 description = "Stubs used for the Bollard rust async Docker client API"
 license = "Apache-2.0"
