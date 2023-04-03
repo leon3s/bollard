@@ -152,7 +152,7 @@ where
     /// An object mapping ports to an empty object in the form:  `{\"<port>/<tcp|udp|sctp>\": {}}`
     #[serde(rename = "ExposedPorts")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub exposed_ports: Option<HashMap<T, HashMap<(), ()>>>,
+    pub exposed_ports: Option<HashMap<T, HashMap<String, String>>>,
 
     /// Attach standard streams to a TTY, including `stdin` if it is not closed.
     #[serde(rename = "Tty")]
@@ -197,7 +197,7 @@ where
     /// An object mapping mount point paths inside the container to empty objects.
     #[serde(rename = "Volumes")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<HashMap<T, HashMap<(), ()>>>,
+    pub volumes: Option<HashMap<T, HashMap<String, String>>>,
 
     /// The working directory for commands to run in.
     #[serde(rename = "WorkingDir")]

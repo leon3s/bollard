@@ -8,6 +8,7 @@ edition = "2021"
 
 [features]
 buildkit = ["base64", "bytes", "bollard-buildkit-proto", "prost"]
+utoipa = ["dep:utoipa"]
 
 [dependencies]
 base64 = { version = "0.13", optional = true }
@@ -19,3 +20,4 @@ prost = { version = "0.11", optional = true }
 time = { version = "0.3", features = ["formatting", "parsing"], optional = true }
 
 serde_with = {version = "2.0", default-features = false, features = ["std"]}
+utoipa = { version = "3", optional = true }

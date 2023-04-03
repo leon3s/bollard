@@ -19,6 +19,8 @@ members = [
 ]
 
 [features]
+# Enable utoipa support
+utoipa = ["bollard-next-stubs/utoipa"]
 # Enable Buildkit-enabled docker image building
 buildkit = ["num", "rand", "tower", "tonic", "tower-service", "bollard-next-stubs/buildkit", "bollard-buildkit-proto"]
 # Enable tests specifically for the http connector
