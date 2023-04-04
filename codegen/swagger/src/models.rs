@@ -191,7 +191,7 @@ pub struct BuildCache {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<BollardDate>,
+    pub created_at: Option<String>,
 
     /// Date and time at which the build cache was last used in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
     #[serde(rename = "LastUsedAt")]
@@ -201,7 +201,7 @@ pub struct BuildCache {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub last_used_at: Option<BollardDate>,
+    pub last_used_at: Option<String>,
 
     #[serde(rename = "UsageCount")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -348,6 +348,7 @@ pub struct ClusterInfo {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
+    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub created_at: Option<BollardDate>,
 
     /// Date and time at which the swarm was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
@@ -358,6 +359,7 @@ pub struct ClusterInfo {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
+    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
@@ -409,6 +411,7 @@ pub struct ClusterVolume {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
+    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub created_at: Option<BollardDate>,
 
     #[serde(rename = "UpdatedAt")]
@@ -418,6 +421,7 @@ pub struct ClusterVolume {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
+    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
@@ -821,6 +825,7 @@ pub struct Config {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
+    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub created_at: Option<BollardDate>,
 
     #[serde(rename = "UpdatedAt")]
@@ -830,6 +835,7 @@ pub struct Config {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
+    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
@@ -2136,24 +2142,21 @@ pub struct ExecStartConfig {
 }
 
 /// User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`).
-
-pub type GenericResources = GenericResourcesInner;
-
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct GenericResourcesInner {
+pub struct GenericResources {
     #[serde(rename = "NamedResourceSpec")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub named_resource_spec: Option<GenericResourcesInnerNamedResourceSpec>,
+    pub named_resource_spec: Option<GenericResourcesNamedResourceSpec>,
 
     #[serde(rename = "DiscreteResourceSpec")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discrete_resource_spec: Option<GenericResourcesInnerDiscreteResourceSpec>,
+    pub discrete_resource_spec: Option<GenericResourcesDiscreteResourceSpec>,
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct GenericResourcesInnerDiscreteResourceSpec {
+pub struct GenericResourcesDiscreteResourceSpec {
     #[serde(rename = "Kind")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -2165,7 +2168,7 @@ pub struct GenericResourcesInnerDiscreteResourceSpec {
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct GenericResourcesInnerNamedResourceSpec {
+pub struct GenericResourcesNamedResourceSpec {
     #[serde(rename = "Kind")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -2305,7 +2308,7 @@ pub struct HealthcheckResult {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub start: Option<BollardDate>,
+    pub start: Option<String>,
 
     /// Date and time at which this check ended in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
     #[serde(rename = "End")]
@@ -2315,7 +2318,7 @@ pub struct HealthcheckResult {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub end: Option<BollardDate>,
+    pub end: Option<String>,
 
     /// ExitCode meanings:  - `0` healthy - `1` unhealthy - `2` reserved (considered unhealthy) - other values: error running probe
     #[serde(rename = "ExitCode")]
