@@ -1,7 +1,7 @@
 [package]
 name = "bollard-next-stubs"
-version = "1.42.0-rc.9"
-authors = [ "Bollard contributors" ]
+version = "1.42.0-rc.10"
+authors = ["Bollard contributors"]
 description = "Stubs used for the Bollard rust async Docker client API"
 license = "Apache-2.0"
 edition = "2021"
@@ -14,10 +14,15 @@ utoipa = ["dep:utoipa"]
 base64 = { version = "0.13", optional = true }
 bollard-buildkit-proto = { path = "../proto", version = "=0.1.0", optional = true }
 bytes = { version = "1", optional = true }
-chrono = { version = "0.4", default-features = false, features = ["serde"], optional = true }
+chrono = { version = "0.4", default-features = false, features = [
+    "serde",
+], optional = true }
 serde = { version = "1.0", features = ["derive"] }
 prost = { version = "0.11", optional = true }
-time = { version = "0.3", features = ["formatting", "parsing"], optional = true }
+time = { version = "0.3", features = [
+    "formatting",
+    "parsing",
+], optional = true }
 
-serde_with = {version = "2.0", default-features = false, features = ["std"]}
+serde_with = { version = "2.0", default-features = false, features = ["std"] }
 utoipa = { version = "3", optional = true }

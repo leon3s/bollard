@@ -1,8 +1,8 @@
 [package]
 name = "bollard-next"
 description = "An asynchronous Docker daemon API"
-version = "0.14.4"
-authors = [ "Bollard contributors" ]
+version = "0.14.5"
+authors = ["Bollard contributors"]
 license = "Apache-2.0"
 homepage = "https://github.com/fussybeaver/bollard"
 repository = "https://github.com/fussybeaver/bollard"
@@ -12,17 +12,21 @@ keywords = ["docker"]
 edition = "2021"
 
 [workspace]
-members = [
-  "codegen/swagger",
-  "codegen/proto",
-  "."
-]
+members = ["codegen/swagger", "codegen/proto", "."]
 
 [features]
 # Enable utoipa support
 utoipa = ["bollard-next-stubs/utoipa"]
 # Enable Buildkit-enabled docker image building
-buildkit = ["num", "rand", "tower", "tonic", "tower-service", "bollard-next-stubs/buildkit", "bollard-buildkit-proto"]
+buildkit = [
+  "num",
+  "rand",
+  "tower",
+  "tonic",
+  "tower-service",
+  "bollard-next-stubs/buildkit",
+  "bollard-buildkit-proto",
+]
 # Enable tests specifically for the http connector
 test_http = []
 # Enable tests specifically for rustls
@@ -32,7 +36,15 @@ test_macos = []
 # Enable JSON payload in deserialization errors
 json_data_content = []
 # Enable rustls / ssl
-ssl = ["dirs-next", "hyper-rustls", "rustls", "rustls-native-certs", "rustls-pemfile", "webpki", "webpki-roots"]
+ssl = [
+  "dirs-next",
+  "hyper-rustls",
+  "rustls",
+  "rustls-native-certs",
+  "rustls-pemfile",
+  "webpki",
+  "webpki-roots",
+]
 ct_logs = ["ssl", "ct-logs"]
 chrono = ["dep:chrono", "bollard-next-stubs/chrono"]
 time = ["dep:time", "bollard-next-stubs/time"]
@@ -42,14 +54,24 @@ base64 = "0.21"
 bollard-next-stubs = { path = "codegen/swagger", version = "=1.42.0-rc.9", default-features = false }
 bollard-buildkit-proto = { path = "codegen/proto", version = "=0.1.0", optional = true }
 bytes = "1"
-chrono = { version = "0.4", default-features = false, features = ["std", "clock", "serde"], optional = true }
+chrono = { version = "0.4", default-features = false, features = [
+  "std",
+  "clock",
+  "serde",
+], optional = true }
 ct-logs = { version = "0.9.0", optional = true }
 dirs-next = { version = "2.0", optional = true }
 futures-core = "0.3"
 futures-util = "0.3"
 hex = "0.4.2"
 http = "0.2"
-hyper = { version = "0.14", features = ["client", "tcp", "http1", "http2", "stream"] }
+hyper = { version = "0.14", features = [
+  "client",
+  "tcp",
+  "http1",
+  "http2",
+  "stream",
+] }
 hyper-rustls = { version = "0.23", optional = true }
 log = "0.4"
 pin-project-lite = "0.2.8"
@@ -67,7 +89,10 @@ tokio = { version = "1.7", features = ["time", "net", "io-util"] }
 tonic = { version = "0.8", optional = true }
 tower = { version = "0.4", optional = true }
 thiserror = "1.0"
-time = { version = "0.3", features = ["formatting", "parsing"], optional = true }
+time = { version = "0.3", features = [
+  "formatting",
+  "parsing",
+], optional = true }
 tokio-util = { version = "0.7", features = ["codec"] }
 tower-service = { version = "0.3", optional = true }
 url = "2.2"
@@ -81,7 +106,7 @@ tokio = { version = "1.7", features = ["fs", "rt-multi-thread", "macros"] }
 yup-hyper-mock = "6.0.0"
 
 [target.'cfg(unix)'.dependencies]
-hyperlocal =  { version = "0.8.0" }
+hyperlocal = { version = "0.8.0" }
 
 [target.'cfg(unix)'.dev-dependencies]
 termion = "2.0"
