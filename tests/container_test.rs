@@ -579,7 +579,7 @@ async fn archive_container_test(docker: Docker) -> Result<(), Error> {
                 platform: None,
             }),
             Config {
-                image: Some(&image[..]),
+                image: Some(image.to_owned()),
                 ..Default::default()
             },
         )
@@ -666,7 +666,7 @@ async fn inspect_container_test(docker: Docker) -> Result<(), Error> {
 
     assert_eq!(None, result.host_config.as_ref().unwrap().cap_add);
 
-    let config: Config<String> = result.config.as_ref().unwrap().to_owned().into();
+    let config: Config = result.config.as_ref().unwrap().to_owned().into();
 
     assert_eq!(
         config.image.as_ref().unwrap(),
@@ -734,7 +734,7 @@ async fn mount_volume_container_test(docker: Docker) -> Result<(), Error> {
                 platform: None,
             }),
             Config {
-                image: Some(&image[..]),
+                image: Some(image.to_owned()),
                 host_config: Some(host_config),
                 ..Default::default()
             },

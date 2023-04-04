@@ -37,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
         .await?;
 
     let alpine_config = Config {
-        image: Some(IMAGE),
+        image: Some(IMAGE.to_owned()),
         tty: Some(true),
         attach_stdin: Some(true),
         attach_stdout: Some(true),
@@ -47,7 +47,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
     };
 
     let id = docker
-        .create_container::<&str, &str>(None, alpine_config)
+        .create_container::<&str>(None, alpine_config)
         .await?
         .id;
     docker.start_container::<String>(&id, None).await?;

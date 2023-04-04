@@ -159,9 +159,15 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
     };
 
     let cmd = if cfg!(windows) {
-        Some(vec!["cmd.exe", "/C", "copy", "nul", "bollard.txt"])
+        Some(vec![
+            "cmd.exe".into(),
+            "/C".into(),
+            "copy".into(),
+            "nul".into(),
+            "bollard.txt".into(),
+        ])
     } else {
-        Some(vec!["touch", "/bollard.txt"])
+        Some(vec!["touch".into(), "/bollard.txt".into()])
     };
 
     create_image_hello_world(&docker).await?;
@@ -174,7 +180,7 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
             }),
             Config {
                 cmd,
-                image: Some(&image[..]),
+                image: Some(image.to_owned()),
                 ..Default::default()
             },
         )
@@ -203,7 +209,7 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
                 pause: true,
                 ..Default::default()
             },
-            Config::<String> {
+            Config {
                 ..Default::default()
             },
         )
@@ -216,11 +222,16 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
                 platform: None,
             }),
             Config {
-                image: Some("integration_test_commit_container_next"),
+                image: Some("integration_test_commit_container_next".into()),
                 cmd: if cfg!(windows) {
-                    Some(vec!["cmd.exe", "/C", "dir", "bollard.txt"])
+                    Some(vec![
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "dir".into(),
+                        "bollard.txt".into(),
+                    ])
                 } else {
-                    Some(vec!["ls", "/bollard.txt"])
+                    Some(vec!["ls".into(), "/bollard.txt".into()])
                 },
                 ..Default::default()
             },
@@ -334,11 +345,16 @@ RUN touch bollard.txt
                 platform: None,
             }),
             Config {
-                image: Some("integration_test_build_image"),
+                image: Some("integration_test_build_image".into()),
                 cmd: if cfg!(windows) {
-                    Some(vec!["cmd.exe", "/C", "dir", "bollard.txt"])
+                    Some(vec![
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "dir".into(),
+                        "bollard.txt".into(),
+                    ])
                 } else {
-                    Some(vec!["ls", "/bollard.txt"])
+                    Some(vec!["ls".into(), "/bollard.txt".into()])
                 },
                 ..Default::default()
             },

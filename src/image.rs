@@ -986,14 +986,13 @@ impl Docker {
     ///
     /// docker.commit_container(options, config);
     /// ```
-    pub async fn commit_container<T, Z>(
+    pub async fn commit_container<T>(
         &self,
         options: CommitContainerOptions<T>,
-        config: Config<Z>,
+        config: Config,
     ) -> Result<Commit, Error>
     where
         T: Into<String> + Serialize,
-        Z: Into<String> + Eq + Hash + Serialize,
     {
         let url = "/commit";
 

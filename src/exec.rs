@@ -4,7 +4,6 @@ use http::header::{CONNECTION, UPGRADE};
 use http::request::Builder;
 use hyper::Body;
 use hyper::Method;
-use serde::ser::Serialize;
 
 use super::Docker;
 
@@ -21,10 +20,8 @@ use tokio_util::codec::FramedRead;
 /// Exec configuration used in the [Create Exec API](Docker::create_exec())
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct CreateExecOptions<T>
-where
-    T: Into<String> + Serialize,
-{
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+pub struct CreateExecOptions {
     /// Attach to `stdin` of the exec command.
     pub attach_stdin: Option<bool>,
     /// Attach to stdout of the exec command.
@@ -35,18 +32,18 @@ where
     pub tty: Option<bool>,
     /// Override the key sequence for detaching a container. Format is a single character `[a-Z]`
     /// or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`.
-    pub detach_keys: Option<T>,
+    pub detach_keys: Option<String>,
     /// A list of environment variables in the form `["VAR=value", ...].`
-    pub env: Option<Vec<T>>,
+    pub env: Option<Vec<String>>,
     /// Command to run, as a string or array of strings.
-    pub cmd: Option<Vec<T>>,
+    pub cmd: Option<Vec<String>>,
     /// Runs the exec process with extended privileges.
     pub privileged: Option<bool>,
     /// The user, and optionally, group to run the exec process inside the container. Format is one
     /// of: `user`, `user:group`, `uid`, or `uid:gid`.
-    pub user: Option<T>,
+    pub user: Option<String>,
     /// The working directory for the exec process inside the container.
-    pub working_dir: Option<T>,
+    pub working_dir: Option<String>,
 }
 
 /// Result type for the [Create Exec API](Docker::create_exec())
@@ -133,14 +130,11 @@ impl Docker {
     ///
     /// docker.create_exec("hello-world", config);
     /// ```
-    pub async fn create_exec<T>(
+    pub async fn create_exec(
         &self,
         container_name: &str,
-        config: CreateExecOptions<T>,
-    ) -> Result<CreateExecResults, Error>
-    where
-        T: Into<String> + Serialize,
-    {
+        config: CreateExecOptions,
+    ) -> Result<CreateExecResults, Error> {
         let url = format!("/containers/{}/exec", container_name);
 
         let req = self.build_request(

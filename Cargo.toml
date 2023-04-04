@@ -1,7 +1,7 @@
 [package]
 name = "bollard-next"
 description = "An asynchronous Docker daemon API"
-version = "0.14.5"
+version = "0.14.6"
 authors = ["Bollard contributors"]
 license = "Apache-2.0"
 homepage = "https://github.com/fussybeaver/bollard"
@@ -16,7 +16,7 @@ members = ["codegen/swagger", "codegen/proto", "."]
 
 [features]
 # Enable utoipa support
-utoipa = ["bollard-next-stubs/utoipa"]
+utoipa = ["dep:utoipa", "bollard-next-stubs/utoipa"]
 # Enable Buildkit-enabled docker image building
 buildkit = [
   "num",
@@ -98,6 +98,7 @@ tower-service = { version = "0.3", optional = true }
 url = "2.2"
 webpki-roots = { version = "0.22", optional = true }
 webpki = { version = "0.22", optional = true }
+utoipa = { version = "3", optional = true }
 
 [dev-dependencies]
 flate2 = "1.0"
