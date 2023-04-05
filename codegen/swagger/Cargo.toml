@@ -1,6 +1,6 @@
 [package]
 name = "bollard-next-stubs"
-version = "1.42.0-rc.10"
+version = "1.42.0-rc.11"
 authors = ["Bollard contributors"]
 description = "Stubs used for the Bollard rust async Docker client API"
 license = "Apache-2.0"
@@ -25,4 +25,4 @@ time = { version = "0.3", features = [
 ], optional = true }
 
 serde_with = { version = "2.0", default-features = false, features = ["std"] }
-utoipa = { version = "3", optional = true }
+utoipa = { version = "3", features = ["preserve_order"], optional = true }
