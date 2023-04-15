@@ -191,7 +191,7 @@ pub struct BuildCache {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<String>,
+    pub created_at: Option<BollardDate>,
 
     /// Date and time at which the build cache was last used in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
     #[serde(rename = "LastUsedAt")]
@@ -201,7 +201,7 @@ pub struct BuildCache {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub last_used_at: Option<String>,
+    pub last_used_at: Option<BollardDate>,
 
     #[serde(rename = "UsageCount")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -209,7 +209,6 @@ pub struct BuildCache {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum BuildCacheTypeEnum {
     #[serde(rename = "")]
@@ -348,7 +347,6 @@ pub struct ClusterInfo {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub created_at: Option<BollardDate>,
 
     /// Date and time at which the swarm was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
@@ -359,7 +357,6 @@ pub struct ClusterInfo {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
@@ -411,7 +408,6 @@ pub struct ClusterVolume {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub created_at: Option<BollardDate>,
 
     #[serde(rename = "UpdatedAt")]
@@ -421,7 +417,6 @@ pub struct ClusterVolume {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
@@ -463,8 +458,8 @@ pub struct ClusterVolumeInfo {
     pub accessible_topology: Option<Vec<Topology>>,
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumePublishStatus {
     /// The ID of the Swarm node the volume is published on.
     #[serde(rename = "NodeID")]
@@ -484,7 +479,6 @@ pub struct ClusterVolumePublishStatus {
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 pub enum ClusterVolumePublishStatusStateEnum {
     #[serde(rename = "")]
     EMPTY,
@@ -579,7 +573,7 @@ pub struct ClusterVolumeSpecAccessMode {
     /// Options for using this volume as a Mount-type volume.      Either MountVolume or BlockVolume, but not both, must be     present.   properties:     FsType:       type: \"string\"       description: |         Specifies the filesystem type for the mount volume.         Optional.     MountFlags:       type: \"array\"       description: |         Flags to pass when mounting the volume. Optional.       items:         type: \"string\" BlockVolume:   type: \"object\"   description: |     Options for using this volume as a Block-type volume.     Intentionally empty.
     #[serde(rename = "MountVolume")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mount_volume: Option<HashMap<String, String>>,
+    pub mount_volume: Option<HashMap<(), ()>>,
 
     /// Swarm Secrets that are passed to the CSI storage plugin when operating on this volume.
     #[serde(rename = "Secrets")]
@@ -601,7 +595,6 @@ pub struct ClusterVolumeSpecAccessMode {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeScopeEnum {
     #[serde(rename = "")]
@@ -645,7 +638,6 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeScopeEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeSharingEnum {
     #[serde(rename = "")]
@@ -699,7 +691,6 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeSharingEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeAvailabilityEnum {
     #[serde(rename = "")]
@@ -825,7 +816,6 @@ pub struct Config {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub created_at: Option<BollardDate>,
 
     #[serde(rename = "UpdatedAt")]
@@ -835,7 +825,6 @@ pub struct Config {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    #[cfg_attr(feature = "utoipa", schema(value_type = String))]
     pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
@@ -917,7 +906,7 @@ pub struct ContainerConfig {
     /// An object mapping ports to an empty object in the form:  `{\"<port>/<tcp|udp|sctp>\": {}}`
     #[serde(rename = "ExposedPorts")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub exposed_ports: Option<HashMap<String, HashMap<String, String>>>,
+    pub exposed_ports: Option<HashMap<String, HashMap<(), ()>>>,
 
     /// Attach standard streams to a TTY, including `stdin` if it is not closed.
     #[serde(rename = "Tty")]
@@ -961,7 +950,7 @@ pub struct ContainerConfig {
     /// An object mapping mount point paths inside the container to empty objects.
     #[serde(rename = "Volumes")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<HashMap<String, HashMap<String, String>>>,
+    pub volumes: Option<HashMap<String, HashMap<(), ()>>>,
 
     /// The working directory for commands to run in.
     #[serde(rename = "WorkingDir")]
@@ -1212,7 +1201,6 @@ pub struct ContainerState {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ContainerStateStatusEnum {
     #[serde(rename = "")]
@@ -1564,7 +1552,6 @@ pub struct EndpointPortConfig {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointPortConfigProtocolEnum {
     #[serde(rename = "")]
@@ -1613,7 +1600,6 @@ impl ::std::convert::AsRef<str> for EndpointPortConfigProtocolEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointPortConfigPublishModeEnum {
     #[serde(rename = "")]
@@ -1739,7 +1725,6 @@ pub struct EndpointSpec {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointSpecModeEnum {
     #[serde(rename = "")]
@@ -1882,7 +1867,6 @@ pub struct EventMessage {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EventMessageTypeEnum {
     #[serde(rename = "")]
@@ -1971,7 +1955,6 @@ impl ::std::convert::AsRef<str> for EventMessageTypeEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EventMessageScopeEnum {
     #[serde(rename = "")]
@@ -2142,21 +2125,24 @@ pub struct ExecStartConfig {
 }
 
 /// User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`).
+
+pub type GenericResources = GenericResourcesInner;
+
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct GenericResources {
+pub struct GenericResourcesInner {
     #[serde(rename = "NamedResourceSpec")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub named_resource_spec: Option<GenericResourcesNamedResourceSpec>,
+    pub named_resource_spec: Option<GenericResourcesInnerNamedResourceSpec>,
 
     #[serde(rename = "DiscreteResourceSpec")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discrete_resource_spec: Option<GenericResourcesDiscreteResourceSpec>,
+    pub discrete_resource_spec: Option<GenericResourcesInnerDiscreteResourceSpec>,
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct GenericResourcesDiscreteResourceSpec {
+pub struct GenericResourcesInnerDiscreteResourceSpec {
     #[serde(rename = "Kind")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -2168,7 +2154,7 @@ pub struct GenericResourcesDiscreteResourceSpec {
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct GenericResourcesNamedResourceSpec {
+pub struct GenericResourcesInnerNamedResourceSpec {
     #[serde(rename = "Kind")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -2213,7 +2199,6 @@ pub struct Health {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HealthStatusEnum {
     #[serde(rename = "")]
@@ -2308,7 +2293,7 @@ pub struct HealthcheckResult {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub start: Option<String>,
+    pub start: Option<BollardDate>,
 
     /// Date and time at which this check ended in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
     #[serde(rename = "End")]
@@ -2318,7 +2303,7 @@ pub struct HealthcheckResult {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub end: Option<String>,
+    pub end: Option<BollardDate>,
 
     /// ExitCode meanings:  - `0` healthy - `1` unhealthy - `2` reserved (considered unhealthy) - other values: error running probe
     #[serde(rename = "ExitCode")]
@@ -2703,7 +2688,6 @@ pub struct HostConfig {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HostConfigCgroupnsModeEnum {
     #[serde(rename = "")]
@@ -2747,7 +2731,6 @@ impl ::std::convert::AsRef<str> for HostConfigCgroupnsModeEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HostConfigIsolationEnum {
     #[serde(rename = "")]
@@ -2952,7 +2935,7 @@ pub struct ImageInspectMetadata {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub last_tag_time: Option<String>,
+    pub last_tag_time: Option<BollardDate>,
 }
 
 /// Information about the image's RootFS, including the layer IDs.
@@ -3155,7 +3138,6 @@ pub struct Limit {
 /// which helps with FFI.
 #[allow(non_camel_case_types)]
 #[repr(C)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum LocalNodeState {
     #[serde(rename = "")]
@@ -3260,7 +3242,6 @@ pub struct Mount {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountTypeEnum {
     #[serde(rename = "")]
@@ -3339,7 +3320,6 @@ pub struct MountBindOptions {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountBindOptionsPropagationEnum {
     #[serde(rename = "")]
@@ -3448,7 +3428,6 @@ pub struct MountPoint {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountPointTypeEnum {
     #[serde(rename = "")]
@@ -3573,7 +3552,7 @@ pub struct Network {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created: Option<String>,
+    pub created: Option<BollardDate>,
 
     #[serde(rename = "Scope")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3885,7 +3864,7 @@ pub struct Node {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<String>,
+    pub created_at: Option<BollardDate>,
 
     /// Date and time at which the node was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
     #[serde(rename = "UpdatedAt")]
@@ -3895,7 +3874,7 @@ pub struct Node {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3964,7 +3943,6 @@ pub struct NodeSpec {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum NodeSpecRoleEnum {
     #[serde(rename = "")]
@@ -4008,7 +3986,6 @@ impl ::std::convert::AsRef<str> for NodeSpecRoleEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum NodeSpecAvailabilityEnum {
     #[serde(rename = "")]
@@ -4062,7 +4039,6 @@ impl ::std::convert::AsRef<str> for NodeSpecAvailabilityEnum {
 /// which helps with FFI.
 #[allow(non_camel_case_types)]
 #[repr(C)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum NodeState {
     #[serde(rename = "unknown")]
@@ -4329,7 +4305,6 @@ pub struct PluginConfigInterface {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum PluginConfigInterfaceProtocolSchemeEnum {
     #[serde(rename = "")]
@@ -4579,7 +4554,6 @@ pub struct Port {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum PortTypeEnum {
     #[serde(rename = "")]
@@ -4708,7 +4682,6 @@ pub struct PushImageInfo {
 /// which helps with FFI.
 #[allow(non_camel_case_types)]
 #[repr(C)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum Reachability {
     #[serde(rename = "unknown")]
@@ -4994,7 +4967,6 @@ pub struct RestartPolicy {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum RestartPolicyNameEnum {
     #[serde(rename = "")]
@@ -5080,7 +5052,7 @@ pub struct Secret {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<String>,
+    pub created_at: Option<BollardDate>,
 
     #[serde(rename = "UpdatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5089,7 +5061,7 @@ pub struct Secret {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5143,7 +5115,7 @@ pub struct Service {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<String>,
+    pub created_at: Option<BollardDate>,
 
     #[serde(rename = "UpdatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5152,7 +5124,7 @@ pub struct Service {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5234,7 +5206,7 @@ pub struct ServiceJobStatus {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub last_execution: Option<String>,
+    pub last_execution: Option<BollardDate>,
 }
 
 /// The status of the service's tasks. Provided only when requested as part of a ServiceList operation.
@@ -5307,7 +5279,7 @@ pub struct ServiceSpecMode {
 
     #[serde(rename = "Global")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub global: Option<HashMap<String, String>>,
+    pub global: Option<HashMap<(), ()>>,
 
     #[serde(rename = "ReplicatedJob")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5316,7 +5288,7 @@ pub struct ServiceSpecMode {
     /// The mode used for services which run a task to the completed state on each valid node.
     #[serde(rename = "GlobalJob")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub global_job: Option<HashMap<String, String>>,
+    pub global_job: Option<HashMap<(), ()>>,
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5378,7 +5350,6 @@ pub struct ServiceSpecRollbackConfig {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecRollbackConfigFailureActionEnum {
     #[serde(rename = "")]
@@ -5422,7 +5393,6 @@ impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigFailureActionEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecRollbackConfigOrderEnum {
     #[serde(rename = "")]
@@ -5501,7 +5471,6 @@ pub struct ServiceSpecUpdateConfig {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecUpdateConfigFailureActionEnum {
     #[serde(rename = "")]
@@ -5550,7 +5519,6 @@ impl ::std::convert::AsRef<str> for ServiceSpecUpdateConfigFailureActionEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecUpdateConfigOrderEnum {
     #[serde(rename = "")]
@@ -5617,7 +5585,7 @@ pub struct ServiceUpdateStatus {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub started_at: Option<String>,
+    pub started_at: Option<BollardDate>,
 
     #[serde(rename = "CompletedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5626,7 +5594,7 @@ pub struct ServiceUpdateStatus {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub completed_at: Option<String>,
+    pub completed_at: Option<BollardDate>,
 
     #[serde(rename = "Message")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5634,7 +5602,6 @@ pub struct ServiceUpdateStatus {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceUpdateStatusStateEnum {
     #[serde(rename = "")]
@@ -5719,7 +5686,7 @@ pub struct Swarm {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<String>,
+    pub created_at: Option<BollardDate>,
 
     /// Date and time at which the swarm was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
     #[serde(rename = "UpdatedAt")]
@@ -5729,7 +5696,7 @@ pub struct Swarm {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<BollardDate>,
 
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5976,7 +5943,6 @@ pub struct SwarmSpecCaConfigExternalCas {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SwarmSpecCaConfigExternalCasProtocolEnum {
     #[serde(rename = "")]
@@ -6452,7 +6418,6 @@ pub struct SystemInfo {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoCgroupDriverEnum {
     #[serde(rename = "")]
@@ -6501,7 +6466,6 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupDriverEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoCgroupVersionEnum {
     #[serde(rename = "")]
@@ -6545,7 +6509,6 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupVersionEnum {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoIsolationEnum {
     #[serde(rename = "")]
@@ -6685,7 +6648,7 @@ pub struct SystemVersionComponents {
     /// Key/value pairs of strings with additional information about the component. These values are intended for informational purposes only, and their content is not defined, and not part of the API specification.  These messages can be printed by the client as information to the user.
     #[serde(rename = "Details")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub details: Option<HashMap<String, String>>,
+    pub details: Option<HashMap<(), ()>>,
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6714,7 +6677,7 @@ pub struct Task {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<String>,
+    pub created_at: Option<BollardDate>,
 
     #[serde(rename = "UpdatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6723,7 +6686,7 @@ pub struct Task {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<BollardDate>,
 
     /// Name of the task.
     #[serde(rename = "Name")]
@@ -6957,7 +6920,6 @@ pub struct TaskSpecContainerSpec {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum TaskSpecContainerSpecIsolationEnum {
     #[serde(rename = "")]
@@ -7015,7 +6977,7 @@ pub struct TaskSpecContainerSpecConfigs {
     /// Runtime represents a target that is not mounted into the container but is used by the task  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually > exclusive
     #[serde(rename = "Runtime")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub runtime: Option<HashMap<String, String>>,
+    pub runtime: Option<HashMap<(), ()>>,
 
     /// ConfigID represents the ID of the specific config that we're referencing.
     #[serde(rename = "ConfigID")]
@@ -7308,7 +7270,6 @@ pub struct TaskSpecRestartPolicy {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum TaskSpecRestartPolicyConditionEnum {
     #[serde(rename = "")]
@@ -7361,7 +7322,6 @@ impl ::std::convert::AsRef<str> for TaskSpecRestartPolicyConditionEnum {
 /// which helps with FFI.
 #[allow(non_camel_case_types)]
 #[repr(C)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum TaskState {
     #[serde(rename = "new")]
@@ -7452,7 +7412,7 @@ pub struct TaskStatus {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub timestamp: Option<String>,
+    pub timestamp: Option<BollardDate>,
 
     #[serde(rename = "State")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7557,12 +7517,12 @@ pub struct Volume {
         deserialize_with = "deserialize_timestamp",
         serialize_with = "serialize_timestamp"
     )]
-    pub created_at: Option<String>,
+    pub created_at: Option<BollardDate>,
 
     /// Low-level details about the volume, provided by the volume driver. Details are returned as a map with key/value pairs: `{\"key\":\"value\",\"key2\":\"value2\"}`.  The `Status` field is optional, and is omitted if the volume driver does not support this feature.
     #[serde(rename = "Status")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<HashMap<String, HashMap<String, String>>>,
+    pub status: Option<HashMap<String, HashMap<(), ()>>>,
 
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
@@ -7590,7 +7550,6 @@ pub struct Volume {
 }
 
 #[allow(non_camel_case_types)]
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum VolumeScopeEnum {
     #[serde(rename = "")]

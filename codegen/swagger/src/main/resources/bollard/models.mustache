@@ -131,7 +131,8 @@ impl ::std::str::FromStr for {{classname}} {
 pub type {{classname}} = {{{arrayModelType}}};
 {{/arrayModelType}}{{^arrayModelType}}{{#emptyVars}}// special-casing PortMap, cos swagger-codegen doesn't figure out this type
 pub type {{classname}} = HashMap<String, Option<Vec<PortBinding>>>;
-{{/emptyVars}}{{^emptyVars}}{{! general struct}}#[derive(Debug, Clone, Default, PartialEq, {{^vendorExtensions.x-rustgen-grpc-aux}}Serialize, {{/vendorExtensions.x-rustgen-grpc-aux}}Deserialize)]{{#xmlName}}
+{{/emptyVars}}{{^emptyVars}}{{! general struct}}#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[derive(Debug, Clone, Default, PartialEq, {{^vendorExtensions.x-rustgen-grpc-aux}}Serialize, {{/vendorExtensions.x-rustgen-grpc-aux}}Deserialize)]{{#xmlName}}
 #[serde(rename = "{{xmlName}}")]{{/xmlName}}{{#vendorExtensions.x-rustgen-upper-case}}
 #[serde(rename_all = "UPPERCASE")]{{/vendorExtensions.x-rustgen-upper-case}}
 pub struct {{classname}} {

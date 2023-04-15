@@ -8,14 +8,16 @@ edition = "2021"
 
 [features]
 buildkit = ["base64", "bytes", "bollard-buildkit-proto", "prost"]
+utoipa = ["dep:utoipa"]
 
 [dependencies]
-base64 = { version = "0.13", optional = true }
+base64 = { version = "0.21", optional = true }
 bollard-buildkit-proto = { path = "../proto", version = "=0.1.0", optional = true }
 bytes = { version = "1", optional = true }
 chrono = { version = "0.4", default-features = false, features = ["std", "clock", "serde"], optional = true }
 serde = { version = "1.0", features = ["derive"] }
 prost = { version = "0.11", optional = true }
 time = { version = "0.3", features = ["formatting", "parsing"], optional = true }
+utoipa = { version = "3.1", features = ["preserve_order"], optional = true }
 
 serde_with = {version = "2.0", default-features = false, features = ["std"]}
