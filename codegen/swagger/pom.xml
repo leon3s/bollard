@@ -27,7 +27,7 @@
                 <supportingFilesToGenerate>models.rs,lib.rs,Cargo.toml,config,README.md</supportingFilesToGenerate>
                 <configOptions>
                   <packageName>bollard-next-stubs</packageName>
-                  <packageVersion>1.42.0-rc.12</packageVersion>
+                  <packageVersion>1.42.0-rc.13</packageVersion>
                 </configOptions>
               </configuration>
             </execution>

@@ -210,6 +210,7 @@ pub struct BuildCache {
     pub usage_count: Option<i64>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum BuildCacheTypeEnum {
@@ -479,6 +480,7 @@ pub struct ClusterVolumePublishStatus {
     pub publish_context: Option<HashMap<String, String>>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumePublishStatusStateEnum {
@@ -596,6 +598,7 @@ pub struct ClusterVolumeSpecAccessMode {
     pub availability: Option<ClusterVolumeSpecAccessModeAvailabilityEnum>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeScopeEnum {
@@ -639,6 +642,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeScopeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeSharingEnum {
@@ -692,6 +696,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeSharingEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeAvailabilityEnum {
@@ -1202,6 +1207,7 @@ pub struct ContainerState {
     pub health: Option<Health>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ContainerStateStatusEnum {
@@ -1553,6 +1559,7 @@ pub struct EndpointPortConfig {
     pub publish_mode: Option<EndpointPortConfigPublishModeEnum>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointPortConfigProtocolEnum {
@@ -1601,6 +1608,7 @@ impl ::std::convert::AsRef<str> for EndpointPortConfigProtocolEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointPortConfigPublishModeEnum {
@@ -1726,6 +1734,7 @@ pub struct EndpointSpec {
     pub ports: Option<Vec<EndpointPortConfig>>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointSpecModeEnum {
@@ -1868,6 +1877,7 @@ pub struct EventMessage {
     pub time_nano: Option<i64>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EventMessageTypeEnum {
@@ -1956,6 +1966,7 @@ impl ::std::convert::AsRef<str> for EventMessageTypeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EventMessageScopeEnum {
@@ -2200,6 +2211,7 @@ pub struct Health {
     pub log: Option<Vec<HealthcheckResult>>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HealthStatusEnum {
@@ -2689,6 +2701,7 @@ pub struct HostConfig {
     pub readonly_paths: Option<Vec<String>>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HostConfigCgroupnsModeEnum {
@@ -2732,6 +2745,7 @@ impl ::std::convert::AsRef<str> for HostConfigCgroupnsModeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HostConfigIsolationEnum {
@@ -3138,6 +3152,7 @@ pub struct Limit {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -3243,6 +3258,7 @@ pub struct Mount {
     pub tmpfs_options: Option<MountTmpfsOptions>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountTypeEnum {
@@ -3321,6 +3337,7 @@ pub struct MountBindOptions {
     pub create_mountpoint: Option<bool>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountBindOptionsPropagationEnum {
@@ -3429,6 +3446,7 @@ pub struct MountPoint {
     pub propagation: Option<String>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountPointTypeEnum {
@@ -3944,6 +3962,7 @@ pub struct NodeSpec {
     pub availability: Option<NodeSpecAvailabilityEnum>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum NodeSpecRoleEnum {
@@ -3987,6 +4006,7 @@ impl ::std::convert::AsRef<str> for NodeSpecRoleEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum NodeSpecAvailabilityEnum {
@@ -4039,6 +4059,7 @@ impl ::std::convert::AsRef<str> for NodeSpecAvailabilityEnum {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -4306,6 +4327,7 @@ pub struct PluginConfigInterface {
     pub protocol_scheme: Option<PluginConfigInterfaceProtocolSchemeEnum>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum PluginConfigInterfaceProtocolSchemeEnum {
@@ -4555,6 +4577,7 @@ pub struct Port {
     pub typ: Option<PortTypeEnum>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum PortTypeEnum {
@@ -4682,6 +4705,7 @@ pub struct PushImageInfo {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -4968,6 +4992,7 @@ pub struct RestartPolicy {
     pub maximum_retry_count: Option<i64>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum RestartPolicyNameEnum {
@@ -5351,6 +5376,7 @@ pub struct ServiceSpecRollbackConfig {
     pub order: Option<ServiceSpecRollbackConfigOrderEnum>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecRollbackConfigFailureActionEnum {
@@ -5394,6 +5420,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigFailureActionEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecRollbackConfigOrderEnum {
@@ -5472,6 +5499,7 @@ pub struct ServiceSpecUpdateConfig {
     pub order: Option<ServiceSpecUpdateConfigOrderEnum>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecUpdateConfigFailureActionEnum {
@@ -5520,6 +5548,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecUpdateConfigFailureActionEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecUpdateConfigOrderEnum {
@@ -5603,6 +5632,7 @@ pub struct ServiceUpdateStatus {
     pub message: Option<String>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceUpdateStatusStateEnum {
@@ -5944,6 +5974,7 @@ pub struct SwarmSpecCaConfigExternalCas {
     pub ca_cert: Option<String>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SwarmSpecCaConfigExternalCasProtocolEnum {
@@ -6419,6 +6450,7 @@ pub struct SystemInfo {
     pub warnings: Option<Vec<String>>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoCgroupDriverEnum {
@@ -6467,6 +6499,7 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupDriverEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoCgroupVersionEnum {
@@ -6510,6 +6543,7 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupVersionEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoIsolationEnum {
@@ -6921,6 +6955,7 @@ pub struct TaskSpecContainerSpec {
     pub ulimits: Option<Vec<ResourcesUlimits>>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum TaskSpecContainerSpecIsolationEnum {
@@ -7271,6 +7306,7 @@ pub struct TaskSpecRestartPolicy {
     pub window: Option<i64>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum TaskSpecRestartPolicyConditionEnum {
@@ -7322,6 +7358,7 @@ impl ::std::convert::AsRef<str> for TaskSpecRestartPolicyConditionEnum {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -7551,6 +7588,7 @@ pub struct Volume {
     pub usage_data: Option<VolumeUsageData>,
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum VolumeScopeEnum {
