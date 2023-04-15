@@ -35,6 +35,8 @@ pub type BollardDate = chrono::DateTime<chrono::Utc>;
 #[cfg(not(any(feature = "chrono", feature = "time")))]
 pub type BollardDate = String;
 
+pub type EmptyObject = HashMap<(), ()>;
+
 #[cfg(feature = "time")]
 fn deserialize_timestamp<'de, D: Deserializer<'de>>(d: D) -> Result<Option<BollardDate>, D::Error> {
     let opt: Option<String> = serde::Deserialize::deserialize(d)?;
@@ -573,7 +575,7 @@ pub struct ClusterVolumeSpecAccessMode {
     /// Options for using this volume as a Mount-type volume.      Either MountVolume or BlockVolume, but not both, must be     present.   properties:     FsType:       type: \"string\"       description: |         Specifies the filesystem type for the mount volume.         Optional.     MountFlags:       type: \"array\"       description: |         Flags to pass when mounting the volume. Optional.       items:         type: \"string\" BlockVolume:   type: \"object\"   description: |     Options for using this volume as a Block-type volume.     Intentionally empty.
     #[serde(rename = "MountVolume")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mount_volume: Option<HashMap<(), ()>>,
+    pub mount_volume: Option<EmptyObject>,
 
     /// Swarm Secrets that are passed to the CSI storage plugin when operating on this volume.
     #[serde(rename = "Secrets")]
@@ -906,7 +908,7 @@ pub struct ContainerConfig {
     /// An object mapping ports to an empty object in the form:  `{\"<port>/<tcp|udp|sctp>\": {}}`
     #[serde(rename = "ExposedPorts")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub exposed_ports: Option<HashMap<String, HashMap<(), ()>>>,
+    pub exposed_ports: Option<HashMap<String, EmptyObject>>,
 
     /// Attach standard streams to a TTY, including `stdin` if it is not closed.
     #[serde(rename = "Tty")]
@@ -950,7 +952,7 @@ pub struct ContainerConfig {
     /// An object mapping mount point paths inside the container to empty objects.
     #[serde(rename = "Volumes")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<HashMap<String, HashMap<(), ()>>>,
+    pub volumes: Option<HashMap<String, EmptyObject>>,
 
     /// The working directory for commands to run in.
     #[serde(rename = "WorkingDir")]
@@ -5279,7 +5281,7 @@ pub struct ServiceSpecMode {
 
     #[serde(rename = "Global")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub global: Option<HashMap<(), ()>>,
+    pub global: Option<EmptyObject>,
 
     #[serde(rename = "ReplicatedJob")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5288,7 +5290,7 @@ pub struct ServiceSpecMode {
     /// The mode used for services which run a task to the completed state on each valid node.
     #[serde(rename = "GlobalJob")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub global_job: Option<HashMap<(), ()>>,
+    pub global_job: Option<EmptyObject>,
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6648,7 +6650,7 @@ pub struct SystemVersionComponents {
     /// Key/value pairs of strings with additional information about the component. These values are intended for informational purposes only, and their content is not defined, and not part of the API specification.  These messages can be printed by the client as information to the user.
     #[serde(rename = "Details")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub details: Option<HashMap<(), ()>>,
+    pub details: Option<EmptyObject>,
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6977,7 +6979,7 @@ pub struct TaskSpecContainerSpecConfigs {
     /// Runtime represents a target that is not mounted into the container but is used by the task  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually > exclusive
     #[serde(rename = "Runtime")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub runtime: Option<HashMap<(), ()>>,
+    pub runtime: Option<EmptyObject>,
 
     /// ConfigID represents the ID of the specific config that we're referencing.
     #[serde(rename = "ConfigID")]
@@ -7522,7 +7524,7 @@ pub struct Volume {
     /// Low-level details about the volume, provided by the volume driver. Details are returned as a map with key/value pairs: `{\"key\":\"value\",\"key2\":\"value2\"}`.  The `Status` field is optional, and is omitted if the volume driver does not support this feature.
     #[serde(rename = "Status")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<HashMap<String, HashMap<(), ()>>>,
+    pub status: Option<HashMap<String, EmptyObject>>,
 
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
