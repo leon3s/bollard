@@ -63,11 +63,7 @@ log = "0.4"
 pin-project-lite = "0.2.8"
 num = { version = "0.4", optional = true }
 rand = { version = "0.8", optional = true }
-<<<<<<< HEAD
-rustls = { version = "0.21", optional = true, features = ["dangerous_configuration"] }
-=======
 rustls = { version = "0.21", optional = true }
->>>>>>> f19efbe (Bump rustls version to 0.21)
 rustls-native-certs = { version = "0.6.0", optional = true }
 rustls-pemfile = { version = "1.0", optional = true }
 serde = "1.0"
