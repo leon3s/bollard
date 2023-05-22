@@ -1,7 +1,7 @@
 [package]
 name = "bollard-next"
 description = "An asynchronous Docker daemon API"
-version = "0.15.0"
+version = "0.15.1"
 authors = ["Bollard contributors"]
 license = "Apache-2.0"
 homepage = "https://github.com/fussybeaver/bollard"
@@ -84,7 +84,7 @@ tower-service = { version = "0.3", optional = true }
 url = "2.2"
 webpki-roots = { version = "0.23", optional = true }
 webpki = { version = "0.22", optional = true }
-utoipa = { version = "3.1", features = ["preserve_order"], optional = true }
+utoipa = { version = "3.5.0", features = ["preserve_order"], optional = true }
 
 [dev-dependencies]
 flate2 = "1.0"
