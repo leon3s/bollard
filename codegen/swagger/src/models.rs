@@ -38,7 +38,9 @@ pub type BollardDate = String;
 pub type EmptyObject = HashMap<(), ()>;
 
 #[cfg(feature = "time")]
-fn deserialize_timestamp<'de, D: Deserializer<'de>>(d: D) -> Result<Option<BollardDate>, D::Error> {
+fn deserialize_timestamp<'de, D: Deserializer<'de>>(
+    d: D
+) -> Result<Option<BollardDate>, D::Error> {
     let opt: Option<String> = serde::Deserialize::deserialize(d)?;
     if let Some(s) = opt {
         Ok(Some(
@@ -51,19 +53,18 @@ fn deserialize_timestamp<'de, D: Deserializer<'de>>(d: D) -> Result<Option<Bolla
 }
 
 #[cfg(not(feature = "time"))]
-fn deserialize_timestamp<'de, D: Deserializer<'de>>(d: D) -> Result<Option<BollardDate>, D::Error> {
+fn deserialize_timestamp<'de, D: Deserializer<'de>>(
+    d: D
+) -> Result<Option<BollardDate>, D::Error> {
     serde::Deserialize::deserialize(d)
 }
 
 #[cfg(feature = "time")]
 fn serialize_timestamp<S: Serializer>(date: &Option<BollardDate>, s: S) -> Result<S::Ok, S::Error> {
     match date {
-        Some(inner) => Ok(s.serialize_str(
-            &inner
-                .format(&time::format_description::well_known::Rfc3339)
-                .map_err(|e| serde::ser::Error::custom(format!("{:?}", e)))?,
-        )?),
-        None => Ok(s.serialize_str("")?),
+        Some(inner) => Ok(s.serialize_str(&inner.format(&time::format_description::well_known::Rfc3339)
+                                          .map_err(|e| serde::ser::Error::custom(format!("{:?}", e)))?)?),
+        None => Ok(s.serialize_str("")?)
     }
 }
 
@@ -71,7 +72,7 @@ fn serialize_timestamp<S: Serializer>(date: &Option<BollardDate>, s: S) -> Resul
 fn serialize_timestamp<S: Serializer>(date: &Option<BollardDate>, s: S) -> Result<S::Ok, S::Error> {
     match date {
         Some(inner) => s.serialize_some(inner),
-        None => s.serialize_none(),
+        None => s.serialize_none()
     }
 }
 
@@ -94,8 +95,9 @@ fn deserialize_buildinfo_aux<'de, D: Deserializer<'de>>(
 pub enum BuildInfoAux {
     #[serde(deserialize_with = "deserialize_buildinfo_aux")]
     BuildKit(crate::moby::buildkit::v1::StatusResponse),
-    Default(ImageId),
+    Default(ImageId)
 }
+
 
 /// Address represents an IPv4 or IPv6 IP address.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -110,6 +112,7 @@ pub struct Address {
     #[serde(rename = "PrefixLen")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prefix_len: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -130,6 +133,7 @@ pub struct AuthConfig {
     #[serde(rename = "serveraddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub serveraddress: Option<String>,
+
 }
 
 /// Volume configuration
@@ -139,53 +143,54 @@ pub struct Body {
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ClusterVolumeSpec>,
+
 }
 
-/// BuildCache contains information about a build cache record.
+/// BuildCache contains information about a build cache record. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct BuildCache {
-    /// Unique ID of the build cache record.
+    /// Unique ID of the build cache record. 
     #[serde(rename = "ID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 
-    /// ID of the parent build cache record.  > **Deprecated**: This field is deprecated, and omitted if empty.
+    /// ID of the parent build cache record.  > **Deprecated**: This field is deprecated, and omitted if empty. 
     #[serde(rename = "Parent")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
 
-    /// List of parent build cache record IDs.
+    /// List of parent build cache record IDs. 
     #[serde(rename = "Parents")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parents: Option<Vec<String>>,
 
-    /// Cache record type.
+    /// Cache record type. 
     #[serde(rename = "Type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<BuildCacheTypeEnum>,
 
-    /// Description of the build-step that produced the build cache.
+    /// Description of the build-step that produced the build cache. 
     #[serde(rename = "Description")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
-    /// Indicates if the build cache is in use.
+    /// Indicates if the build cache is in use. 
     #[serde(rename = "InUse")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub in_use: Option<bool>,
 
-    /// Indicates if the build cache is shared.
+    /// Indicates if the build cache is shared. 
     #[serde(rename = "Shared")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shared: Option<bool>,
 
-    /// Amount of disk space used by the build cache (in bytes).
+    /// Amount of disk space used by the build cache (in bytes). 
     #[serde(rename = "Size")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
 
-    /// Date and time at which the build cache was created in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the build cache was created in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "CreatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -195,7 +200,7 @@ pub struct BuildCache {
     )]
     pub created_at: Option<BollardDate>,
 
-    /// Date and time at which the build cache was last used in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the build cache was last used in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "LastUsedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -208,12 +213,13 @@ pub struct BuildCache {
     #[serde(rename = "UsageCount")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_count: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum BuildCacheTypeEnum {
+pub enum BuildCacheTypeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "internal")]
@@ -232,7 +238,7 @@ pub enum BuildCacheTypeEnum {
 
 impl ::std::fmt::Display for BuildCacheTypeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             BuildCacheTypeEnum::EMPTY => write!(f, ""),
             BuildCacheTypeEnum::INTERNAL => write!(f, "{}", "internal"),
             BuildCacheTypeEnum::FRONTEND => write!(f, "{}", "frontend"),
@@ -240,6 +246,7 @@ impl ::std::fmt::Display for BuildCacheTypeEnum {
             BuildCacheTypeEnum::SOURCE_GIT_CHECKOUT => write!(f, "{}", "source.git.checkout"),
             BuildCacheTypeEnum::EXEC_CACHEMOUNT => write!(f, "{}", "exec.cachemount"),
             BuildCacheTypeEnum::REGULAR => write!(f, "{}", "regular"),
+
         }
     }
 }
@@ -247,7 +254,7 @@ impl ::std::fmt::Display for BuildCacheTypeEnum {
 impl ::std::str::FromStr for BuildCacheTypeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(BuildCacheTypeEnum::EMPTY),
             "internal" => Ok(BuildCacheTypeEnum::INTERNAL),
             "frontend" => Ok(BuildCacheTypeEnum::FRONTEND),
@@ -262,7 +269,7 @@ impl ::std::str::FromStr for BuildCacheTypeEnum {
 
 impl ::std::convert::AsRef<str> for BuildCacheTypeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             BuildCacheTypeEnum::EMPTY => "",
             BuildCacheTypeEnum::INTERNAL => "internal",
             BuildCacheTypeEnum::FRONTEND => "frontend",
@@ -314,6 +321,7 @@ pub struct BuildInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg(not(feature = "buildkit"))]
     pub aux: Option<ImageId>,
+    
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -327,9 +335,50 @@ pub struct BuildPruneResponse {
     #[serde(rename = "SpaceReclaimed")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub space_reclaimed: Option<i64>,
+
 }
 
-/// ClusterInfo represents information about the swarm as is returned by the \"/info\" endpoint. Join-tokens are not included.
+/// Kind of change  Can be one of:  - `0`: Modified (\"C\") - `1`: Added (\"A\") - `2`: Deleted (\"D\") 
+/// Enumeration of values.
+/// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
+/// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[allow(non_camel_case_types)]
+#[repr(C)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
+pub enum ChangeType {
+    #[default]
+    #[serde(rename = "0")]
+    _0,
+    #[serde(rename = "1")]
+    _1,
+    #[serde(rename = "2")]
+    _2,
+}
+
+impl ::std::fmt::Display for ChangeType {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        match *self { 
+            ChangeType::_0 => write!(f, "{}", "0"),
+            ChangeType::_1 => write!(f, "{}", "1"),
+            ChangeType::_2 => write!(f, "{}", "2"),
+        }
+    }
+}
+
+impl ::std::str::FromStr for ChangeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "0" => Ok(ChangeType::_0),
+            "1" => Ok(ChangeType::_1),
+            "2" => Ok(ChangeType::_2),
+            _ => Err(()),
+        }
+    }
+}
+
+/// ClusterInfo represents information about the swarm as is returned by the \"/info\" endpoint. Join-tokens are not included. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterInfo {
@@ -342,7 +391,7 @@ pub struct ClusterInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<ObjectVersion>,
 
-    /// Date and time at which the swarm was initialised in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the swarm was initialised in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "CreatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -352,7 +401,7 @@ pub struct ClusterInfo {
     )]
     pub created_at: Option<BollardDate>,
 
-    /// Date and time at which the swarm was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the swarm was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "UpdatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -370,32 +419,33 @@ pub struct ClusterInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tls_info: Option<TlsInfo>,
 
-    /// Whether there is currently a root CA rotation in progress for the swarm
+    /// Whether there is currently a root CA rotation in progress for the swarm 
     #[serde(rename = "RootRotationInProgress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub root_rotation_in_progress: Option<bool>,
 
-    /// DataPathPort specifies the data path port number for data traffic. Acceptable port range is 1024 to 49151. If no port is set or is set to 0, the default port (4789) is used.
+    /// DataPathPort specifies the data path port number for data traffic. Acceptable port range is 1024 to 49151. If no port is set or is set to 0, the default port (4789) is used. 
     #[serde(rename = "DataPathPort")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_path_port: Option<u32>,
 
-    /// Default Address Pool specifies default subnet pools for global scope networks.
+    /// Default Address Pool specifies default subnet pools for global scope networks. 
     #[serde(rename = "DefaultAddrPool")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_addr_pool: Option<Vec<String>>,
 
-    /// SubnetSize specifies the subnet size of the networks created from the default subnet pool.
+    /// SubnetSize specifies the subnet size of the networks created from the default subnet pool. 
     #[serde(rename = "SubnetSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subnet_size: Option<u32>,
+
 }
 
-/// Options and information specific to, and only present on, Swarm CSI cluster volumes.
+/// Options and information specific to, and only present on, Swarm CSI cluster volumes. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolume {
-    /// The Swarm ID of this volume. Because cluster volumes are Swarm objects, they have an ID, unlike non-cluster volumes. This ID can be used to refer to the Volume instead of the name.
+    /// The Swarm ID of this volume. Because cluster volumes are Swarm objects, they have an ID, unlike non-cluster volumes. This ID can be used to refer to the Volume instead of the name. 
     #[serde(rename = "ID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -430,60 +480,63 @@ pub struct ClusterVolume {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub info: Option<ClusterVolumeInfo>,
 
-    /// The status of the volume as it pertains to its publishing and use on specific nodes
+    /// The status of the volume as it pertains to its publishing and use on specific nodes 
     #[serde(rename = "PublishStatus")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_status: Option<Vec<ClusterVolumePublishStatus>>,
+
 }
 
-/// Information about the global status of the volume.
+/// Information about the global status of the volume. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeInfo {
-    /// The capacity of the volume in bytes. A value of 0 indicates that the capacity is unknown.
+    /// The capacity of the volume in bytes. A value of 0 indicates that the capacity is unknown. 
     #[serde(rename = "CapacityBytes")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capacity_bytes: Option<i64>,
 
-    /// A map of strings to strings returned from the storage plugin when the volume is created.
+    /// A map of strings to strings returned from the storage plugin when the volume is created. 
     #[serde(rename = "VolumeContext")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_context: Option<HashMap<String, String>>,
 
-    /// The ID of the volume as returned by the CSI storage plugin. This is distinct from the volume's ID as provided by Docker. This ID is never used by the user when communicating with Docker to refer to this volume. If the ID is blank, then the Volume has not been successfully created in the plugin yet.
+    /// The ID of the volume as returned by the CSI storage plugin. This is distinct from the volume's ID as provided by Docker. This ID is never used by the user when communicating with Docker to refer to this volume. If the ID is blank, then the Volume has not been successfully created in the plugin yet. 
     #[serde(rename = "VolumeID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_id: Option<String>,
 
-    /// The topology this volume is actually accessible from.
+    /// The topology this volume is actually accessible from. 
     #[serde(rename = "AccessibleTopology")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub accessible_topology: Option<Vec<Topology>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumePublishStatus {
-    /// The ID of the Swarm node the volume is published on.
+    /// The ID of the Swarm node the volume is published on. 
     #[serde(rename = "NodeID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_id: Option<String>,
 
-    /// The published state of the volume. * `pending-publish` The volume should be published to this node, but the call to the controller plugin to do so has not yet been successfully completed. * `published` The volume is published successfully to the node. * `pending-node-unpublish` The volume should be unpublished from the node, and the manager is awaiting confirmation from the worker that it has done so. * `pending-controller-unpublish` The volume is successfully unpublished from the node, but has not yet been successfully unpublished on the controller.
+    /// The published state of the volume. * `pending-publish` The volume should be published to this node, but the call to the controller plugin to do so has not yet been successfully completed. * `published` The volume is published successfully to the node. * `pending-node-unpublish` The volume should be unpublished from the node, and the manager is awaiting confirmation from the worker that it has done so. * `pending-controller-unpublish` The volume is successfully unpublished from the node, but has not yet been successfully unpublished on the controller. 
     #[serde(rename = "State")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<ClusterVolumePublishStatusStateEnum>,
 
-    /// A map of strings to strings returned by the CSI controller plugin when a volume is published.
+    /// A map of strings to strings returned by the CSI controller plugin when a volume is published. 
     #[serde(rename = "PublishContext")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_context: Option<HashMap<String, String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ClusterVolumePublishStatusStateEnum {
+pub enum ClusterVolumePublishStatusStateEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "pending-publish")]
@@ -498,18 +551,13 @@ pub enum ClusterVolumePublishStatusStateEnum {
 
 impl ::std::fmt::Display for ClusterVolumePublishStatusStateEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ClusterVolumePublishStatusStateEnum::EMPTY => write!(f, ""),
-            ClusterVolumePublishStatusStateEnum::PENDING_PUBLISH => {
-                write!(f, "{}", "pending-publish")
-            }
+            ClusterVolumePublishStatusStateEnum::PENDING_PUBLISH => write!(f, "{}", "pending-publish"),
             ClusterVolumePublishStatusStateEnum::PUBLISHED => write!(f, "{}", "published"),
-            ClusterVolumePublishStatusStateEnum::PENDING_NODE_UNPUBLISH => {
-                write!(f, "{}", "pending-node-unpublish")
-            }
-            ClusterVolumePublishStatusStateEnum::PENDING_CONTROLLER_UNPUBLISH => {
-                write!(f, "{}", "pending-controller-unpublish")
-            }
+            ClusterVolumePublishStatusStateEnum::PENDING_NODE_UNPUBLISH => write!(f, "{}", "pending-node-unpublish"),
+            ClusterVolumePublishStatusStateEnum::PENDING_CONTROLLER_UNPUBLISH => write!(f, "{}", "pending-controller-unpublish"),
+
         }
     }
 }
@@ -517,16 +565,12 @@ impl ::std::fmt::Display for ClusterVolumePublishStatusStateEnum {
 impl ::std::str::FromStr for ClusterVolumePublishStatusStateEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ClusterVolumePublishStatusStateEnum::EMPTY),
             "pending-publish" => Ok(ClusterVolumePublishStatusStateEnum::PENDING_PUBLISH),
             "published" => Ok(ClusterVolumePublishStatusStateEnum::PUBLISHED),
-            "pending-node-unpublish" => {
-                Ok(ClusterVolumePublishStatusStateEnum::PENDING_NODE_UNPUBLISH)
-            }
-            "pending-controller-unpublish" => {
-                Ok(ClusterVolumePublishStatusStateEnum::PENDING_CONTROLLER_UNPUBLISH)
-            }
+            "pending-node-unpublish" => Ok(ClusterVolumePublishStatusStateEnum::PENDING_NODE_UNPUBLISH),
+            "pending-controller-unpublish" => Ok(ClusterVolumePublishStatusStateEnum::PENDING_CONTROLLER_UNPUBLISH),
             x => Err(format!("Invalid enum type: {}", x)),
         }
     }
@@ -534,23 +578,21 @@ impl ::std::str::FromStr for ClusterVolumePublishStatusStateEnum {
 
 impl ::std::convert::AsRef<str> for ClusterVolumePublishStatusStateEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ClusterVolumePublishStatusStateEnum::EMPTY => "",
             ClusterVolumePublishStatusStateEnum::PENDING_PUBLISH => "pending-publish",
             ClusterVolumePublishStatusStateEnum::PUBLISHED => "published",
             ClusterVolumePublishStatusStateEnum::PENDING_NODE_UNPUBLISH => "pending-node-unpublish",
-            ClusterVolumePublishStatusStateEnum::PENDING_CONTROLLER_UNPUBLISH => {
-                "pending-controller-unpublish"
-            }
+            ClusterVolumePublishStatusStateEnum::PENDING_CONTROLLER_UNPUBLISH => "pending-controller-unpublish",
         }
     }
 }
 
-/// Cluster-specific options used to create the volume.
+/// Cluster-specific options used to create the volume. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpec {
-    /// Group defines the volume group of this volume. Volumes belonging to the same group can be referred to by group name when creating Services.  Referring to a volume by group instructs Swarm to treat volumes in that group interchangeably for the purpose of scheduling. Volumes with an empty string for a group technically all belong to the same, emptystring group.
+    /// Group defines the volume group of this volume. Volumes belonging to the same group can be referred to by group name when creating Services.  Referring to a volume by group instructs Swarm to treat volumes in that group interchangeably for the purpose of scheduling. Volumes with an empty string for a group technically all belong to the same, emptystring group. 
     #[serde(rename = "Group")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
@@ -558,28 +600,29 @@ pub struct ClusterVolumeSpec {
     #[serde(rename = "AccessMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access_mode: Option<ClusterVolumeSpecAccessMode>,
+
 }
 
-/// Defines how the volume is used by tasks.
+/// Defines how the volume is used by tasks. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessMode {
-    /// The set of nodes this volume can be used on at one time. - `single` The volume may only be scheduled to one node at a time. - `multi` the volume may be scheduled to any supported number of nodes at a time.
+    /// The set of nodes this volume can be used on at one time. - `single` The volume may only be scheduled to one node at a time. - `multi` the volume may be scheduled to any supported number of nodes at a time. 
     #[serde(rename = "Scope")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub scope: Option<ClusterVolumeSpecAccessModeScopeEnum>,
 
-    /// The number and way that different tasks can use this volume at one time. - `none` The volume may only be used by one task at a time. - `readonly` The volume may be used by any number of tasks, but they all must mount the volume as readonly - `onewriter` The volume may be used by any number of tasks, but only one may mount it as read/write. - `all` The volume may have any number of readers and writers.
+    /// The number and way that different tasks can use this volume at one time. - `none` The volume may only be used by one task at a time. - `readonly` The volume may be used by any number of tasks, but they all must mount the volume as readonly - `onewriter` The volume may be used by any number of tasks, but only one may mount it as read/write. - `all` The volume may have any number of readers and writers. 
     #[serde(rename = "Sharing")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sharing: Option<ClusterVolumeSpecAccessModeSharingEnum>,
 
-    /// Options for using this volume as a Mount-type volume.      Either MountVolume or BlockVolume, but not both, must be     present.   properties:     FsType:       type: \"string\"       description: |         Specifies the filesystem type for the mount volume.         Optional.     MountFlags:       type: \"array\"       description: |         Flags to pass when mounting the volume. Optional.       items:         type: \"string\" BlockVolume:   type: \"object\"   description: |     Options for using this volume as a Block-type volume.     Intentionally empty.
+    /// Options for using this volume as a Mount-type volume.      Either MountVolume or BlockVolume, but not both, must be     present.   properties:     FsType:       type: \"string\"       description: |         Specifies the filesystem type for the mount volume.         Optional.     MountFlags:       type: \"array\"       description: |         Flags to pass when mounting the volume. Optional.       items:         type: \"string\" BlockVolume:   type: \"object\"   description: |     Options for using this volume as a Block-type volume.     Intentionally empty. 
     #[serde(rename = "MountVolume")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mount_volume: Option<EmptyObject>,
 
-    /// Swarm Secrets that are passed to the CSI storage plugin when operating on this volume.
+    /// Swarm Secrets that are passed to the CSI storage plugin when operating on this volume. 
     #[serde(rename = "Secrets")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<ClusterVolumeSpecAccessModeSecrets>>,
@@ -592,16 +635,17 @@ pub struct ClusterVolumeSpecAccessMode {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capacity_range: Option<ClusterVolumeSpecAccessModeCapacityRange>,
 
-    /// The availability of the volume for use in tasks. - `active` The volume is fully available for scheduling on the cluster - `pause` No new workloads should use the volume, but existing workloads are not stopped. - `drain` All workloads using this volume should be stopped and rescheduled, and no new ones should be started.
+    /// The availability of the volume for use in tasks. - `active` The volume is fully available for scheduling on the cluster - `pause` No new workloads should use the volume, but existing workloads are not stopped. - `drain` All workloads using this volume should be stopped and rescheduled, and no new ones should be started. 
     #[serde(rename = "Availability")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub availability: Option<ClusterVolumeSpecAccessModeAvailabilityEnum>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ClusterVolumeSpecAccessModeScopeEnum {
+pub enum ClusterVolumeSpecAccessModeScopeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "single")]
@@ -612,10 +656,11 @@ pub enum ClusterVolumeSpecAccessModeScopeEnum {
 
 impl ::std::fmt::Display for ClusterVolumeSpecAccessModeScopeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ClusterVolumeSpecAccessModeScopeEnum::EMPTY => write!(f, ""),
             ClusterVolumeSpecAccessModeScopeEnum::SINGLE => write!(f, "{}", "single"),
             ClusterVolumeSpecAccessModeScopeEnum::MULTI => write!(f, "{}", "multi"),
+
         }
     }
 }
@@ -623,7 +668,7 @@ impl ::std::fmt::Display for ClusterVolumeSpecAccessModeScopeEnum {
 impl ::std::str::FromStr for ClusterVolumeSpecAccessModeScopeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ClusterVolumeSpecAccessModeScopeEnum::EMPTY),
             "single" => Ok(ClusterVolumeSpecAccessModeScopeEnum::SINGLE),
             "multi" => Ok(ClusterVolumeSpecAccessModeScopeEnum::MULTI),
@@ -634,7 +679,7 @@ impl ::std::str::FromStr for ClusterVolumeSpecAccessModeScopeEnum {
 
 impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeScopeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ClusterVolumeSpecAccessModeScopeEnum::EMPTY => "",
             ClusterVolumeSpecAccessModeScopeEnum::SINGLE => "single",
             ClusterVolumeSpecAccessModeScopeEnum::MULTI => "multi",
@@ -645,7 +690,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeScopeEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ClusterVolumeSpecAccessModeSharingEnum {
+pub enum ClusterVolumeSpecAccessModeSharingEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "none")]
@@ -660,12 +705,13 @@ pub enum ClusterVolumeSpecAccessModeSharingEnum {
 
 impl ::std::fmt::Display for ClusterVolumeSpecAccessModeSharingEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ClusterVolumeSpecAccessModeSharingEnum::EMPTY => write!(f, ""),
             ClusterVolumeSpecAccessModeSharingEnum::NONE => write!(f, "{}", "none"),
             ClusterVolumeSpecAccessModeSharingEnum::READONLY => write!(f, "{}", "readonly"),
             ClusterVolumeSpecAccessModeSharingEnum::ONEWRITER => write!(f, "{}", "onewriter"),
             ClusterVolumeSpecAccessModeSharingEnum::ALL => write!(f, "{}", "all"),
+
         }
     }
 }
@@ -673,7 +719,7 @@ impl ::std::fmt::Display for ClusterVolumeSpecAccessModeSharingEnum {
 impl ::std::str::FromStr for ClusterVolumeSpecAccessModeSharingEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ClusterVolumeSpecAccessModeSharingEnum::EMPTY),
             "none" => Ok(ClusterVolumeSpecAccessModeSharingEnum::NONE),
             "readonly" => Ok(ClusterVolumeSpecAccessModeSharingEnum::READONLY),
@@ -686,7 +732,7 @@ impl ::std::str::FromStr for ClusterVolumeSpecAccessModeSharingEnum {
 
 impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeSharingEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ClusterVolumeSpecAccessModeSharingEnum::EMPTY => "",
             ClusterVolumeSpecAccessModeSharingEnum::NONE => "none",
             ClusterVolumeSpecAccessModeSharingEnum::READONLY => "readonly",
@@ -699,7 +745,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeSharingEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ClusterVolumeSpecAccessModeAvailabilityEnum {
+pub enum ClusterVolumeSpecAccessModeAvailabilityEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "active")]
@@ -712,11 +758,12 @@ pub enum ClusterVolumeSpecAccessModeAvailabilityEnum {
 
 impl ::std::fmt::Display for ClusterVolumeSpecAccessModeAvailabilityEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ClusterVolumeSpecAccessModeAvailabilityEnum::EMPTY => write!(f, ""),
             ClusterVolumeSpecAccessModeAvailabilityEnum::ACTIVE => write!(f, "{}", "active"),
             ClusterVolumeSpecAccessModeAvailabilityEnum::PAUSE => write!(f, "{}", "pause"),
             ClusterVolumeSpecAccessModeAvailabilityEnum::DRAIN => write!(f, "{}", "drain"),
+
         }
     }
 }
@@ -724,7 +771,7 @@ impl ::std::fmt::Display for ClusterVolumeSpecAccessModeAvailabilityEnum {
 impl ::std::str::FromStr for ClusterVolumeSpecAccessModeAvailabilityEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ClusterVolumeSpecAccessModeAvailabilityEnum::EMPTY),
             "active" => Ok(ClusterVolumeSpecAccessModeAvailabilityEnum::ACTIVE),
             "pause" => Ok(ClusterVolumeSpecAccessModeAvailabilityEnum::PAUSE),
@@ -736,7 +783,7 @@ impl ::std::str::FromStr for ClusterVolumeSpecAccessModeAvailabilityEnum {
 
 impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeAvailabilityEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ClusterVolumeSpecAccessModeAvailabilityEnum::EMPTY => "",
             ClusterVolumeSpecAccessModeAvailabilityEnum::ACTIVE => "active",
             ClusterVolumeSpecAccessModeAvailabilityEnum::PAUSE => "pause",
@@ -745,52 +792,55 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeAvailabilityEnum 
     }
 }
 
-/// Requirements for the accessible topology of the volume. These fields are optional. For an in-depth description of what these fields mean, see the CSI specification.
+/// Requirements for the accessible topology of the volume. These fields are optional. For an in-depth description of what these fields mean, see the CSI specification. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessModeAccessibilityRequirements {
-    /// A list of required topologies, at least one of which the volume must be accessible from.
+    /// A list of required topologies, at least one of which the volume must be accessible from. 
     #[serde(rename = "Requisite")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requisite: Option<Vec<Topology>>,
 
-    /// A list of topologies that the volume should attempt to be provisioned in.
+    /// A list of topologies that the volume should attempt to be provisioned in. 
     #[serde(rename = "Preferred")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred: Option<Vec<Topology>>,
+
 }
 
-/// The desired capacity that the volume should be created with. If empty, the plugin will decide the capacity.
+/// The desired capacity that the volume should be created with. If empty, the plugin will decide the capacity. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessModeCapacityRange {
-    /// The volume must be at least this big. The value of 0 indicates an unspecified minimum
+    /// The volume must be at least this big. The value of 0 indicates an unspecified minimum 
     #[serde(rename = "RequiredBytes")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required_bytes: Option<i64>,
 
-    /// The volume must not be bigger than this. The value of 0 indicates an unspecified maximum.
+    /// The volume must not be bigger than this. The value of 0 indicates an unspecified maximum. 
     #[serde(rename = "LimitBytes")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit_bytes: Option<i64>,
+
 }
 
-/// One cluster volume secret entry. Defines a key-value pair that is passed to the plugin.
+/// One cluster volume secret entry. Defines a key-value pair that is passed to the plugin. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessModeSecrets {
-    /// Key is the name of the key of the key-value pair passed to the plugin.
+    /// Key is the name of the key of the key-value pair passed to the plugin. 
     #[serde(rename = "Key")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
 
-    /// Secret is the swarm Secret object from which to read data. This can be a Secret name or ID. The Secret data is retrieved by swarm and used as the value of the key-value pair passed to the plugin.
+    /// Secret is the swarm Secret object from which to read data. This can be a Secret name or ID. The Secret data is retrieved by swarm and used as the value of the key-value pair passed to the plugin. 
     #[serde(rename = "Secret")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
+
 }
 
-/// Commit holds the Git-commit (SHA1) that a binary was built from, as reported in the version-string of external tools, such as `containerd`, or `runC`.
+/// Commit holds the Git-commit (SHA1) that a binary was built from, as reported in the version-string of external tools, such as `containerd`, or `runC`. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Commit {
@@ -799,10 +849,11 @@ pub struct Commit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 
-    /// Commit ID of external tool expected by dockerd as set at build time.
+    /// Commit ID of external tool expected by dockerd as set at build time. 
     #[serde(rename = "Expected")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expected: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -837,6 +888,7 @@ pub struct Config {
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<ConfigSpec>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -852,40 +904,28 @@ pub struct ConfigSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<HashMap<String, String>>,
 
-    /// Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-5)) config data.
+    /// Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-5)) config data. 
     #[serde(rename = "Data")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
 
-    /// Templating driver, if applicable  Templating controls whether and how to evaluate the config payload as a template. If no driver is set, no templating is used.
+    /// Templating driver, if applicable  Templating controls whether and how to evaluate the config payload as a template. If no driver is set, no templating is used. 
     #[serde(rename = "Templating")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub templating: Option<Driver>,
+
 }
 
-/// change item in response to ContainerChanges operation
-#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct ContainerChangeResponseItem {
-    /// Path to file that has changed
-    #[serde(rename = "Path")]
-    pub path: String,
-
-    /// Kind of change
-    #[serde(rename = "Kind")]
-    pub kind: i64,
-}
-
-/// Configuration for a container that is portable between hosts.  When used as `ContainerConfig` field in an image, `ContainerConfig` is an optional field containing the configuration of the container that was last committed when creating the image.  Previous versions of Docker builder used this field to store build cache, and it is not in active use anymore.
+/// Configuration for a container that is portable between hosts.  When used as `ContainerConfig` field in an image, `ContainerConfig` is an optional field containing the configuration of the container that was last committed when creating the image.  Previous versions of Docker builder used this field to store build cache, and it is not in active use anymore. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerConfig {
-    /// The hostname to use for the container, as a valid RFC 1123 hostname.
+    /// The hostname to use for the container, as a valid RFC 1123 hostname. 
     #[serde(rename = "Hostname")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
 
-    /// The domain name to use for the container.
+    /// The domain name to use for the container. 
     #[serde(rename = "Domainname")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub domainname: Option<String>,
@@ -910,12 +950,12 @@ pub struct ContainerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attach_stderr: Option<bool>,
 
-    /// An object mapping ports to an empty object in the form:  `{\"<port>/<tcp|udp|sctp>\": {}}`
+    /// An object mapping ports to an empty object in the form:  `{\"<port>/<tcp|udp|sctp>\": {}}` 
     #[serde(rename = "ExposedPorts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exposed_ports: Option<HashMap<String, EmptyObject>>,
 
-    /// Attach standard streams to a TTY, including `stdin` if it is not closed.
+    /// Attach standard streams to a TTY, including `stdin` if it is not closed. 
     #[serde(rename = "Tty")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
@@ -930,12 +970,12 @@ pub struct ContainerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stdin_once: Option<bool>,
 
-    /// A list of environment variables to set inside the container in the form `[\"VAR=value\", ...]`. A variable without `=` is removed from the environment, rather than to have an empty value.
+    /// A list of environment variables to set inside the container in the form `[\"VAR=value\", ...]`. A variable without `=` is removed from the environment, rather than to have an empty value. 
     #[serde(rename = "Env")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<String>>,
 
-    /// Command to run specified as a string or an array of strings.
+    /// Command to run specified as a string or an array of strings. 
     #[serde(rename = "Cmd")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cmd: Option<Vec<String>>,
@@ -949,12 +989,12 @@ pub struct ContainerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub args_escaped: Option<bool>,
 
-    /// The name (or reference) of the image to use when creating the container, or which was used when the container was created.
+    /// The name (or reference) of the image to use when creating the container, or which was used when the container was created. 
     #[serde(rename = "Image")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
 
-    /// An object mapping mount point paths inside the container to empty objects.
+    /// An object mapping mount point paths inside the container to empty objects. 
     #[serde(rename = "Volumes")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub volumes: Option<HashMap<String, EmptyObject>>,
@@ -964,7 +1004,7 @@ pub struct ContainerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub working_dir: Option<String>,
 
-    /// The entry point for the container as a string or an array of strings.  If the array consists of exactly one empty string (`[\"\"]`) then the entry point is reset to system default (i.e., the entry point used by docker when there is no `ENTRYPOINT` instruction in the `Dockerfile`).
+    /// The entry point for the container as a string or an array of strings.  If the array consists of exactly one empty string (`[\"\"]`) then the entry point is reset to system default (i.e., the entry point used by docker when there is no `ENTRYPOINT` instruction in the `Dockerfile`). 
     #[serde(rename = "Entrypoint")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entrypoint: Option<Vec<String>>,
@@ -979,7 +1019,7 @@ pub struct ContainerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mac_address: Option<String>,
 
-    /// `ONBUILD` metadata that were defined in the image's `Dockerfile`.
+    /// `ONBUILD` metadata that were defined in the image's `Dockerfile`. 
     #[serde(rename = "OnBuild")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_build: Option<Vec<String>>,
@@ -989,7 +1029,7 @@ pub struct ContainerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<HashMap<String, String>>,
 
-    /// Signal to stop a container as a string or unsigned integer.
+    /// Signal to stop a container as a string or unsigned integer. 
     #[serde(rename = "StopSignal")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_signal: Option<String>,
@@ -999,10 +1039,11 @@ pub struct ContainerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_timeout: Option<i64>,
 
-    /// Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell.
+    /// Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell. 
     #[serde(rename = "Shell")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shell: Option<Vec<String>>,
+
 }
 
 /// OK response to ContainerCreate operation
@@ -1017,6 +1058,7 @@ pub struct ContainerCreateResponse {
     #[serde(rename = "Warnings")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub warnings: Vec<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -1108,7 +1150,7 @@ pub struct ContainerInspectResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub graph_driver: Option<GraphDriverData>,
 
-    /// The size of files that have been created or changed by this container.
+    /// The size of files that have been created or changed by this container. 
     #[serde(rename = "SizeRw")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size_rw: Option<i64>,
@@ -1129,6 +1171,7 @@ pub struct ContainerInspectResponse {
     #[serde(rename = "NetworkSettings")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_settings: Option<NetworkSettings>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -1143,18 +1186,19 @@ pub struct ContainerPruneResponse {
     #[serde(rename = "SpaceReclaimed")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub space_reclaimed: Option<i64>,
+
 }
 
-/// ContainerState stores container's running state. It's part of ContainerJSONBase and will be returned by the \"inspect\" command.
+/// ContainerState stores container's running state. It's part of ContainerJSONBase and will be returned by the \"inspect\" command. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerState {
-    /// String representation of the container state. Can be one of \"created\", \"running\", \"paused\", \"restarting\", \"removing\", \"exited\", or \"dead\".
+    /// String representation of the container state. Can be one of \"created\", \"running\", \"paused\", \"restarting\", \"removing\", \"exited\", or \"dead\". 
     #[serde(rename = "Status")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ContainerStateStatusEnum>,
 
-    /// Whether this container is running.  Note that a running container can be _paused_. The `Running` and `Paused` booleans are not mutually exclusive:  When pausing a container (on Linux), the freezer cgroup is used to suspend all processes in the container. Freezing the process requires the process to be running. As a result, paused containers are both `Running` _and_ `Paused`.  Use the `Status` field instead to determine if a container's state is \"running\".
+    /// Whether this container is running.  Note that a running container can be _paused_. The `Running` and `Paused` booleans are not mutually exclusive:  When pausing a container (on Linux), the freezer cgroup is used to suspend all processes in the container. Freezing the process requires the process to be running. As a result, paused containers are both `Running` _and_ `Paused`.  Use the `Status` field instead to determine if a container's state is \"running\". 
     #[serde(rename = "Running")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub running: Option<bool>,
@@ -1169,7 +1213,7 @@ pub struct ContainerState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub restarting: Option<bool>,
 
-    /// Whether this container has been killed because it ran out of memory.
+    /// Whether a process within this container has been killed because it ran out of memory since the container was last started. 
     #[serde(rename = "OOMKilled")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oom_killed: Option<bool>,
@@ -1205,12 +1249,13 @@ pub struct ContainerState {
     #[serde(rename = "Health")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub health: Option<Health>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ContainerStateStatusEnum {
+pub enum ContainerStateStatusEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "created")]
@@ -1231,7 +1276,7 @@ pub enum ContainerStateStatusEnum {
 
 impl ::std::fmt::Display for ContainerStateStatusEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ContainerStateStatusEnum::EMPTY => write!(f, ""),
             ContainerStateStatusEnum::CREATED => write!(f, "{}", "created"),
             ContainerStateStatusEnum::RUNNING => write!(f, "{}", "running"),
@@ -1240,6 +1285,7 @@ impl ::std::fmt::Display for ContainerStateStatusEnum {
             ContainerStateStatusEnum::REMOVING => write!(f, "{}", "removing"),
             ContainerStateStatusEnum::EXITED => write!(f, "{}", "exited"),
             ContainerStateStatusEnum::DEAD => write!(f, "{}", "dead"),
+
         }
     }
 }
@@ -1247,7 +1293,7 @@ impl ::std::fmt::Display for ContainerStateStatusEnum {
 impl ::std::str::FromStr for ContainerStateStatusEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ContainerStateStatusEnum::EMPTY),
             "created" => Ok(ContainerStateStatusEnum::CREATED),
             "running" => Ok(ContainerStateStatusEnum::RUNNING),
@@ -1263,7 +1309,7 @@ impl ::std::str::FromStr for ContainerStateStatusEnum {
 
 impl ::std::convert::AsRef<str> for ContainerStateStatusEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ContainerStateStatusEnum::EMPTY => "",
             ContainerStateStatusEnum::CREATED => "created",
             ContainerStateStatusEnum::RUNNING => "running",
@@ -1350,6 +1396,7 @@ pub struct ContainerSummary {
     #[serde(rename = "Mounts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<MountPoint>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -1358,6 +1405,7 @@ pub struct ContainerSummaryHostConfig {
     #[serde(rename = "NetworkMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_mode: Option<String>,
+
 }
 
 /// A summary of the container's network settings
@@ -1367,6 +1415,7 @@ pub struct ContainerSummaryNetworkSettings {
     #[serde(rename = "Networks")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<HashMap<String, EndpointSettings>>,
+
 }
 
 /// OK response to ContainerTop operation
@@ -1378,10 +1427,11 @@ pub struct ContainerTopResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub titles: Option<Vec<String>>,
 
-    /// Each process running in the container, where each is process is an array of values corresponding to the titles.
+    /// Each process running in the container, where each is process is an array of values corresponding to the titles. 
     #[serde(rename = "Processes")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub processes: Option<Vec<Vec<String>>>,
+
 }
 
 /// OK response to ContainerUpdate operation
@@ -1391,6 +1441,7 @@ pub struct ContainerUpdateResponse {
     #[serde(rename = "Warnings")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warnings: Option<Vec<String>>,
+
 }
 
 /// container waiting error, if any
@@ -1401,6 +1452,7 @@ pub struct ContainerWaitExitError {
     #[serde(rename = "Message")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+
 }
 
 /// OK response to ContainerWait operation
@@ -1414,6 +1466,7 @@ pub struct ContainerWaitResponse {
     #[serde(rename = "Error")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<ContainerWaitExitError>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -1442,6 +1495,7 @@ pub struct CreateImageInfo {
     #[serde(rename = "progressDetail")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub progress_detail: Option<ProgressDetail>,
+
 }
 
 /// A device mapping between the host and container
@@ -1459,6 +1513,7 @@ pub struct DeviceMapping {
     #[serde(rename = "CgroupPermissions")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroup_permissions: Option<String>,
+
 }
 
 /// A request for devices to be sent to device drivers
@@ -1477,28 +1532,30 @@ pub struct DeviceRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_ids: Option<Vec<String>>,
 
-    /// A list of capabilities; an OR list of AND lists of capabilities.
+    /// A list of capabilities; an OR list of AND lists of capabilities. 
     #[serde(rename = "Capabilities")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<Vec<Vec<String>>>,
 
-    /// Driver-specific options, specified as a key/value pairs. These options are passed directly to the driver.
+    /// Driver-specific options, specified as a key/value pairs. These options are passed directly to the driver. 
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<HashMap<String, String>>,
+
 }
 
-/// Describes the result obtained from contacting the registry to retrieve image metadata.
+/// Describes the result obtained from contacting the registry to retrieve image metadata. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct DistributionInspect {
     #[serde(rename = "Descriptor")]
     pub descriptor: OciDescriptor,
 
-    /// An array containing all platforms supported by the image.
+    /// An array containing all platforms supported by the image. 
     #[serde(rename = "Platforms")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub platforms: Vec<OciPlatform>,
+
 }
 
 /// Driver represents a driver (network, logging, secrets).
@@ -1513,9 +1570,10 @@ pub struct Driver {
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<HashMap<String, String>>,
+
 }
 
-/// EndpointIPAMConfig represents an endpoint's IPAM configuration.
+/// EndpointIPAMConfig represents an endpoint's IPAM configuration. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EndpointIpamConfig {
@@ -1530,6 +1588,7 @@ pub struct EndpointIpamConfig {
     #[serde(rename = "LinkLocalIPs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link_local_ips: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -1553,16 +1612,17 @@ pub struct EndpointPortConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub published_port: Option<i64>,
 
-    /// The mode in which port is published.  <p><br /></p>  - \"ingress\" makes the target port accessible on every node,   regardless of whether there is a task for the service running on   that node or not. - \"host\" bypasses the routing mesh and publish the port directly on   the swarm node where that service is running.
+    /// The mode in which port is published.  <p><br /></p>  - \"ingress\" makes the target port accessible on every node,   regardless of whether there is a task for the service running on   that node or not. - \"host\" bypasses the routing mesh and publish the port directly on   the swarm node where that service is running. 
     #[serde(rename = "PublishMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_mode: Option<EndpointPortConfigPublishModeEnum>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum EndpointPortConfigProtocolEnum {
+pub enum EndpointPortConfigProtocolEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "tcp")]
@@ -1575,11 +1635,12 @@ pub enum EndpointPortConfigProtocolEnum {
 
 impl ::std::fmt::Display for EndpointPortConfigProtocolEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             EndpointPortConfigProtocolEnum::EMPTY => write!(f, ""),
             EndpointPortConfigProtocolEnum::TCP => write!(f, "{}", "tcp"),
             EndpointPortConfigProtocolEnum::UDP => write!(f, "{}", "udp"),
             EndpointPortConfigProtocolEnum::SCTP => write!(f, "{}", "sctp"),
+
         }
     }
 }
@@ -1587,7 +1648,7 @@ impl ::std::fmt::Display for EndpointPortConfigProtocolEnum {
 impl ::std::str::FromStr for EndpointPortConfigProtocolEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(EndpointPortConfigProtocolEnum::EMPTY),
             "tcp" => Ok(EndpointPortConfigProtocolEnum::TCP),
             "udp" => Ok(EndpointPortConfigProtocolEnum::UDP),
@@ -1599,7 +1660,7 @@ impl ::std::str::FromStr for EndpointPortConfigProtocolEnum {
 
 impl ::std::convert::AsRef<str> for EndpointPortConfigProtocolEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             EndpointPortConfigProtocolEnum::EMPTY => "",
             EndpointPortConfigProtocolEnum::TCP => "tcp",
             EndpointPortConfigProtocolEnum::UDP => "udp",
@@ -1611,7 +1672,7 @@ impl ::std::convert::AsRef<str> for EndpointPortConfigProtocolEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum EndpointPortConfigPublishModeEnum {
+pub enum EndpointPortConfigPublishModeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "ingress")]
@@ -1622,10 +1683,11 @@ pub enum EndpointPortConfigPublishModeEnum {
 
 impl ::std::fmt::Display for EndpointPortConfigPublishModeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             EndpointPortConfigPublishModeEnum::EMPTY => write!(f, ""),
             EndpointPortConfigPublishModeEnum::INGRESS => write!(f, "{}", "ingress"),
             EndpointPortConfigPublishModeEnum::HOST => write!(f, "{}", "host"),
+
         }
     }
 }
@@ -1633,7 +1695,7 @@ impl ::std::fmt::Display for EndpointPortConfigPublishModeEnum {
 impl ::std::str::FromStr for EndpointPortConfigPublishModeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(EndpointPortConfigPublishModeEnum::EMPTY),
             "ingress" => Ok(EndpointPortConfigPublishModeEnum::INGRESS),
             "host" => Ok(EndpointPortConfigPublishModeEnum::HOST),
@@ -1644,7 +1706,7 @@ impl ::std::str::FromStr for EndpointPortConfigPublishModeEnum {
 
 impl ::std::convert::AsRef<str> for EndpointPortConfigPublishModeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             EndpointPortConfigPublishModeEnum::EMPTY => "",
             EndpointPortConfigPublishModeEnum::INGRESS => "ingress",
             EndpointPortConfigPublishModeEnum::HOST => "host",
@@ -1668,76 +1730,78 @@ pub struct EndpointSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aliases: Option<Vec<String>>,
 
-    /// Unique ID of the network.
+    /// Unique ID of the network. 
     #[serde(rename = "NetworkID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_id: Option<String>,
 
-    /// Unique ID for the service endpoint in a Sandbox.
+    /// Unique ID for the service endpoint in a Sandbox. 
     #[serde(rename = "EndpointID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub endpoint_id: Option<String>,
 
-    /// Gateway address for this network.
+    /// Gateway address for this network. 
     #[serde(rename = "Gateway")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
 
-    /// IPv4 address.
+    /// IPv4 address. 
     #[serde(rename = "IPAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 
-    /// Mask length of the IPv4 address.
+    /// Mask length of the IPv4 address. 
     #[serde(rename = "IPPrefixLen")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_prefix_len: Option<i64>,
 
-    /// IPv6 gateway address.
+    /// IPv6 gateway address. 
     #[serde(rename = "IPv6Gateway")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ipv6_gateway: Option<String>,
 
-    /// Global IPv6 address.
+    /// Global IPv6 address. 
     #[serde(rename = "GlobalIPv6Address")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub global_ipv6_address: Option<String>,
 
-    /// Mask length of the global IPv6 address.
+    /// Mask length of the global IPv6 address. 
     #[serde(rename = "GlobalIPv6PrefixLen")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub global_ipv6_prefix_len: Option<i64>,
 
-    /// MAC address for the endpoint on this network.
+    /// MAC address for the endpoint on this network. 
     #[serde(rename = "MacAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mac_address: Option<String>,
 
-    /// DriverOpts is a mapping of driver options and values. These options are passed directly to the driver and are driver specific.
+    /// DriverOpts is a mapping of driver options and values. These options are passed directly to the driver and are driver specific. 
     #[serde(rename = "DriverOpts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver_opts: Option<HashMap<String, String>>,
+
 }
 
 /// Properties that can be configured to access and load balance a service.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EndpointSpec {
-    /// The mode of resolution to use for internal load balancing between tasks.
+    /// The mode of resolution to use for internal load balancing between tasks. 
     #[serde(rename = "Mode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<EndpointSpecModeEnum>,
 
-    /// List of exposed ports that this service is accessible on from the outside. Ports can only be provided if `vip` resolution mode is used.
+    /// List of exposed ports that this service is accessible on from the outside. Ports can only be provided if `vip` resolution mode is used. 
     #[serde(rename = "Ports")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<EndpointPortConfig>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum EndpointSpecModeEnum {
+pub enum EndpointSpecModeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "vip")]
@@ -1748,10 +1812,11 @@ pub enum EndpointSpecModeEnum {
 
 impl ::std::fmt::Display for EndpointSpecModeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             EndpointSpecModeEnum::EMPTY => write!(f, ""),
             EndpointSpecModeEnum::VIP => write!(f, "{}", "vip"),
             EndpointSpecModeEnum::DNSRR => write!(f, "{}", "dnsrr"),
+
         }
     }
 }
@@ -1759,7 +1824,7 @@ impl ::std::fmt::Display for EndpointSpecModeEnum {
 impl ::std::str::FromStr for EndpointSpecModeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(EndpointSpecModeEnum::EMPTY),
             "vip" => Ok(EndpointSpecModeEnum::VIP),
             "dnsrr" => Ok(EndpointSpecModeEnum::DNSRR),
@@ -1770,7 +1835,7 @@ impl ::std::str::FromStr for EndpointSpecModeEnum {
 
 impl ::std::convert::AsRef<str> for EndpointSpecModeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             EndpointSpecModeEnum::EMPTY => "",
             EndpointSpecModeEnum::VIP => "vip",
             EndpointSpecModeEnum::DNSRR => "dnsrr",
@@ -1793,6 +1858,7 @@ pub struct EngineDescription {
     #[serde(rename = "Plugins")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<EngineDescriptionPlugins>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -1805,6 +1871,7 @@ pub struct EngineDescriptionPlugins {
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -1817,6 +1884,7 @@ pub struct ErrorDetail {
     #[serde(rename = "message")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+
 }
 
 /// Represents an error.
@@ -1826,9 +1894,10 @@ pub struct ErrorResponse {
     /// The error message.
     #[serde(rename = "message")]
     pub message: String,
+
 }
 
-/// Actor describes something that generates events, like a container, network, or a volume.
+/// Actor describes something that generates events, like a container, network, or a volume. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EventActor {
@@ -1837,13 +1906,14 @@ pub struct EventActor {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 
-    /// Various key/value attributes of the object, depending on its type.
+    /// Various key/value attributes of the object, depending on its type. 
     #[serde(rename = "Attributes")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<HashMap<String, String>>,
+
 }
 
-/// EventMessage represents the information an event contains.
+/// EventMessage represents the information an event contains. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EventMessage {
@@ -1861,7 +1931,7 @@ pub struct EventMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub actor: Option<EventActor>,
 
-    /// Scope of the event. Engine events are `local` scope. Cluster (Swarm) events are `swarm` scope.
+    /// Scope of the event. Engine events are `local` scope. Cluster (Swarm) events are `swarm` scope. 
     #[serde(rename = "scope")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub scope: Option<EventMessageScopeEnum>,
@@ -1875,12 +1945,13 @@ pub struct EventMessage {
     #[serde(rename = "timeNano")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub time_nano: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum EventMessageTypeEnum {
+pub enum EventMessageTypeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "builder")]
@@ -1909,7 +1980,7 @@ pub enum EventMessageTypeEnum {
 
 impl ::std::fmt::Display for EventMessageTypeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             EventMessageTypeEnum::EMPTY => write!(f, ""),
             EventMessageTypeEnum::BUILDER => write!(f, "{}", "builder"),
             EventMessageTypeEnum::CONFIG => write!(f, "{}", "config"),
@@ -1922,6 +1993,7 @@ impl ::std::fmt::Display for EventMessageTypeEnum {
             EventMessageTypeEnum::SECRET => write!(f, "{}", "secret"),
             EventMessageTypeEnum::SERVICE => write!(f, "{}", "service"),
             EventMessageTypeEnum::VOLUME => write!(f, "{}", "volume"),
+
         }
     }
 }
@@ -1929,7 +2001,7 @@ impl ::std::fmt::Display for EventMessageTypeEnum {
 impl ::std::str::FromStr for EventMessageTypeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(EventMessageTypeEnum::EMPTY),
             "builder" => Ok(EventMessageTypeEnum::BUILDER),
             "config" => Ok(EventMessageTypeEnum::CONFIG),
@@ -1949,7 +2021,7 @@ impl ::std::str::FromStr for EventMessageTypeEnum {
 
 impl ::std::convert::AsRef<str> for EventMessageTypeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             EventMessageTypeEnum::EMPTY => "",
             EventMessageTypeEnum::BUILDER => "builder",
             EventMessageTypeEnum::CONFIG => "config",
@@ -1969,7 +2041,7 @@ impl ::std::convert::AsRef<str> for EventMessageTypeEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum EventMessageScopeEnum {
+pub enum EventMessageScopeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "local")]
@@ -1980,10 +2052,11 @@ pub enum EventMessageScopeEnum {
 
 impl ::std::fmt::Display for EventMessageScopeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             EventMessageScopeEnum::EMPTY => write!(f, ""),
             EventMessageScopeEnum::LOCAL => write!(f, "{}", "local"),
             EventMessageScopeEnum::SWARM => write!(f, "{}", "swarm"),
+
         }
     }
 }
@@ -1991,7 +2064,7 @@ impl ::std::fmt::Display for EventMessageScopeEnum {
 impl ::std::str::FromStr for EventMessageScopeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(EventMessageScopeEnum::EMPTY),
             "local" => Ok(EventMessageScopeEnum::LOCAL),
             "swarm" => Ok(EventMessageScopeEnum::SWARM),
@@ -2002,7 +2075,7 @@ impl ::std::str::FromStr for EventMessageScopeEnum {
 
 impl ::std::convert::AsRef<str> for EventMessageScopeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             EventMessageScopeEnum::EMPTY => "",
             EventMessageScopeEnum::LOCAL => "local",
             EventMessageScopeEnum::SWARM => "swarm",
@@ -2033,7 +2106,7 @@ pub struct ExecConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub console_size: Option<Vec<i32>>,
 
-    /// Override the key sequence for detaching a container. Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`.
+    /// Override the key sequence for detaching a container. Format is a single character `[a-Z]` or `ctrl-<value>` where `<value>` is one of: `a-z`, `@`, `^`, `[`, `,` or `_`. 
     #[serde(rename = "DetachKeys")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub detach_keys: Option<String>,
@@ -2043,7 +2116,7 @@ pub struct ExecConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
 
-    /// A list of environment variables in the form `[\"VAR=value\", ...]`.
+    /// A list of environment variables in the form `[\"VAR=value\", ...]`. 
     #[serde(rename = "Env")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<String>>,
@@ -2058,15 +2131,16 @@ pub struct ExecConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
 
-    /// The user, and optionally, group to run the exec process inside the container. Format is one of: `user`, `user:group`, `uid`, or `uid:gid`.
+    /// The user, and optionally, group to run the exec process inside the container. Format is one of: `user`, `user:group`, `uid`, or `uid:gid`. 
     #[serde(rename = "User")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 
-    /// The working directory for the exec process inside the container.
+    /// The working directory for the exec process inside the container. 
     #[serde(rename = "WorkingDir")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub working_dir: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -2116,6 +2190,7 @@ pub struct ExecInspectResponse {
     #[serde(rename = "Pid")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pid: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -2135,9 +2210,23 @@ pub struct ExecStartConfig {
     #[serde(rename = "ConsoleSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub console_size: Option<Vec<i32>>,
+
 }
 
-/// User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`).
+/// Change in the container's filesystem. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+pub struct FilesystemChange {
+    /// Path to file or directory that has changed. 
+    #[serde(rename = "Path")]
+    pub path: String,
+
+    /// Kind of change.
+    #[serde(rename = "Kind")]
+    pub kind: ChangeType,
+}
+
+/// User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`). 
 
 pub type GenericResources = GenericResourcesInner;
 
@@ -2151,6 +2240,7 @@ pub struct GenericResourcesInner {
     #[serde(rename = "DiscreteResourceSpec")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discrete_resource_spec: Option<GenericResourcesInnerDiscreteResourceSpec>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -2163,6 +2253,7 @@ pub struct GenericResourcesInnerDiscreteResourceSpec {
     #[serde(rename = "Value")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -2175,9 +2266,10 @@ pub struct GenericResourcesInnerNamedResourceSpec {
     #[serde(rename = "Value")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+
 }
 
-/// Information about the storage driver used to store the container's and image's filesystem.
+/// Information about the storage driver used to store the container's and image's filesystem. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct GraphDriverData {
@@ -2185,17 +2277,18 @@ pub struct GraphDriverData {
     #[serde(rename = "Name")]
     pub name: String,
 
-    /// Low-level storage metadata, provided as key/value pairs.  This information is driver-specific, and depends on the storage-driver in use, and should be used for informational purposes only.
+    /// Low-level storage metadata, provided as key/value pairs.  This information is driver-specific, and depends on the storage-driver in use, and should be used for informational purposes only. 
     #[serde(rename = "Data")]
     #[serde(deserialize_with = "deserialize_nonoptional_map")]
     pub data: HashMap<String, String>,
+
 }
 
-/// Health stores information about the container's healthcheck results.
+/// Health stores information about the container's healthcheck results. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Health {
-    /// Status is one of `none`, `starting`, `healthy` or `unhealthy`  - \"none\"      Indicates there is no healthcheck - \"starting\"  Starting indicates that the container is not yet ready - \"healthy\"   Healthy indicates that the container is running correctly - \"unhealthy\" Unhealthy indicates that the container has a problem
+    /// Status is one of `none`, `starting`, `healthy` or `unhealthy`  - \"none\"      Indicates there is no healthcheck - \"starting\"  Starting indicates that the container is not yet ready - \"healthy\"   Healthy indicates that the container is running correctly - \"unhealthy\" Unhealthy indicates that the container has a problem 
     #[serde(rename = "Status")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<HealthStatusEnum>,
@@ -2205,16 +2298,17 @@ pub struct Health {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failing_streak: Option<i64>,
 
-    /// Log contains the last few results (oldest first)
+    /// Log contains the last few results (oldest first) 
     #[serde(rename = "Log")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub log: Option<Vec<HealthcheckResult>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum HealthStatusEnum {
+pub enum HealthStatusEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "none")]
@@ -2229,12 +2323,13 @@ pub enum HealthStatusEnum {
 
 impl ::std::fmt::Display for HealthStatusEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             HealthStatusEnum::EMPTY => write!(f, ""),
             HealthStatusEnum::NONE => write!(f, "{}", "none"),
             HealthStatusEnum::STARTING => write!(f, "{}", "starting"),
             HealthStatusEnum::HEALTHY => write!(f, "{}", "healthy"),
             HealthStatusEnum::UNHEALTHY => write!(f, "{}", "unhealthy"),
+
         }
     }
 }
@@ -2242,7 +2337,7 @@ impl ::std::fmt::Display for HealthStatusEnum {
 impl ::std::str::FromStr for HealthStatusEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(HealthStatusEnum::EMPTY),
             "none" => Ok(HealthStatusEnum::NONE),
             "starting" => Ok(HealthStatusEnum::STARTING),
@@ -2255,7 +2350,7 @@ impl ::std::str::FromStr for HealthStatusEnum {
 
 impl ::std::convert::AsRef<str> for HealthStatusEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             HealthStatusEnum::EMPTY => "",
             HealthStatusEnum::NONE => "none",
             HealthStatusEnum::STARTING => "starting",
@@ -2269,37 +2364,38 @@ impl ::std::convert::AsRef<str> for HealthStatusEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HealthConfig {
-    /// The test to perform. Possible values are:  - `[]` inherit healthcheck from image or parent image - `[\"NONE\"]` disable healthcheck - `[\"CMD\", args...]` exec arguments directly - `[\"CMD-SHELL\", command]` run command with system's default shell
+    /// The test to perform. Possible values are:  - `[]` inherit healthcheck from image or parent image - `[\"NONE\"]` disable healthcheck - `[\"CMD\", args...]` exec arguments directly - `[\"CMD-SHELL\", command]` run command with system's default shell 
     #[serde(rename = "Test")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub test: Option<Vec<String>>,
 
-    /// The time to wait between checks in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit.
+    /// The time to wait between checks in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit. 
     #[serde(rename = "Interval")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<i64>,
 
-    /// The time to wait before considering the check to have hung. It should be 0 or at least 1000000 (1 ms). 0 means inherit.
+    /// The time to wait before considering the check to have hung. It should be 0 or at least 1000000 (1 ms). 0 means inherit. 
     #[serde(rename = "Timeout")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,
 
-    /// The number of consecutive failures needed to consider a container as unhealthy. 0 means inherit.
+    /// The number of consecutive failures needed to consider a container as unhealthy. 0 means inherit. 
     #[serde(rename = "Retries")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
 
-    /// Start period for the container to initialize before starting health-retries countdown in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit.
+    /// Start period for the container to initialize before starting health-retries countdown in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit. 
     #[serde(rename = "StartPeriod")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start_period: Option<i64>,
+
 }
 
-/// HealthcheckResult stores information about a single run of a healthcheck probe
+/// HealthcheckResult stores information about a single run of a healthcheck probe 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HealthcheckResult {
-    /// Date and time at which this check started in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which this check started in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "Start")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -2309,7 +2405,7 @@ pub struct HealthcheckResult {
     )]
     pub start: Option<BollardDate>,
 
-    /// Date and time at which this check ended in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which this check ended in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "End")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -2319,7 +2415,7 @@ pub struct HealthcheckResult {
     )]
     pub end: Option<BollardDate>,
 
-    /// ExitCode meanings:  - `0` healthy - `1` unhealthy - `2` reserved (considered unhealthy) - other values: error running probe
+    /// ExitCode meanings:  - `0` healthy - `1` unhealthy - `2` reserved (considered unhealthy) - other values: error running probe 
     #[serde(rename = "ExitCode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exit_code: Option<i64>,
@@ -2328,6 +2424,7 @@ pub struct HealthcheckResult {
     #[serde(rename = "Output")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output: Option<String>,
+
 }
 
 /// individual image layer information in response to ImageHistory operation
@@ -2352,13 +2449,14 @@ pub struct HistoryResponseItem {
 
     #[serde(rename = "Comment")]
     pub comment: String,
+
 }
 
 /// Container configuration that depends on the host we are running on
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HostConfig {
-    /// An integer value representing this container's relative CPU weight versus other containers.
+    /// An integer value representing this container's relative CPU weight versus other containers. 
     #[serde(rename = "CpuShares")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_shares: Option<i64>,
@@ -2368,7 +2466,7 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory: Option<i64>,
 
-    /// Path to `cgroups` under which the container's `cgroup` is created. If the path is not absolute, the path is considered to be relative to the `cgroups` path of the init process. Cgroups are created if they do not already exist.
+    /// Path to `cgroups` under which the container's `cgroup` is created. If the path is not absolute, the path is considered to be relative to the `cgroups` path of the init process. Cgroups are created if they do not already exist. 
     #[serde(rename = "CgroupParent")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroup_parent: Option<String>,
@@ -2378,27 +2476,27 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_weight: Option<u16>,
 
-    /// Block IO weight (relative device weight) in the form:  ``` [{\"Path\": \"device_path\", \"Weight\": weight}] ```
+    /// Block IO weight (relative device weight) in the form:  ``` [{\"Path\": \"device_path\", \"Weight\": weight}] ``` 
     #[serde(rename = "BlkioWeightDevice")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_weight_device: Option<Vec<ResourcesBlkioWeightDevice>>,
 
-    /// Limit read rate (bytes per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit read rate (bytes per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceReadBps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_read_bps: Option<Vec<ThrottleDevice>>,
 
-    /// Limit write rate (bytes per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit write rate (bytes per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceWriteBps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_write_bps: Option<Vec<ThrottleDevice>>,
 
-    /// Limit read rate (IO per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit read rate (IO per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceReadIOps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_read_iops: Option<Vec<ThrottleDevice>>,
 
-    /// Limit write rate (IO per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit write rate (IO per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceWriteIOps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_write_iops: Option<Vec<ThrottleDevice>>,
@@ -2408,27 +2506,27 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_period: Option<i64>,
 
-    /// Microseconds of CPU time that the container can get in a CPU period.
+    /// Microseconds of CPU time that the container can get in a CPU period. 
     #[serde(rename = "CpuQuota")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_quota: Option<i64>,
 
-    /// The length of a CPU real-time period in microseconds. Set to 0 to allocate no time allocated to real-time tasks.
+    /// The length of a CPU real-time period in microseconds. Set to 0 to allocate no time allocated to real-time tasks. 
     #[serde(rename = "CpuRealtimePeriod")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_realtime_period: Option<i64>,
 
-    /// The length of a CPU real-time runtime in microseconds. Set to 0 to allocate no time allocated to real-time tasks.
+    /// The length of a CPU real-time runtime in microseconds. Set to 0 to allocate no time allocated to real-time tasks. 
     #[serde(rename = "CpuRealtimeRuntime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_realtime_runtime: Option<i64>,
 
-    /// CPUs in which to allow execution (e.g., `0-3`, `0,1`).
+    /// CPUs in which to allow execution (e.g., `0-3`, `0,1`). 
     #[serde(rename = "CpusetCpus")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpuset_cpus: Option<String>,
 
-    /// Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems.
+    /// Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems. 
     #[serde(rename = "CpusetMems")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpuset_mems: Option<String>,
@@ -2443,12 +2541,12 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_cgroup_rules: Option<Vec<String>>,
 
-    /// A list of requests for devices to be sent to device drivers.
+    /// A list of requests for devices to be sent to device drivers. 
     #[serde(rename = "DeviceRequests")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_requests: Option<Vec<DeviceRequest>>,
 
-    /// Hard limit for kernel TCP buffer memory (in bytes). Depending on the OCI runtime in use, this option may be ignored. It is no longer supported by the default (runc) runtime.  This field is omitted when empty.
+    /// Hard limit for kernel TCP buffer memory (in bytes). Depending on the OCI runtime in use, this option may be ignored. It is no longer supported by the default (runc) runtime.  This field is omitted when empty. 
     #[serde(rename = "KernelMemoryTCP")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kernel_memory_tcp: Option<i64>,
@@ -2458,12 +2556,12 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_reservation: Option<i64>,
 
-    /// Total memory limit (memory + swap). Set as `-1` to enable unlimited swap.
+    /// Total memory limit (memory + swap). Set as `-1` to enable unlimited swap. 
     #[serde(rename = "MemorySwap")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_swap: Option<i64>,
 
-    /// Tune a container's memory swappiness behavior. Accepts an integer between 0 and 100.
+    /// Tune a container's memory swappiness behavior. Accepts an integer between 0 and 100. 
     #[serde(rename = "MemorySwappiness")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_swappiness: Option<i64>,
@@ -2478,27 +2576,27 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oom_kill_disable: Option<bool>,
 
-    /// Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used.
+    /// Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used. 
     #[serde(rename = "Init")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub init: Option<bool>,
 
-    /// Tune a container's PIDs limit. Set `0` or `-1` for unlimited, or `null` to not change.
+    /// Tune a container's PIDs limit. Set `0` or `-1` for unlimited, or `null` to not change. 
     #[serde(rename = "PidsLimit")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pids_limit: Option<i64>,
 
-    /// A list of resource limits to set in the container. For example:  ``` {\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048} ```
+    /// A list of resource limits to set in the container. For example:  ``` {\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048} ``` 
     #[serde(rename = "Ulimits")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ulimits: Option<Vec<ResourcesUlimits>>,
 
-    /// The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last.
+    /// The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last. 
     #[serde(rename = "CpuCount")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_count: Option<i64>,
 
-    /// The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last.
+    /// The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last. 
     #[serde(rename = "CpuPercent")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_percent: Option<i64>,
@@ -2508,12 +2606,12 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub io_maximum_iops: Option<i64>,
 
-    /// Maximum IO in bytes per second for the container system drive (Windows only).
+    /// Maximum IO in bytes per second for the container system drive (Windows only). 
     #[serde(rename = "IOMaximumBandwidth")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub io_maximum_bandwidth: Option<i64>,
 
-    /// A list of volume bindings for this container. Each volume binding is a string in one of these forms:  - `host-src:container-dest[:options]` to bind-mount a host path   into the container. Both `host-src`, and `container-dest` must   be an _absolute_ path. - `volume-name:container-dest[:options]` to bind-mount a volume   managed by a volume driver into the container. `container-dest`   must be an _absolute_ path.  `options` is an optional, comma-delimited list of:  - `nocopy` disables automatic copying of data from the container   path to the volume. The `nocopy` flag only applies to named volumes. - `[ro|rw]` mounts a volume read-only or read-write, respectively.   If omitted or set to `rw`, volumes are mounted read-write. - `[z|Z]` applies SELinux labels to allow or deny multiple containers   to read and write to the same volume.     - `z`: a _shared_ content label is applied to the content. This       label indicates that multiple containers can share the volume       content, for both reading and writing.     - `Z`: a _private unshared_ label is applied to the content.       This label indicates that only the current container can use       a private volume. Labeling systems such as SELinux require       proper labels to be placed on volume content that is mounted       into a container. Without a label, the security system can       prevent a container's processes from using the content. By       default, the labels set by the host operating system are not       modified. - `[[r]shared|[r]slave|[r]private]` specifies mount   [propagation behavior](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt).   This only applies to bind-mounted volumes, not internal volumes   or named volumes. Mount propagation requires the source mount   point (the location where the source directory is mounted in the   host operating system) to have the correct propagation properties.   For shared volumes, the source mount point must be set to `shared`.   For slave volumes, the mount must be set to either `shared` or   `slave`.
+    /// A list of volume bindings for this container. Each volume binding is a string in one of these forms:  - `host-src:container-dest[:options]` to bind-mount a host path   into the container. Both `host-src`, and `container-dest` must   be an _absolute_ path. - `volume-name:container-dest[:options]` to bind-mount a volume   managed by a volume driver into the container. `container-dest`   must be an _absolute_ path.  `options` is an optional, comma-delimited list of:  - `nocopy` disables automatic copying of data from the container   path to the volume. The `nocopy` flag only applies to named volumes. - `[ro|rw]` mounts a volume read-only or read-write, respectively.   If omitted or set to `rw`, volumes are mounted read-write. - `[z|Z]` applies SELinux labels to allow or deny multiple containers   to read and write to the same volume.     - `z`: a _shared_ content label is applied to the content. This       label indicates that multiple containers can share the volume       content, for both reading and writing.     - `Z`: a _private unshared_ label is applied to the content.       This label indicates that only the current container can use       a private volume. Labeling systems such as SELinux require       proper labels to be placed on volume content that is mounted       into a container. Without a label, the security system can       prevent a container's processes from using the content. By       default, the labels set by the host operating system are not       modified. - `[[r]shared|[r]slave|[r]private]` specifies mount   [propagation behavior](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt).   This only applies to bind-mounted volumes, not internal volumes   or named volumes. Mount propagation requires the source mount   point (the location where the source directory is mounted in the   host operating system) to have the correct propagation properties.   For shared volumes, the source mount point must be set to `shared`.   For slave volumes, the mount must be set to either `shared` or   `slave`. 
     #[serde(rename = "Binds")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub binds: Option<Vec<String>>,
@@ -2527,7 +2625,7 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub log_config: Option<HostConfigLogConfig>,
 
-    /// Network mode to use for this container. Supported standard values are: `bridge`, `host`, `none`, and `container:<name|id>`. Any other value is taken as a custom network's name to which this container should connect to.
+    /// Network mode to use for this container. Supported standard values are: `bridge`, `host`, `none`, and `container:<name|id>`. Any other value is taken as a custom network's name to which this container should connect to. 
     #[serde(rename = "NetworkMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_mode: Option<String>,
@@ -2540,7 +2638,7 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub restart_policy: Option<RestartPolicy>,
 
-    /// Automatically remove the container when the container's process exits. This has no effect if `RestartPolicy` is set.
+    /// Automatically remove the container when the container's process exits. This has no effect if `RestartPolicy` is set. 
     #[serde(rename = "AutoRemove")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_remove: Option<bool>,
@@ -2550,32 +2648,37 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub volume_driver: Option<String>,
 
-    /// A list of volumes to inherit from another container, specified in the form `<container name>[:<ro|rw>]`.
+    /// A list of volumes to inherit from another container, specified in the form `<container name>[:<ro|rw>]`. 
     #[serde(rename = "VolumesFrom")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub volumes_from: Option<Vec<String>>,
 
-    /// Specification for mounts to be added to the container.
+    /// Specification for mounts to be added to the container. 
     #[serde(rename = "Mounts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<Mount>>,
 
-    /// Initial console size, as an `[height, width]` array.
+    /// Initial console size, as an `[height, width]` array. 
     #[serde(rename = "ConsoleSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub console_size: Option<Vec<i32>>,
 
-    /// A list of kernel capabilities to add to the container. Conflicts with option 'Capabilities'.
+    /// Arbitrary non-identifying metadata attached to container and provided to the runtime when the container is started. 
+    #[serde(rename = "Annotations")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<HashMap<String, String>>,
+
+    /// A list of kernel capabilities to add to the container. Conflicts with option 'Capabilities'. 
     #[serde(rename = "CapAdd")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cap_add: Option<Vec<String>>,
 
-    /// A list of kernel capabilities to drop from the container. Conflicts with option 'Capabilities'.
+    /// A list of kernel capabilities to drop from the container. Conflicts with option 'Capabilities'. 
     #[serde(rename = "CapDrop")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cap_drop: Option<Vec<String>>,
 
-    /// cgroup namespace mode for the container. Possible values are:  - `\"private\"`: the container runs in its own private cgroup namespace - `\"host\"`: use the host system's cgroup namespace  If not specified, the daemon default is used, which can either be `\"private\"` or `\"host\"`, depending on daemon version, kernel support and configuration.
+    /// cgroup namespace mode for the container. Possible values are:  - `\"private\"`: the container runs in its own private cgroup namespace - `\"host\"`: use the host system's cgroup namespace  If not specified, the daemon default is used, which can either be `\"private\"` or `\"host\"`, depending on daemon version, kernel support and configuration. 
     #[serde(rename = "CgroupnsMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroupns_mode: Option<HostConfigCgroupnsModeEnum>,
@@ -2595,17 +2698,17 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dns_search: Option<Vec<String>>,
 
-    /// A list of hostnames/IP mappings to add to the container's `/etc/hosts` file. Specified in the form `[\"hostname:IP\"]`.
+    /// A list of hostnames/IP mappings to add to the container's `/etc/hosts` file. Specified in the form `[\"hostname:IP\"]`. 
     #[serde(rename = "ExtraHosts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extra_hosts: Option<Vec<String>>,
 
-    /// A list of additional groups that the container process will run as.
+    /// A list of additional groups that the container process will run as. 
     #[serde(rename = "GroupAdd")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub group_add: Option<Vec<String>>,
 
-    /// IPC sharing mode for the container. Possible values are:  - `\"none\"`: own private IPC namespace, with /dev/shm not mounted - `\"private\"`: own private IPC namespace - `\"shareable\"`: own private IPC namespace, with a possibility to share it with other containers - `\"container:<name|id>\"`: join another (shareable) container's IPC namespace - `\"host\"`: use the host system's IPC namespace  If not specified, daemon default is used, which can either be `\"private\"` or `\"shareable\"`, depending on daemon version and configuration.
+    /// IPC sharing mode for the container. Possible values are:  - `\"none\"`: own private IPC namespace, with /dev/shm not mounted - `\"private\"`: own private IPC namespace - `\"shareable\"`: own private IPC namespace, with a possibility to share it with other containers - `\"container:<name|id>\"`: join another (shareable) container's IPC namespace - `\"host\"`: use the host system's IPC namespace  If not specified, daemon default is used, which can either be `\"private\"` or `\"shareable\"`, depending on daemon version and configuration. 
     #[serde(rename = "IpcMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ipc_mode: Option<String>,
@@ -2615,17 +2718,17 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroup: Option<String>,
 
-    /// A list of links for the container in the form `container_name:alias`.
+    /// A list of links for the container in the form `container_name:alias`. 
     #[serde(rename = "Links")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<String>>,
 
-    /// An integer value containing the score given to the container in order to tune OOM killer preferences.
+    /// An integer value containing the score given to the container in order to tune OOM killer preferences. 
     #[serde(rename = "OomScoreAdj")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oom_score_adj: Option<i64>,
 
-    /// Set the PID (Process) Namespace mode for the container. It can be either:  - `\"container:<name|id>\"`: joins another container's PID namespace - `\"host\"`: use the host's PID namespace inside the container
+    /// Set the PID (Process) Namespace mode for the container. It can be either:  - `\"container:<name|id>\"`: joins another container's PID namespace - `\"host\"`: use the host's PID namespace inside the container 
     #[serde(rename = "PidMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pid_mode: Option<String>,
@@ -2635,7 +2738,7 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
 
-    /// Allocates an ephemeral host port for all of a container's exposed ports.  Ports are de-allocated when the container stops and allocated when the container starts. The allocated port might be changed when restarting the container.  The port is selected from the ephemeral port range that depends on the kernel. For example, on Linux the range is defined by `/proc/sys/net/ipv4/ip_local_port_range`.
+    /// Allocates an ephemeral host port for all of a container's exposed ports.  Ports are de-allocated when the container stops and allocated when the container starts. The allocated port might be changed when restarting the container.  The port is selected from the ephemeral port range that depends on the kernel. For example, on Linux the range is defined by `/proc/sys/net/ipv4/ip_local_port_range`. 
     #[serde(rename = "PublishAllPorts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_all_ports: Option<bool>,
@@ -2645,17 +2748,17 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub readonly_rootfs: Option<bool>,
 
-    /// A list of string values to customize labels for MLS systems, such as SELinux.
+    /// A list of string values to customize labels for MLS systems, such as SELinux. 
     #[serde(rename = "SecurityOpt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub security_opt: Option<Vec<String>>,
 
-    /// Storage driver options for this container, in the form `{\"size\": \"120G\"}`.
+    /// Storage driver options for this container, in the form `{\"size\": \"120G\"}`. 
     #[serde(rename = "StorageOpt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub storage_opt: Option<HashMap<String, String>>,
 
-    /// A map of container directories which should be replaced by tmpfs mounts, and their corresponding mount options. For example:  ``` { \"/run\": \"rw,noexec,nosuid,size=65536k\" } ```
+    /// A map of container directories which should be replaced by tmpfs mounts, and their corresponding mount options. For example:  ``` { \"/run\": \"rw,noexec,nosuid,size=65536k\" } ``` 
     #[serde(rename = "Tmpfs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tmpfs: Option<HashMap<String, String>>,
@@ -2665,17 +2768,17 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uts_mode: Option<String>,
 
-    /// Sets the usernamespace mode for the container when usernamespace remapping option is enabled.
+    /// Sets the usernamespace mode for the container when usernamespace remapping option is enabled. 
     #[serde(rename = "UsernsMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub userns_mode: Option<String>,
 
-    /// Size of `/dev/shm` in bytes. If omitted, the system uses 64MB.
+    /// Size of `/dev/shm` in bytes. If omitted, the system uses 64MB. 
     #[serde(rename = "ShmSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shm_size: Option<i64>,
 
-    /// A list of kernel parameters (sysctls) to set in the container. For example:  ``` {\"net.ipv4.ip_forward\": \"1\"} ```
+    /// A list of kernel parameters (sysctls) to set in the container. For example:  ``` {\"net.ipv4.ip_forward\": \"1\"} ``` 
     #[serde(rename = "Sysctls")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<HashMap<String, String>>,
@@ -2685,26 +2788,27 @@ pub struct HostConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub runtime: Option<String>,
 
-    /// Isolation technology of the container. (Windows only)
+    /// Isolation technology of the container. (Windows only) 
     #[serde(rename = "Isolation")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub isolation: Option<HostConfigIsolationEnum>,
 
-    /// The list of paths to be masked inside the container (this overrides the default set of paths).
+    /// The list of paths to be masked inside the container (this overrides the default set of paths). 
     #[serde(rename = "MaskedPaths")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub masked_paths: Option<Vec<String>>,
 
-    /// The list of paths to be set as read-only inside the container (this overrides the default set of paths).
+    /// The list of paths to be set as read-only inside the container (this overrides the default set of paths). 
     #[serde(rename = "ReadonlyPaths")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub readonly_paths: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum HostConfigCgroupnsModeEnum {
+pub enum HostConfigCgroupnsModeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "private")]
@@ -2715,10 +2819,11 @@ pub enum HostConfigCgroupnsModeEnum {
 
 impl ::std::fmt::Display for HostConfigCgroupnsModeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             HostConfigCgroupnsModeEnum::EMPTY => write!(f, ""),
             HostConfigCgroupnsModeEnum::PRIVATE => write!(f, "{}", "private"),
             HostConfigCgroupnsModeEnum::HOST => write!(f, "{}", "host"),
+
         }
     }
 }
@@ -2726,7 +2831,7 @@ impl ::std::fmt::Display for HostConfigCgroupnsModeEnum {
 impl ::std::str::FromStr for HostConfigCgroupnsModeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(HostConfigCgroupnsModeEnum::EMPTY),
             "private" => Ok(HostConfigCgroupnsModeEnum::PRIVATE),
             "host" => Ok(HostConfigCgroupnsModeEnum::HOST),
@@ -2737,7 +2842,7 @@ impl ::std::str::FromStr for HostConfigCgroupnsModeEnum {
 
 impl ::std::convert::AsRef<str> for HostConfigCgroupnsModeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             HostConfigCgroupnsModeEnum::EMPTY => "",
             HostConfigCgroupnsModeEnum::PRIVATE => "private",
             HostConfigCgroupnsModeEnum::HOST => "host",
@@ -2748,7 +2853,7 @@ impl ::std::convert::AsRef<str> for HostConfigCgroupnsModeEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum HostConfigIsolationEnum {
+pub enum HostConfigIsolationEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "default")]
@@ -2761,11 +2866,12 @@ pub enum HostConfigIsolationEnum {
 
 impl ::std::fmt::Display for HostConfigIsolationEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             HostConfigIsolationEnum::EMPTY => write!(f, ""),
             HostConfigIsolationEnum::DEFAULT => write!(f, "{}", "default"),
             HostConfigIsolationEnum::PROCESS => write!(f, "{}", "process"),
             HostConfigIsolationEnum::HYPERV => write!(f, "{}", "hyperv"),
+
         }
     }
 }
@@ -2773,7 +2879,7 @@ impl ::std::fmt::Display for HostConfigIsolationEnum {
 impl ::std::str::FromStr for HostConfigIsolationEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(HostConfigIsolationEnum::EMPTY),
             "default" => Ok(HostConfigIsolationEnum::DEFAULT),
             "process" => Ok(HostConfigIsolationEnum::PROCESS),
@@ -2785,7 +2891,7 @@ impl ::std::str::FromStr for HostConfigIsolationEnum {
 
 impl ::std::convert::AsRef<str> for HostConfigIsolationEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             HostConfigIsolationEnum::EMPTY => "",
             HostConfigIsolationEnum::DEFAULT => "default",
             HostConfigIsolationEnum::PROCESS => "process",
@@ -2805,6 +2911,7 @@ pub struct HostConfigLogConfig {
     #[serde(rename = "Config")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub config: Option<HashMap<String, String>>,
+
 }
 
 /// Response to an API call that returns just an Id
@@ -2813,7 +2920,9 @@ pub struct HostConfigLogConfig {
 #[serde(rename_all = "UPPERCASE")]
 pub struct IdResponse {
     /// The id of the newly created object.
+    
     pub id: String,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -2828,6 +2937,7 @@ pub struct ImageDeleteResponseItem {
     #[serde(rename = "Deleted")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deleted: Option<String>,
+
 }
 
 /// Image ID or Digest
@@ -2837,43 +2947,44 @@ pub struct ImageId {
     #[serde(rename = "ID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+
 }
 
-/// Information about an image in the local image cache.
+/// Information about an image in the local image cache. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageInspect {
-    /// ID is the content-addressable ID of an image.  This identifier is a content-addressable digest calculated from the image's configuration (which includes the digests of layers used by the image).  Note that this digest differs from the `RepoDigests` below, which holds digests of image manifests that reference the image.
+    /// ID is the content-addressable ID of an image.  This identifier is a content-addressable digest calculated from the image's configuration (which includes the digests of layers used by the image).  Note that this digest differs from the `RepoDigests` below, which holds digests of image manifests that reference the image. 
     #[serde(rename = "Id")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 
-    /// List of image names/tags in the local image cache that reference this image.  Multiple image tags can refer to the same image, and this list may be empty if no tags reference the image, in which case the image is \"untagged\", in which case it can still be referenced by its ID.
+    /// List of image names/tags in the local image cache that reference this image.  Multiple image tags can refer to the same image, and this list may be empty if no tags reference the image, in which case the image is \"untagged\", in which case it can still be referenced by its ID. 
     #[serde(rename = "RepoTags")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub repo_tags: Option<Vec<String>>,
 
-    /// List of content-addressable digests of locally available image manifests that the image is referenced from. Multiple manifests can refer to the same image.  These digests are usually only available if the image was either pulled from a registry, or if the image was pushed to a registry, which is when the manifest is generated and its digest calculated.
+    /// List of content-addressable digests of locally available image manifests that the image is referenced from. Multiple manifests can refer to the same image.  These digests are usually only available if the image was either pulled from a registry, or if the image was pushed to a registry, which is when the manifest is generated and its digest calculated. 
     #[serde(rename = "RepoDigests")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub repo_digests: Option<Vec<String>>,
 
-    /// ID of the parent image.  Depending on how the image was created, this field may be empty and is only set for images that were built/created locally. This field is empty if the image was pulled from an image registry.
+    /// ID of the parent image.  Depending on how the image was created, this field may be empty and is only set for images that were built/created locally. This field is empty if the image was pulled from an image registry. 
     #[serde(rename = "Parent")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
 
-    /// Optional message that was set when committing or importing the image.
+    /// Optional message that was set when committing or importing the image. 
     #[serde(rename = "Comment")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
 
-    /// Date and time at which the image was created, formatted in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the image was created, formatted in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "Created")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<String>,
 
-    /// The ID of the container that was used to create the image.  Depending on how the image was created, this field may be empty.
+    /// The ID of the container that was used to create the image.  Depending on how the image was created, this field may be empty. 
     #[serde(rename = "Container")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
@@ -2882,12 +2993,12 @@ pub struct ImageInspect {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub container_config: Option<ContainerConfig>,
 
-    /// The version of Docker that was used to build the image.  Depending on how the image was created, this field may be empty.
+    /// The version of Docker that was used to build the image.  Depending on how the image was created, this field may be empty. 
     #[serde(rename = "DockerVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub docker_version: Option<String>,
 
-    /// Name of the author that was specified when committing the image, or as specified through MAINTAINER (deprecated) in the Dockerfile.
+    /// Name of the author that was specified when committing the image, or as specified through MAINTAINER (deprecated) in the Dockerfile. 
     #[serde(rename = "Author")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub author: Option<String>,
@@ -2896,32 +3007,32 @@ pub struct ImageInspect {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub config: Option<ContainerConfig>,
 
-    /// Hardware CPU architecture that the image runs on.
+    /// Hardware CPU architecture that the image runs on. 
     #[serde(rename = "Architecture")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub architecture: Option<String>,
 
-    /// CPU architecture variant (presently ARM-only).
+    /// CPU architecture variant (presently ARM-only). 
     #[serde(rename = "Variant")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub variant: Option<String>,
 
-    /// Operating System the image is built to run on.
+    /// Operating System the image is built to run on. 
     #[serde(rename = "Os")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os: Option<String>,
 
-    /// Operating System version the image is built to run on (especially for Windows).
+    /// Operating System version the image is built to run on (especially for Windows). 
     #[serde(rename = "OsVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os_version: Option<String>,
 
-    /// Total size of the image including all layers it is composed of.
+    /// Total size of the image including all layers it is composed of. 
     #[serde(rename = "Size")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
 
-    /// Total size of the image including all layers it is composed of.  In versions of Docker before v1.10, this field was calculated from the image itself and all of its parent images. Docker v1.10 and up store images self-contained, and no longer use a parent-chain, making this field an equivalent of the Size field.  This field is kept for backward compatibility, but may be removed in a future version of the API.
+    /// Total size of the image including all layers it is composed of.  In versions of Docker before v1.10, this field was calculated from the image itself and all of its parent images. Images are now stored self-contained, and no longer use a parent-chain, making this field an equivalent of the Size field.  > **Deprecated**: this field is kept for backward compatibility, but > will be removed in API v1.44. 
     #[serde(rename = "VirtualSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub virtual_size: Option<i64>,
@@ -2937,13 +3048,14 @@ pub struct ImageInspect {
     #[serde(rename = "Metadata")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ImageInspectMetadata>,
+
 }
 
-/// Additional metadata of the image in the local cache. This information is local to the daemon, and not part of the image itself.
+/// Additional metadata of the image in the local cache. This information is local to the daemon, and not part of the image itself. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageInspectMetadata {
-    /// Date and time at which the image was last tagged in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.  This information is only available if the image was tagged locally, and omitted otherwise.
+    /// Date and time at which the image was last tagged in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.  This information is only available if the image was tagged locally, and omitted otherwise. 
     #[serde(rename = "LastTagTime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -2952,9 +3064,10 @@ pub struct ImageInspectMetadata {
         serialize_with = "serialize_timestamp"
     )]
     pub last_tag_time: Option<BollardDate>,
+
 }
 
-/// Information about the image's RootFS, including the layer IDs.
+/// Information about the image's RootFS, including the layer IDs. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageInspectRootFs {
@@ -2964,6 +3077,7 @@ pub struct ImageInspectRootFs {
     #[serde(rename = "Layers")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub layers: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -2978,6 +3092,7 @@ pub struct ImagePruneResponse {
     #[serde(rename = "SpaceReclaimed")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub space_reclaimed: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3002,78 +3117,82 @@ pub struct ImageSearchResponseItem {
     #[serde(rename = "star_count")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub star_count: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageSummary {
-    /// ID is the content-addressable ID of an image.  This identifier is a content-addressable digest calculated from the image's configuration (which includes the digests of layers used by the image).  Note that this digest differs from the `RepoDigests` below, which holds digests of image manifests that reference the image.
+    /// ID is the content-addressable ID of an image.  This identifier is a content-addressable digest calculated from the image's configuration (which includes the digests of layers used by the image).  Note that this digest differs from the `RepoDigests` below, which holds digests of image manifests that reference the image. 
     #[serde(rename = "Id")]
     pub id: String,
 
-    /// ID of the parent image.  Depending on how the image was created, this field may be empty and is only set for images that were built/created locally. This field is empty if the image was pulled from an image registry.
+    /// ID of the parent image.  Depending on how the image was created, this field may be empty and is only set for images that were built/created locally. This field is empty if the image was pulled from an image registry. 
     #[serde(rename = "ParentId")]
     pub parent_id: String,
 
-    /// List of image names/tags in the local image cache that reference this image.  Multiple image tags can refer to the same image, and this list may be empty if no tags reference the image, in which case the image is \"untagged\", in which case it can still be referenced by its ID.
+    /// List of image names/tags in the local image cache that reference this image.  Multiple image tags can refer to the same image, and this list may be empty if no tags reference the image, in which case the image is \"untagged\", in which case it can still be referenced by its ID. 
     #[serde(rename = "RepoTags")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub repo_tags: Vec<String>,
 
-    /// List of content-addressable digests of locally available image manifests that the image is referenced from. Multiple manifests can refer to the same image.  These digests are usually only available if the image was either pulled from a registry, or if the image was pushed to a registry, which is when the manifest is generated and its digest calculated.
+    /// List of content-addressable digests of locally available image manifests that the image is referenced from. Multiple manifests can refer to the same image.  These digests are usually only available if the image was either pulled from a registry, or if the image was pushed to a registry, which is when the manifest is generated and its digest calculated. 
     #[serde(rename = "RepoDigests")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub repo_digests: Vec<String>,
 
-    /// Date and time at which the image was created as a Unix timestamp (number of seconds sinds EPOCH).
+    /// Date and time at which the image was created as a Unix timestamp (number of seconds sinds EPOCH). 
     #[serde(rename = "Created")]
     pub created: i64,
 
-    /// Total size of the image including all layers it is composed of.
+    /// Total size of the image including all layers it is composed of. 
     #[serde(rename = "Size")]
     pub size: i64,
 
-    /// Total size of image layers that are shared between this image and other images.  This size is not calculated by default. `-1` indicates that the value has not been set / calculated.
+    /// Total size of image layers that are shared between this image and other images.  This size is not calculated by default. `-1` indicates that the value has not been set / calculated. 
     #[serde(rename = "SharedSize")]
     pub shared_size: i64,
 
-    /// Total size of the image including all layers it is composed of.  In versions of Docker before v1.10, this field was calculated from the image itself and all of its parent images. Docker v1.10 and up store images self-contained, and no longer use a parent-chain, making this field an equivalent of the Size field.  This field is kept for backward compatibility, but may be removed in a future version of the API.
+    /// Total size of the image including all layers it is composed of.  In versions of Docker before v1.10, this field was calculated from the image itself and all of its parent images. Images are now stored self-contained, and no longer use a parent-chain, making this field an equivalent of the Size field.  Deprecated: this field is kept for backward compatibility, and will be removed in API v1.44.
     #[serde(rename = "VirtualSize")]
-    pub virtual_size: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub virtual_size: Option<i64>,
 
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
     #[serde(deserialize_with = "deserialize_nonoptional_map")]
     pub labels: HashMap<String, String>,
 
-    /// Number of containers using this image. Includes both stopped and running containers.  This size is not calculated by default, and depends on which API endpoint is used. `-1` indicates that the value has not been set / calculated.
+    /// Number of containers using this image. Includes both stopped and running containers.  This size is not calculated by default, and depends on which API endpoint is used. `-1` indicates that the value has not been set / calculated. 
     #[serde(rename = "Containers")]
     pub containers: i64,
+
 }
 
 /// IndexInfo contains information about a registry.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct IndexInfo {
-    /// Name of the registry, such as \"docker.io\".
+    /// Name of the registry, such as \"docker.io\". 
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
-    /// List of mirrors, expressed as URIs.
+    /// List of mirrors, expressed as URIs. 
     #[serde(rename = "Mirrors")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mirrors: Option<Vec<String>>,
 
-    /// Indicates if the registry is part of the list of insecure registries.  If `false`, the registry is insecure. Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  > **Warning**: Insecure registries can be useful when running a local > registry. However, because its use creates security vulnerabilities > it should ONLY be enabled for testing purposes. For increased > security, users should add their CA to their system's list of > trusted CAs instead of enabling this option.
+    /// Indicates if the registry is part of the list of insecure registries.  If `false`, the registry is insecure. Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  > **Warning**: Insecure registries can be useful when running a local > registry. However, because its use creates security vulnerabilities > it should ONLY be enabled for testing purposes. For increased > security, users should add their CA to their system's list of > trusted CAs instead of enabling this option. 
     #[serde(rename = "Secure")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
 
-    /// Indicates whether this is an official registry (i.e., Docker Hub / docker.io)
+    /// Indicates whether this is an official registry (i.e., Docker Hub / docker.io) 
     #[serde(rename = "Official")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub official: Option<bool>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3084,7 +3203,7 @@ pub struct Ipam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver: Option<String>,
 
-    /// List of IPAM configuration options, specified as a map:  ``` {\"Subnet\": <CIDR>, \"IPRange\": <CIDR>, \"Gateway\": <IP address>, \"AuxAddress\": <device_name:IP address>} ```
+    /// List of IPAM configuration options, specified as a map:  ``` {\"Subnet\": <CIDR>, \"IPRange\": <CIDR>, \"Gateway\": <IP address>, \"AuxAddress\": <device_name:IP address>} ``` 
     #[serde(rename = "Config")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub config: Option<Vec<IpamConfig>>,
@@ -3093,6 +3212,7 @@ pub struct Ipam {
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<HashMap<String, String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3113,24 +3233,26 @@ pub struct IpamConfig {
     #[serde(rename = "AuxiliaryAddresses")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auxiliary_addresses: Option<HashMap<String, String>>,
+
 }
 
-/// JoinTokens contains the tokens workers and managers need to join the swarm.
+/// JoinTokens contains the tokens workers and managers need to join the swarm. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct JoinTokens {
-    /// The token workers can use to join the swarm.
+    /// The token workers can use to join the swarm. 
     #[serde(rename = "Worker")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub worker: Option<String>,
 
-    /// The token managers can use to join the swarm.
+    /// The token managers can use to join the swarm. 
     #[serde(rename = "Manager")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub manager: Option<String>,
+
 }
 
-/// An object describing a limit on resources which can be requested by a task.
+/// An object describing a limit on resources which can be requested by a task. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Limit {
@@ -3142,10 +3264,11 @@ pub struct Limit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_bytes: Option<i64>,
 
-    /// Limits the maximum number of PIDs in the container. Set `0` for unlimited.
+    /// Limits the maximum number of PIDs in the container. Set `0` for unlimited. 
     #[serde(rename = "Pids")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pids: Option<i64>,
+
 }
 
 /// Current local status of this node.
@@ -3156,7 +3279,7 @@ pub struct Limit {
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum LocalNodeState {
+pub enum LocalNodeState { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "inactive")]
@@ -3173,7 +3296,7 @@ pub enum LocalNodeState {
 
 impl ::std::fmt::Display for LocalNodeState {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             LocalNodeState::EMPTY => write!(f, "{}", ""),
             LocalNodeState::INACTIVE => write!(f, "{}", "inactive"),
             LocalNodeState::PENDING => write!(f, "{}", "pending"),
@@ -3199,7 +3322,7 @@ impl ::std::str::FromStr for LocalNodeState {
     }
 }
 
-/// ManagerStatus represents the status of a manager.  It provides the current status of a node's manager component, if the node is a manager.
+/// ManagerStatus represents the status of a manager.  It provides the current status of a node's manager component, if the node is a manager. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ManagerStatus {
@@ -3211,10 +3334,11 @@ pub struct ManagerStatus {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reachability: Option<Reachability>,
 
-    /// The IP address and port at which the manager is reachable.
+    /// The IP address and port at which the manager is reachable. 
     #[serde(rename = "Addr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub addr: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3230,7 +3354,7 @@ pub struct Mount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 
-    /// The mount type. Available types:  - `bind` Mounts a file or directory from the host into the container. Must exist prior to creating the container. - `volume` Creates a volume with the given name and options (or uses a pre-existing volume with the same name and options). These are **not** removed when the container is removed. - `tmpfs` Create a tmpfs with the given options. The mount source cannot be specified for tmpfs. - `npipe` Mounts a named pipe from the host into the container. Must exist prior to creating the container. - `cluster` a Swarm cluster volume
+    /// The mount type. Available types:  - `bind` Mounts a file or directory from the host into the container. Must exist prior to creating the container. - `volume` Creates a volume with the given name and options (or uses a pre-existing volume with the same name and options). These are **not** removed when the container is removed. - `tmpfs` Create a tmpfs with the given options. The mount source cannot be specified for tmpfs. - `npipe` Mounts a named pipe from the host into the container. Must exist prior to creating the container. - `cluster` a Swarm cluster volume 
     #[serde(rename = "Type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<MountTypeEnum>,
@@ -3256,12 +3380,13 @@ pub struct Mount {
     #[serde(rename = "TmpfsOptions")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tmpfs_options: Option<MountTmpfsOptions>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum MountTypeEnum {
+pub enum MountTypeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "bind")]
@@ -3278,13 +3403,14 @@ pub enum MountTypeEnum {
 
 impl ::std::fmt::Display for MountTypeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             MountTypeEnum::EMPTY => write!(f, ""),
             MountTypeEnum::BIND => write!(f, "{}", "bind"),
             MountTypeEnum::VOLUME => write!(f, "{}", "volume"),
             MountTypeEnum::TMPFS => write!(f, "{}", "tmpfs"),
             MountTypeEnum::NPIPE => write!(f, "{}", "npipe"),
             MountTypeEnum::CLUSTER => write!(f, "{}", "cluster"),
+
         }
     }
 }
@@ -3292,7 +3418,7 @@ impl ::std::fmt::Display for MountTypeEnum {
 impl ::std::str::FromStr for MountTypeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(MountTypeEnum::EMPTY),
             "bind" => Ok(MountTypeEnum::BIND),
             "volume" => Ok(MountTypeEnum::VOLUME),
@@ -3306,7 +3432,7 @@ impl ::std::str::FromStr for MountTypeEnum {
 
 impl ::std::convert::AsRef<str> for MountTypeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             MountTypeEnum::EMPTY => "",
             MountTypeEnum::BIND => "bind",
             MountTypeEnum::VOLUME => "volume",
@@ -3335,12 +3461,13 @@ pub struct MountBindOptions {
     #[serde(rename = "CreateMountpoint")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub create_mountpoint: Option<bool>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum MountBindOptionsPropagationEnum {
+pub enum MountBindOptionsPropagationEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "private")]
@@ -3359,7 +3486,7 @@ pub enum MountBindOptionsPropagationEnum {
 
 impl ::std::fmt::Display for MountBindOptionsPropagationEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             MountBindOptionsPropagationEnum::EMPTY => write!(f, ""),
             MountBindOptionsPropagationEnum::PRIVATE => write!(f, "{}", "private"),
             MountBindOptionsPropagationEnum::RPRIVATE => write!(f, "{}", "rprivate"),
@@ -3367,6 +3494,7 @@ impl ::std::fmt::Display for MountBindOptionsPropagationEnum {
             MountBindOptionsPropagationEnum::RSHARED => write!(f, "{}", "rshared"),
             MountBindOptionsPropagationEnum::SLAVE => write!(f, "{}", "slave"),
             MountBindOptionsPropagationEnum::RSLAVE => write!(f, "{}", "rslave"),
+
         }
     }
 }
@@ -3374,7 +3502,7 @@ impl ::std::fmt::Display for MountBindOptionsPropagationEnum {
 impl ::std::str::FromStr for MountBindOptionsPropagationEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(MountBindOptionsPropagationEnum::EMPTY),
             "private" => Ok(MountBindOptionsPropagationEnum::PRIVATE),
             "rprivate" => Ok(MountBindOptionsPropagationEnum::RPRIVATE),
@@ -3389,7 +3517,7 @@ impl ::std::str::FromStr for MountBindOptionsPropagationEnum {
 
 impl ::std::convert::AsRef<str> for MountBindOptionsPropagationEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             MountBindOptionsPropagationEnum::EMPTY => "",
             MountBindOptionsPropagationEnum::PRIVATE => "private",
             MountBindOptionsPropagationEnum::RPRIVATE => "rprivate",
@@ -3401,55 +3529,56 @@ impl ::std::convert::AsRef<str> for MountBindOptionsPropagationEnum {
     }
 }
 
-/// MountPoint represents a mount point configuration inside the container. This is used for reporting the mountpoints in use by a container.
+/// MountPoint represents a mount point configuration inside the container. This is used for reporting the mountpoints in use by a container. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct MountPoint {
-    /// The mount type:  - `bind` a mount of a file or directory from the host into the container. - `volume` a docker volume with the given `Name`. - `tmpfs` a `tmpfs`. - `npipe` a named pipe from the host into the container. - `cluster` a Swarm cluster volume
+    /// The mount type:  - `bind` a mount of a file or directory from the host into the container. - `volume` a docker volume with the given `Name`. - `tmpfs` a `tmpfs`. - `npipe` a named pipe from the host into the container. - `cluster` a Swarm cluster volume 
     #[serde(rename = "Type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<MountPointTypeEnum>,
 
-    /// Name is the name reference to the underlying data defined by `Source` e.g., the volume name.
+    /// Name is the name reference to the underlying data defined by `Source` e.g., the volume name. 
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
-    /// Source location of the mount.  For volumes, this contains the storage location of the volume (within `/var/lib/docker/volumes/`). For bind-mounts, and `npipe`, this contains the source (host) part of the bind-mount. For `tmpfs` mount points, this field is empty.
+    /// Source location of the mount.  For volumes, this contains the storage location of the volume (within `/var/lib/docker/volumes/`). For bind-mounts, and `npipe`, this contains the source (host) part of the bind-mount. For `tmpfs` mount points, this field is empty. 
     #[serde(rename = "Source")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 
-    /// Destination is the path relative to the container root (`/`) where the `Source` is mounted inside the container.
+    /// Destination is the path relative to the container root (`/`) where the `Source` is mounted inside the container. 
     #[serde(rename = "Destination")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
 
-    /// Driver is the volume driver used to create the volume (if it is a volume).
+    /// Driver is the volume driver used to create the volume (if it is a volume). 
     #[serde(rename = "Driver")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver: Option<String>,
 
-    /// Mode is a comma separated list of options supplied by the user when creating the bind/volume mount.  The default is platform-specific (`\"z\"` on Linux, empty on Windows).
+    /// Mode is a comma separated list of options supplied by the user when creating the bind/volume mount.  The default is platform-specific (`\"z\"` on Linux, empty on Windows). 
     #[serde(rename = "Mode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
 
-    /// Whether the mount is mounted writable (read-write).
+    /// Whether the mount is mounted writable (read-write). 
     #[serde(rename = "RW")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rw: Option<bool>,
 
-    /// Propagation describes how mounts are propagated from the host into the mount point, and vice-versa. Refer to the [Linux kernel documentation](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt) for details. This field is not used on Windows.
+    /// Propagation describes how mounts are propagated from the host into the mount point, and vice-versa. Refer to the [Linux kernel documentation](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt) for details. This field is not used on Windows. 
     #[serde(rename = "Propagation")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub propagation: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum MountPointTypeEnum {
+pub enum MountPointTypeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "bind")]
@@ -3466,13 +3595,14 @@ pub enum MountPointTypeEnum {
 
 impl ::std::fmt::Display for MountPointTypeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             MountPointTypeEnum::EMPTY => write!(f, ""),
             MountPointTypeEnum::BIND => write!(f, "{}", "bind"),
             MountPointTypeEnum::VOLUME => write!(f, "{}", "volume"),
             MountPointTypeEnum::TMPFS => write!(f, "{}", "tmpfs"),
             MountPointTypeEnum::NPIPE => write!(f, "{}", "npipe"),
             MountPointTypeEnum::CLUSTER => write!(f, "{}", "cluster"),
+
         }
     }
 }
@@ -3480,7 +3610,7 @@ impl ::std::fmt::Display for MountPointTypeEnum {
 impl ::std::str::FromStr for MountPointTypeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(MountPointTypeEnum::EMPTY),
             "bind" => Ok(MountPointTypeEnum::BIND),
             "volume" => Ok(MountPointTypeEnum::VOLUME),
@@ -3494,7 +3624,7 @@ impl ::std::str::FromStr for MountPointTypeEnum {
 
 impl ::std::convert::AsRef<str> for MountPointTypeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             MountPointTypeEnum::EMPTY => "",
             MountPointTypeEnum::BIND => "bind",
             MountPointTypeEnum::VOLUME => "volume",
@@ -3518,6 +3648,7 @@ pub struct MountTmpfsOptions {
     #[serde(rename = "Mode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<i64>,
+
 }
 
 /// Optional configuration for the `volume` type.
@@ -3537,6 +3668,7 @@ pub struct MountVolumeOptions {
     #[serde(rename = "DriverConfig")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver_config: Option<MountVolumeOptionsDriverConfig>,
+
 }
 
 /// Map of driver specific options
@@ -3552,6 +3684,7 @@ pub struct MountVolumeOptionsDriverConfig {
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<HashMap<String, String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3613,26 +3746,28 @@ pub struct Network {
     #[serde(rename = "Labels")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<HashMap<String, String>>,
+
 }
 
-/// Specifies how a service should be attached to a particular network.
+/// Specifies how a service should be attached to a particular network. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkAttachmentConfig {
-    /// The target network for attachment. Must be a network name or ID.
+    /// The target network for attachment. Must be a network name or ID. 
     #[serde(rename = "Target")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target: Option<String>,
 
-    /// Discoverable alternate names for the service on this network.
+    /// Discoverable alternate names for the service on this network. 
     #[serde(rename = "Aliases")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aliases: Option<Vec<String>>,
 
-    /// Driver attachment options for the network target.
+    /// Driver attachment options for the network target. 
     #[serde(rename = "DriverOpts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver_opts: Option<HashMap<String, String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3646,6 +3781,7 @@ pub struct NetworkConnectRequest {
     #[serde(rename = "EndpointConfig")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub endpoint_config: Option<EndpointSettings>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3670,6 +3806,7 @@ pub struct NetworkContainer {
     #[serde(rename = "IPv6Address")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ipv6_address: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3679,7 +3816,7 @@ pub struct NetworkCreateRequest {
     #[serde(rename = "Name")]
     pub name: String,
 
-    /// Check for networks with duplicate names. Since Network is primarily keyed based on a random ID and not on the name, and network name is strictly a user-friendly alias to the network which is uniquely identified using ID, there is no guaranteed way to check for duplicates. CheckDuplicate is there to provide a best effort checking of any networks which has the same name but it is not guaranteed to catch all name collisions.
+    /// Check for networks with duplicate names. Since Network is primarily keyed based on a random ID and not on the name, and network name is strictly a user-friendly alias to the network which is uniquely identified using ID, there is no guaranteed way to check for duplicates. CheckDuplicate is there to provide a best effort checking of any networks which has the same name but it is not guaranteed to catch all name collisions. 
     #[serde(rename = "CheckDuplicate")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_duplicate: Option<bool>,
@@ -3694,12 +3831,12 @@ pub struct NetworkCreateRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub internal: Option<bool>,
 
-    /// Globally scoped network is manually attachable by regular containers from workers in swarm mode.
+    /// Globally scoped network is manually attachable by regular containers from workers in swarm mode. 
     #[serde(rename = "Attachable")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attachable: Option<bool>,
 
-    /// Ingress network is the network which provides the routing-mesh in swarm mode.
+    /// Ingress network is the network which provides the routing-mesh in swarm mode. 
     #[serde(rename = "Ingress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ingress: Option<bool>,
@@ -3723,6 +3860,7 @@ pub struct NetworkCreateRequest {
     #[serde(rename = "Labels")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<HashMap<String, String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3736,20 +3874,22 @@ pub struct NetworkCreateResponse {
     #[serde(rename = "Warning")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warning: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkDisconnectRequest {
-    /// The ID or name of the container to disconnect from the network.
+    /// The ID or name of the container to disconnect from the network. 
     #[serde(rename = "Container")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
 
-    /// Force the container to disconnect from the network.
+    /// Force the container to disconnect from the network. 
     #[serde(rename = "Force")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3759,6 +3899,7 @@ pub struct NetworkPruneResponse {
     #[serde(rename = "NetworksDeleted")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks_deleted: Option<Vec<String>>,
+
 }
 
 /// NetworkSettings exposes the network settings in the API
@@ -3775,7 +3916,7 @@ pub struct NetworkSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sandbox_id: Option<String>,
 
-    /// Indicates if hairpin NAT should be enabled on the virtual interface.
+    /// Indicates if hairpin NAT should be enabled on the virtual interface. 
     #[serde(rename = "HairpinMode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hairpin_mode: Option<bool>,
@@ -3799,70 +3940,72 @@ pub struct NetworkSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sandbox_key: Option<String>,
 
-    ///
+    /// 
     #[serde(rename = "SecondaryIPAddresses")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secondary_ip_addresses: Option<Vec<Address>>,
 
-    ///
+    /// 
     #[serde(rename = "SecondaryIPv6Addresses")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secondary_ipv6_addresses: Option<Vec<Address>>,
 
-    /// EndpointID uniquely represents a service endpoint in a Sandbox.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// EndpointID uniquely represents a service endpoint in a Sandbox.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "EndpointID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub endpoint_id: Option<String>,
 
-    /// Gateway address for the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// Gateway address for the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "Gateway")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
 
-    /// Global IPv6 address for the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// Global IPv6 address for the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "GlobalIPv6Address")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub global_ipv6_address: Option<String>,
 
-    /// Mask length of the global IPv6 address.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// Mask length of the global IPv6 address.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "GlobalIPv6PrefixLen")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub global_ipv6_prefix_len: Option<i64>,
 
-    /// IPv4 address for the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// IPv4 address for the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "IPAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 
-    /// Mask length of the IPv4 address.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// Mask length of the IPv4 address.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "IPPrefixLen")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_prefix_len: Option<i64>,
 
-    /// IPv6 gateway address for this network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// IPv6 gateway address for this network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "IPv6Gateway")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ipv6_gateway: Option<String>,
 
-    /// MAC address for the container on the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0
+    /// MAC address for the container on the default \"bridge\" network.  <p><br /></p>  > **Deprecated**: This field is only propagated when attached to the > default \"bridge\" network. Use the information from the \"bridge\" > network inside the `Networks` map instead, which contains the same > information. This field was deprecated in Docker 1.9 and is scheduled > to be removed in Docker 17.12.0 
     #[serde(rename = "MacAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mac_address: Option<String>,
 
-    /// Information about all networks that the container is connected to.
+    /// Information about all networks that the container is connected to. 
     #[serde(rename = "Networks")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<HashMap<String, EndpointSettings>>,
+
 }
 
-/// NetworkingConfig represents the container's networking configuration for each of its interfaces. It is used for the networking configs specified in the `docker create` and `docker network connect` commands.
+/// NetworkingConfig represents the container's networking configuration for each of its interfaces. It is used for the networking configs specified in the `docker create` and `docker network connect` commands. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkingConfig {
-    /// A mapping of network name to endpoint configuration for that network.
+    /// A mapping of network name to endpoint configuration for that network. 
     #[serde(rename = "EndpointsConfig")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub endpoints_config: Option<HashMap<String, EndpointSettings>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3876,7 +4019,7 @@ pub struct Node {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<ObjectVersion>,
 
-    /// Date and time at which the node was added to the swarm in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the node was added to the swarm in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "CreatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -3886,7 +4029,7 @@ pub struct Node {
     )]
     pub created_at: Option<BollardDate>,
 
-    /// Date and time at which the node was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the node was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "UpdatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -3911,9 +4054,10 @@ pub struct Node {
     #[serde(rename = "ManagerStatus")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub manager_status: Option<ManagerStatus>,
+
 }
 
-/// NodeDescription encapsulates the properties of the Node as reported by the agent.
+/// NodeDescription encapsulates the properties of the Node as reported by the agent. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NodeDescription {
@@ -3936,6 +4080,7 @@ pub struct NodeDescription {
     #[serde(rename = "TLSInfo")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tls_info: Option<TlsInfo>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -3960,12 +4105,13 @@ pub struct NodeSpec {
     #[serde(rename = "Availability")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub availability: Option<NodeSpecAvailabilityEnum>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum NodeSpecRoleEnum {
+pub enum NodeSpecRoleEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "worker")]
@@ -3976,10 +4122,11 @@ pub enum NodeSpecRoleEnum {
 
 impl ::std::fmt::Display for NodeSpecRoleEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             NodeSpecRoleEnum::EMPTY => write!(f, ""),
             NodeSpecRoleEnum::WORKER => write!(f, "{}", "worker"),
             NodeSpecRoleEnum::MANAGER => write!(f, "{}", "manager"),
+
         }
     }
 }
@@ -3987,7 +4134,7 @@ impl ::std::fmt::Display for NodeSpecRoleEnum {
 impl ::std::str::FromStr for NodeSpecRoleEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(NodeSpecRoleEnum::EMPTY),
             "worker" => Ok(NodeSpecRoleEnum::WORKER),
             "manager" => Ok(NodeSpecRoleEnum::MANAGER),
@@ -3998,7 +4145,7 @@ impl ::std::str::FromStr for NodeSpecRoleEnum {
 
 impl ::std::convert::AsRef<str> for NodeSpecRoleEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             NodeSpecRoleEnum::EMPTY => "",
             NodeSpecRoleEnum::WORKER => "worker",
             NodeSpecRoleEnum::MANAGER => "manager",
@@ -4009,7 +4156,7 @@ impl ::std::convert::AsRef<str> for NodeSpecRoleEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum NodeSpecAvailabilityEnum {
+pub enum NodeSpecAvailabilityEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "active")]
@@ -4022,11 +4169,12 @@ pub enum NodeSpecAvailabilityEnum {
 
 impl ::std::fmt::Display for NodeSpecAvailabilityEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             NodeSpecAvailabilityEnum::EMPTY => write!(f, ""),
             NodeSpecAvailabilityEnum::ACTIVE => write!(f, "{}", "active"),
             NodeSpecAvailabilityEnum::PAUSE => write!(f, "{}", "pause"),
             NodeSpecAvailabilityEnum::DRAIN => write!(f, "{}", "drain"),
+
         }
     }
 }
@@ -4034,7 +4182,7 @@ impl ::std::fmt::Display for NodeSpecAvailabilityEnum {
 impl ::std::str::FromStr for NodeSpecAvailabilityEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(NodeSpecAvailabilityEnum::EMPTY),
             "active" => Ok(NodeSpecAvailabilityEnum::ACTIVE),
             "pause" => Ok(NodeSpecAvailabilityEnum::PAUSE),
@@ -4046,7 +4194,7 @@ impl ::std::str::FromStr for NodeSpecAvailabilityEnum {
 
 impl ::std::convert::AsRef<str> for NodeSpecAvailabilityEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             NodeSpecAvailabilityEnum::EMPTY => "",
             NodeSpecAvailabilityEnum::ACTIVE => "active",
             NodeSpecAvailabilityEnum::PAUSE => "pause",
@@ -4063,7 +4211,7 @@ impl ::std::convert::AsRef<str> for NodeSpecAvailabilityEnum {
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum NodeState {
+pub enum NodeState { 
     #[serde(rename = "unknown")]
     UNKNOWN,
     #[serde(rename = "down")]
@@ -4076,7 +4224,7 @@ pub enum NodeState {
 
 impl ::std::fmt::Display for NodeState {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             NodeState::UNKNOWN => write!(f, "{}", "unknown"),
             NodeState::DOWN => write!(f, "{}", "down"),
             NodeState::READY => write!(f, "{}", "ready"),
@@ -4098,7 +4246,7 @@ impl ::std::str::FromStr for NodeState {
     }
 }
 
-/// NodeStatus represents the status of a node.  It provides the current status of the node, as seen by the manager.
+/// NodeStatus represents the status of a node.  It provides the current status of the node, as seen by the manager. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NodeStatus {
@@ -4114,65 +4262,69 @@ pub struct NodeStatus {
     #[serde(rename = "Addr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub addr: Option<String>,
+
 }
 
-/// The version number of the object such as node, service, etc. This is needed to avoid conflicting writes. The client must send the version number along with the modified specification when updating these objects.  This approach ensures safe concurrency and determinism in that the change on the object may not be applied if the version number has changed from the last read. In other words, if two update requests specify the same base version, only one of the requests can succeed. As a result, two separate update requests that happen at the same time will not unintentionally overwrite each other.
+/// The version number of the object such as node, service, etc. This is needed to avoid conflicting writes. The client must send the version number along with the modified specification when updating these objects.  This approach ensures safe concurrency and determinism in that the change on the object may not be applied if the version number has changed from the last read. In other words, if two update requests specify the same base version, only one of the requests can succeed. As a result, two separate update requests that happen at the same time will not unintentionally overwrite each other. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ObjectVersion {
     #[serde(rename = "Index")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub index: Option<u64>,
+
 }
 
-/// A descriptor struct containing digest, media type, and size, as defined in the [OCI Content Descriptors Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/descriptor.md).
+/// A descriptor struct containing digest, media type, and size, as defined in the [OCI Content Descriptors Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/descriptor.md). 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct OciDescriptor {
-    /// The media type of the object this schema refers to.
+    /// The media type of the object this schema refers to. 
     #[serde(rename = "mediaType")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub media_type: Option<String>,
 
-    /// The digest of the targeted content.
+    /// The digest of the targeted content. 
     #[serde(rename = "digest")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub digest: Option<String>,
 
-    /// The size in bytes of the blob.
+    /// The size in bytes of the blob. 
     #[serde(rename = "size")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
+
 }
 
-/// Describes the platform which the image in the manifest runs on, as defined in the [OCI Image Index Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/image-index.md).
+/// Describes the platform which the image in the manifest runs on, as defined in the [OCI Image Index Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/image-index.md). 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct OciPlatform {
-    /// The CPU architecture, for example `amd64` or `ppc64`.
+    /// The CPU architecture, for example `amd64` or `ppc64`. 
     #[serde(rename = "architecture")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub architecture: Option<String>,
 
-    /// The operating system, for example `linux` or `windows`.
+    /// The operating system, for example `linux` or `windows`. 
     #[serde(rename = "os")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os: Option<String>,
 
-    /// Optional field specifying the operating system version, for example on Windows `10.0.19041.1165`.
+    /// Optional field specifying the operating system version, for example on Windows `10.0.19041.1165`. 
     #[serde(rename = "os.version")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os_version: Option<String>,
 
-    /// Optional field specifying an array of strings, each listing a required OS feature (for example on Windows `win32k`).
+    /// Optional field specifying an array of strings, each listing a required OS feature (for example on Windows `win32k`). 
     #[serde(rename = "os.features")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os_features: Option<Vec<String>>,
 
-    /// Optional field specifying a variant of the CPU, for example `v7` to specify ARMv7 when architecture is `arm`.
+    /// Optional field specifying a variant of the CPU, for example `v7` to specify ARMv7 when architecture is `arm`. 
     #[serde(rename = "variant")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub variant: Option<String>,
+
 }
 
 /// Represents a peer-node in the swarm
@@ -4184,25 +4336,27 @@ pub struct PeerNode {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_id: Option<String>,
 
-    /// IP address and ports at which this node can be reached.
+    /// IP address and ports at which this node can be reached. 
     #[serde(rename = "Addr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub addr: Option<String>,
+
 }
 
-/// Platform represents the platform (Arch/OS).
+/// Platform represents the platform (Arch/OS). 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Platform {
-    /// Architecture represents the hardware architecture (for example, `x86_64`).
+    /// Architecture represents the hardware architecture (for example, `x86_64`). 
     #[serde(rename = "Architecture")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub architecture: Option<String>,
 
-    /// OS represents the Operating System (for example, `linux` or `windows`).
+    /// OS represents the Operating System (for example, `linux` or `windows`). 
     #[serde(rename = "OS")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os: Option<String>,
+
 }
 
 /// A plugin for the Engine API
@@ -4230,6 +4384,7 @@ pub struct Plugin {
 
     #[serde(rename = "Config")]
     pub config: PluginConfig,
+
 }
 
 /// The config of a plugin.
@@ -4290,6 +4445,7 @@ pub struct PluginConfig {
     #[serde(rename = "rootfs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rootfs: Option<PluginConfigRootfs>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4308,6 +4464,7 @@ pub struct PluginConfigArgs {
     #[serde(rename = "Value")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub value: Vec<String>,
+
 }
 
 /// The interface between Docker and the plugin
@@ -4325,12 +4482,13 @@ pub struct PluginConfigInterface {
     #[serde(rename = "ProtocolScheme")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub protocol_scheme: Option<PluginConfigInterfaceProtocolSchemeEnum>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum PluginConfigInterfaceProtocolSchemeEnum {
+pub enum PluginConfigInterfaceProtocolSchemeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "moby.plugins.http/v1")]
@@ -4339,11 +4497,10 @@ pub enum PluginConfigInterfaceProtocolSchemeEnum {
 
 impl ::std::fmt::Display for PluginConfigInterfaceProtocolSchemeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             PluginConfigInterfaceProtocolSchemeEnum::EMPTY => write!(f, "{}", ""),
-            PluginConfigInterfaceProtocolSchemeEnum::MOBY_PLUGINS_HTTP_V1 => {
-                write!(f, "{}", "moby.plugins.http/v1")
-            }
+            PluginConfigInterfaceProtocolSchemeEnum::MOBY_PLUGINS_HTTP_V1 => write!(f, "{}", "moby.plugins.http/v1"),
+
         }
     }
 }
@@ -4351,11 +4508,9 @@ impl ::std::fmt::Display for PluginConfigInterfaceProtocolSchemeEnum {
 impl ::std::str::FromStr for PluginConfigInterfaceProtocolSchemeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(PluginConfigInterfaceProtocolSchemeEnum::EMPTY),
-            "moby.plugins.http/v1" => {
-                Ok(PluginConfigInterfaceProtocolSchemeEnum::MOBY_PLUGINS_HTTP_V1)
-            }
+            "moby.plugins.http/v1" => Ok(PluginConfigInterfaceProtocolSchemeEnum::MOBY_PLUGINS_HTTP_V1),
             x => Err(format!("Invalid enum type: {}", x)),
         }
     }
@@ -4363,7 +4518,7 @@ impl ::std::str::FromStr for PluginConfigInterfaceProtocolSchemeEnum {
 
 impl ::std::convert::AsRef<str> for PluginConfigInterfaceProtocolSchemeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             PluginConfigInterfaceProtocolSchemeEnum::EMPTY => "",
             PluginConfigInterfaceProtocolSchemeEnum::MOBY_PLUGINS_HTTP_V1 => "moby.plugins.http/v1",
         }
@@ -4383,6 +4538,7 @@ pub struct PluginConfigLinux {
     #[serde(rename = "Devices")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub devices: Vec<PluginDevice>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4390,6 +4546,7 @@ pub struct PluginConfigLinux {
 pub struct PluginConfigNetwork {
     #[serde(rename = "Type")]
     pub typ: String,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4402,6 +4559,7 @@ pub struct PluginConfigRootfs {
     #[serde(rename = "diff_ids")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub diff_ids: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4414,6 +4572,7 @@ pub struct PluginConfigUser {
     #[serde(rename = "GID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gid: Option<u32>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4431,6 +4590,7 @@ pub struct PluginDevice {
 
     #[serde(rename = "Path")]
     pub path: String,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4448,6 +4608,7 @@ pub struct PluginEnv {
 
     #[serde(rename = "Value")]
     pub value: String,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4461,6 +4622,7 @@ pub struct PluginInterfaceType {
 
     #[serde(rename = "Version")]
     pub version: String,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4488,9 +4650,10 @@ pub struct PluginMount {
     #[serde(rename = "Options")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub options: Vec<String>,
+
 }
 
-/// Describes a permission the user has to accept upon installing the plugin.
+/// Describes a permission the user has to accept upon installing the plugin. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginPrivilege {
@@ -4505,6 +4668,7 @@ pub struct PluginPrivilege {
     #[serde(rename = "Value")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Vec<String>>,
+
 }
 
 /// Settings that can be modified by users.
@@ -4526,9 +4690,10 @@ pub struct PluginSettings {
     #[serde(rename = "Devices")]
     #[serde(deserialize_with = "deserialize_nonoptional_vec")]
     pub devices: Vec<PluginDevice>,
+
 }
 
-/// Available plugins per type.  <p><br /></p>  > **Note**: Only unmanaged (V1) plugins are included in this list. > V1 plugins are \"lazily\" loaded, and are not returned in this list > if there is no resource using the plugin.
+/// Available plugins per type.  <p><br /></p>  > **Note**: Only unmanaged (V1) plugins are included in this list. > V1 plugins are \"lazily\" loaded, and are not returned in this list > if there is no resource using the plugin. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginsInfo {
@@ -4551,6 +4716,7 @@ pub struct PluginsInfo {
     #[serde(rename = "Log")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub log: Option<Vec<String>>,
+
 }
 
 /// An open port on a container
@@ -4575,12 +4741,13 @@ pub struct Port {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "::serde_with::As::<::serde_with::NoneAsEmptyString>")]
     pub typ: Option<PortTypeEnum>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum PortTypeEnum {
+pub enum PortTypeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "tcp")]
@@ -4593,11 +4760,12 @@ pub enum PortTypeEnum {
 
 impl ::std::fmt::Display for PortTypeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             PortTypeEnum::EMPTY => write!(f, ""),
             PortTypeEnum::TCP => write!(f, "{}", "tcp"),
             PortTypeEnum::UDP => write!(f, "{}", "udp"),
             PortTypeEnum::SCTP => write!(f, "{}", "sctp"),
+
         }
     }
 }
@@ -4605,7 +4773,7 @@ impl ::std::fmt::Display for PortTypeEnum {
 impl ::std::str::FromStr for PortTypeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(PortTypeEnum::EMPTY),
             "tcp" => Ok(PortTypeEnum::TCP),
             "udp" => Ok(PortTypeEnum::UDP),
@@ -4617,7 +4785,7 @@ impl ::std::str::FromStr for PortTypeEnum {
 
 impl ::std::convert::AsRef<str> for PortTypeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             PortTypeEnum::EMPTY => "",
             PortTypeEnum::TCP => "tcp",
             PortTypeEnum::UDP => "udp",
@@ -4626,7 +4794,7 @@ impl ::std::convert::AsRef<str> for PortTypeEnum {
     }
 }
 
-/// PortBinding represents a binding between a host IP address and a host port.
+/// PortBinding represents a binding between a host IP address and a host port. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PortBinding {
@@ -4639,9 +4807,10 @@ pub struct PortBinding {
     #[serde(rename = "HostPort")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub host_port: Option<String>,
+
 }
 
-/// PortMap describes the mapping of container ports to host ports, using the container's port-number and protocol as key in the format `<port>/<protocol>`, for example, `80/udp`.  If a container's port is mapped for multiple protocols, separate entries are added to the mapping table.
+/// PortMap describes the mapping of container ports to host ports, using the container's port-number and protocol as key in the format `<port>/<protocol>`, for example, `80/udp`.  If a container's port is mapped for multiple protocols, separate entries are added to the mapping table. 
 // special-casing PortMap, cos swagger-codegen doesn't figure out this type
 pub type PortMap = HashMap<String, Option<Vec<PortBinding>>>;
 
@@ -4667,6 +4836,7 @@ pub struct ProcessConfig {
     #[serde(rename = "arguments")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arguments: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4679,6 +4849,7 @@ pub struct ProgressDetail {
     #[serde(rename = "total")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4699,6 +4870,7 @@ pub struct PushImageInfo {
     #[serde(rename = "progressDetail")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub progress_detail: Option<ProgressDetail>,
+
 }
 
 /// Reachability represents the reachability of a node.
@@ -4709,7 +4881,7 @@ pub struct PushImageInfo {
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum Reachability {
+pub enum Reachability { 
     #[serde(rename = "unknown")]
     UNKNOWN,
     #[serde(rename = "unreachable")]
@@ -4720,7 +4892,7 @@ pub enum Reachability {
 
 impl ::std::fmt::Display for Reachability {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             Reachability::UNKNOWN => write!(f, "{}", "unknown"),
             Reachability::UNREACHABLE => write!(f, "{}", "unreachable"),
             Reachability::REACHABLE => write!(f, "{}", "reachable"),
@@ -4740,21 +4912,21 @@ impl ::std::str::FromStr for Reachability {
     }
 }
 
-/// RegistryServiceConfig stores daemon registry services configuration.
+/// RegistryServiceConfig stores daemon registry services configuration. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct RegistryServiceConfig {
-    /// List of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.  > **Warning**: Nondistributable artifacts typically have restrictions > on how and where they can be distributed and shared. Only use this > feature to push artifacts to private registries and ensure that you > are in compliance with any terms that cover redistributing > nondistributable artifacts.
+    /// List of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.  > **Warning**: Nondistributable artifacts typically have restrictions > on how and where they can be distributed and shared. Only use this > feature to push artifacts to private registries and ensure that you > are in compliance with any terms that cover redistributing > nondistributable artifacts. 
     #[serde(rename = "AllowNondistributableArtifactsCIDRs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_nondistributable_artifacts_cidrs: Option<Vec<String>>,
 
-    /// List of registry hostnames to which nondistributable artifacts can be pushed, using the format `<hostname>[:<port>]` or `<IP address>[:<port>]`.  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior for the specified registries.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.  > **Warning**: Nondistributable artifacts typically have restrictions > on how and where they can be distributed and shared. Only use this > feature to push artifacts to private registries and ensure that you > are in compliance with any terms that cover redistributing > nondistributable artifacts.
+    /// List of registry hostnames to which nondistributable artifacts can be pushed, using the format `<hostname>[:<port>]` or `<IP address>[:<port>]`.  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior for the specified registries.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.  > **Warning**: Nondistributable artifacts typically have restrictions > on how and where they can be distributed and shared. Only use this > feature to push artifacts to private registries and ensure that you > are in compliance with any terms that cover redistributing > nondistributable artifacts. 
     #[serde(rename = "AllowNondistributableArtifactsHostnames")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_nondistributable_artifacts_hostnames: Option<Vec<String>>,
 
-    /// List of IP ranges of insecure registries, using the CIDR syntax ([RFC 4632](https://tools.ietf.org/html/4632)). Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  By default, local registries (`127.0.0.0/8`) are configured as insecure. All other registries are secure. Communicating with an insecure registry is not possible if the daemon assumes that registry is secure.  This configuration override this behavior, insecure communication with registries whose resolved IP address is within the subnet described by the CIDR syntax.  Registries can also be marked insecure by hostname. Those registries are listed under `IndexConfigs` and have their `Secure` field set to `false`.  > **Warning**: Using this option can be useful when running a local > registry, but introduces security vulnerabilities. This option > should therefore ONLY be used for testing purposes. For increased > security, users should add their CA to their system's list of trusted > CAs instead of enabling this option.
+    /// List of IP ranges of insecure registries, using the CIDR syntax ([RFC 4632](https://tools.ietf.org/html/4632)). Insecure registries accept un-encrypted (HTTP) and/or untrusted (HTTPS with certificates from unknown CAs) communication.  By default, local registries (`127.0.0.0/8`) are configured as insecure. All other registries are secure. Communicating with an insecure registry is not possible if the daemon assumes that registry is secure.  This configuration override this behavior, insecure communication with registries whose resolved IP address is within the subnet described by the CIDR syntax.  Registries can also be marked insecure by hostname. Those registries are listed under `IndexConfigs` and have their `Secure` field set to `false`.  > **Warning**: Using this option can be useful when running a local > registry, but introduces security vulnerabilities. This option > should therefore ONLY be used for testing purposes. For increased > security, users should add their CA to their system's list of trusted > CAs instead of enabling this option. 
     #[serde(rename = "InsecureRegistryCIDRs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub insecure_registry_cidrs: Option<Vec<String>>,
@@ -4763,13 +4935,14 @@ pub struct RegistryServiceConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub index_configs: Option<HashMap<String, IndexInfo>>,
 
-    /// List of registry URLs that act as a mirror for the official (`docker.io`) registry.
+    /// List of registry URLs that act as a mirror for the official (`docker.io`) registry. 
     #[serde(rename = "Mirrors")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mirrors: Option<Vec<String>>,
+
 }
 
-/// An object describing the resources which can be advertised by a node and requested by a task.
+/// An object describing the resources which can be advertised by a node and requested by a task. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ResourceObject {
@@ -4784,13 +4957,14 @@ pub struct ResourceObject {
     #[serde(rename = "GenericResources")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generic_resources: Option<GenericResources>,
+
 }
 
 /// A container's resources (cgroups config, ulimits, etc)
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Resources {
-    /// An integer value representing this container's relative CPU weight versus other containers.
+    /// An integer value representing this container's relative CPU weight versus other containers. 
     #[serde(rename = "CpuShares")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_shares: Option<i64>,
@@ -4800,7 +4974,7 @@ pub struct Resources {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory: Option<i64>,
 
-    /// Path to `cgroups` under which the container's `cgroup` is created. If the path is not absolute, the path is considered to be relative to the `cgroups` path of the init process. Cgroups are created if they do not already exist.
+    /// Path to `cgroups` under which the container's `cgroup` is created. If the path is not absolute, the path is considered to be relative to the `cgroups` path of the init process. Cgroups are created if they do not already exist. 
     #[serde(rename = "CgroupParent")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroup_parent: Option<String>,
@@ -4810,27 +4984,27 @@ pub struct Resources {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_weight: Option<u16>,
 
-    /// Block IO weight (relative device weight) in the form:  ``` [{\"Path\": \"device_path\", \"Weight\": weight}] ```
+    /// Block IO weight (relative device weight) in the form:  ``` [{\"Path\": \"device_path\", \"Weight\": weight}] ``` 
     #[serde(rename = "BlkioWeightDevice")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_weight_device: Option<Vec<ResourcesBlkioWeightDevice>>,
 
-    /// Limit read rate (bytes per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit read rate (bytes per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceReadBps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_read_bps: Option<Vec<ThrottleDevice>>,
 
-    /// Limit write rate (bytes per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit write rate (bytes per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceWriteBps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_write_bps: Option<Vec<ThrottleDevice>>,
 
-    /// Limit read rate (IO per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit read rate (IO per second) from a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceReadIOps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_read_iops: Option<Vec<ThrottleDevice>>,
 
-    /// Limit write rate (IO per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ```
+    /// Limit write rate (IO per second) to a device, in the form:  ``` [{\"Path\": \"device_path\", \"Rate\": rate}] ``` 
     #[serde(rename = "BlkioDeviceWriteIOps")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blkio_device_write_iops: Option<Vec<ThrottleDevice>>,
@@ -4840,27 +5014,27 @@ pub struct Resources {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_period: Option<i64>,
 
-    /// Microseconds of CPU time that the container can get in a CPU period.
+    /// Microseconds of CPU time that the container can get in a CPU period. 
     #[serde(rename = "CpuQuota")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_quota: Option<i64>,
 
-    /// The length of a CPU real-time period in microseconds. Set to 0 to allocate no time allocated to real-time tasks.
+    /// The length of a CPU real-time period in microseconds. Set to 0 to allocate no time allocated to real-time tasks. 
     #[serde(rename = "CpuRealtimePeriod")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_realtime_period: Option<i64>,
 
-    /// The length of a CPU real-time runtime in microseconds. Set to 0 to allocate no time allocated to real-time tasks.
+    /// The length of a CPU real-time runtime in microseconds. Set to 0 to allocate no time allocated to real-time tasks. 
     #[serde(rename = "CpuRealtimeRuntime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_realtime_runtime: Option<i64>,
 
-    /// CPUs in which to allow execution (e.g., `0-3`, `0,1`).
+    /// CPUs in which to allow execution (e.g., `0-3`, `0,1`). 
     #[serde(rename = "CpusetCpus")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpuset_cpus: Option<String>,
 
-    /// Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems.
+    /// Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems. 
     #[serde(rename = "CpusetMems")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpuset_mems: Option<String>,
@@ -4875,12 +5049,12 @@ pub struct Resources {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_cgroup_rules: Option<Vec<String>>,
 
-    /// A list of requests for devices to be sent to device drivers.
+    /// A list of requests for devices to be sent to device drivers. 
     #[serde(rename = "DeviceRequests")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_requests: Option<Vec<DeviceRequest>>,
 
-    /// Hard limit for kernel TCP buffer memory (in bytes). Depending on the OCI runtime in use, this option may be ignored. It is no longer supported by the default (runc) runtime.  This field is omitted when empty.
+    /// Hard limit for kernel TCP buffer memory (in bytes). Depending on the OCI runtime in use, this option may be ignored. It is no longer supported by the default (runc) runtime.  This field is omitted when empty. 
     #[serde(rename = "KernelMemoryTCP")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kernel_memory_tcp: Option<i64>,
@@ -4890,12 +5064,12 @@ pub struct Resources {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_reservation: Option<i64>,
 
-    /// Total memory limit (memory + swap). Set as `-1` to enable unlimited swap.
+    /// Total memory limit (memory + swap). Set as `-1` to enable unlimited swap. 
     #[serde(rename = "MemorySwap")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_swap: Option<i64>,
 
-    /// Tune a container's memory swappiness behavior. Accepts an integer between 0 and 100.
+    /// Tune a container's memory swappiness behavior. Accepts an integer between 0 and 100. 
     #[serde(rename = "MemorySwappiness")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory_swappiness: Option<i64>,
@@ -4910,27 +5084,27 @@ pub struct Resources {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oom_kill_disable: Option<bool>,
 
-    /// Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used.
+    /// Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used. 
     #[serde(rename = "Init")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub init: Option<bool>,
 
-    /// Tune a container's PIDs limit. Set `0` or `-1` for unlimited, or `null` to not change.
+    /// Tune a container's PIDs limit. Set `0` or `-1` for unlimited, or `null` to not change. 
     #[serde(rename = "PidsLimit")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pids_limit: Option<i64>,
 
-    /// A list of resource limits to set in the container. For example:  ``` {\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048} ```
+    /// A list of resource limits to set in the container. For example:  ``` {\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048} ``` 
     #[serde(rename = "Ulimits")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ulimits: Option<Vec<ResourcesUlimits>>,
 
-    /// The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last.
+    /// The number of usable CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last. 
     #[serde(rename = "CpuCount")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_count: Option<i64>,
 
-    /// The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last.
+    /// The usable percentage of the available CPUs (Windows only).  On Windows Server containers, the processor resource controls are mutually exclusive. The order of precedence is `CPUCount` first, then `CPUShares`, and `CPUPercent` last. 
     #[serde(rename = "CpuPercent")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_percent: Option<i64>,
@@ -4940,10 +5114,11 @@ pub struct Resources {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub io_maximum_iops: Option<i64>,
 
-    /// Maximum IO in bytes per second for the container system drive (Windows only).
+    /// Maximum IO in bytes per second for the container system drive (Windows only). 
     #[serde(rename = "IOMaximumBandwidth")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub io_maximum_bandwidth: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4956,6 +5131,7 @@ pub struct ResourcesBlkioWeightDevice {
     #[serde(rename = "Weight")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weight: Option<usize>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -4975,27 +5151,29 @@ pub struct ResourcesUlimits {
     #[serde(rename = "Hard")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hard: Option<i64>,
+
 }
 
-/// The behavior to apply when the container exits. The default is not to restart.  An ever increasing delay (double the previous delay, starting at 100ms) is added before each restart to prevent flooding the server.
+/// The behavior to apply when the container exits. The default is not to restart.  An ever increasing delay (double the previous delay, starting at 100ms) is added before each restart to prevent flooding the server. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct RestartPolicy {
-    /// - Empty string means not to restart - `no` Do not automatically restart - `always` Always restart - `unless-stopped` Restart always except when the user has manually stopped the container - `on-failure` Restart only when the container exit code is non-zero
+    /// - Empty string means not to restart - `no` Do not automatically restart - `always` Always restart - `unless-stopped` Restart always except when the user has manually stopped the container - `on-failure` Restart only when the container exit code is non-zero 
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<RestartPolicyNameEnum>,
 
-    /// If `on-failure` is used, the number of times to retry before giving up.
+    /// If `on-failure` is used, the number of times to retry before giving up. 
     #[serde(rename = "MaximumRetryCount")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_retry_count: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum RestartPolicyNameEnum {
+pub enum RestartPolicyNameEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "no")]
@@ -5010,12 +5188,13 @@ pub enum RestartPolicyNameEnum {
 
 impl ::std::fmt::Display for RestartPolicyNameEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             RestartPolicyNameEnum::EMPTY => write!(f, "{}", ""),
             RestartPolicyNameEnum::NO => write!(f, "{}", "no"),
             RestartPolicyNameEnum::ALWAYS => write!(f, "{}", "always"),
             RestartPolicyNameEnum::UNLESS_STOPPED => write!(f, "{}", "unless-stopped"),
             RestartPolicyNameEnum::ON_FAILURE => write!(f, "{}", "on-failure"),
+
         }
     }
 }
@@ -5023,7 +5202,7 @@ impl ::std::fmt::Display for RestartPolicyNameEnum {
 impl ::std::str::FromStr for RestartPolicyNameEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(RestartPolicyNameEnum::EMPTY),
             "no" => Ok(RestartPolicyNameEnum::NO),
             "always" => Ok(RestartPolicyNameEnum::ALWAYS),
@@ -5036,7 +5215,7 @@ impl ::std::str::FromStr for RestartPolicyNameEnum {
 
 impl ::std::convert::AsRef<str> for RestartPolicyNameEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             RestartPolicyNameEnum::EMPTY => "",
             RestartPolicyNameEnum::NO => "no",
             RestartPolicyNameEnum::ALWAYS => "always",
@@ -5046,19 +5225,20 @@ impl ::std::convert::AsRef<str> for RestartPolicyNameEnum {
     }
 }
 
-/// Runtime describes an [OCI compliant](https://github.com/opencontainers/runtime-spec) runtime.  The runtime is invoked by the daemon via the `containerd` daemon. OCI runtimes act as an interface to the Linux kernel namespaces, cgroups, and SELinux.
+/// Runtime describes an [OCI compliant](https://github.com/opencontainers/runtime-spec) runtime.  The runtime is invoked by the daemon via the `containerd` daemon. OCI runtimes act as an interface to the Linux kernel namespaces, cgroups, and SELinux. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Runtime {
-    /// Name and, optional, path, of the OCI executable binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
+    /// Name and, optional, path, of the OCI executable binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result. 
     #[serde(rename = "path")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 
-    /// List of command-line arguments to pass to the runtime when invoked.
+    /// List of command-line arguments to pass to the runtime when invoked. 
     #[serde(rename = "runtimeArgs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub runtime_args: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5093,6 +5273,7 @@ pub struct Secret {
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<SecretSpec>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5108,20 +5289,21 @@ pub struct SecretSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<HashMap<String, String>>,
 
-    /// Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-5)) data to store as secret.  This field is only used to _create_ a secret, and is not returned by other endpoints.
+    /// Base64-url-safe-encoded ([RFC 4648](https://tools.ietf.org/html/rfc4648#section-5)) data to store as secret.  This field is only used to _create_ a secret, and is not returned by other endpoints. 
     #[serde(rename = "Data")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
 
-    /// Name of the secrets driver used to fetch the secret's value from an external secret store.
+    /// Name of the secrets driver used to fetch the secret's value from an external secret store. 
     #[serde(rename = "Driver")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver: Option<Driver>,
 
-    /// Templating driver, if applicable  Templating controls whether and how to evaluate the config payload as a template. If no driver is set, no templating is used.
+    /// Templating driver, if applicable  Templating controls whether and how to evaluate the config payload as a template. If no driver is set, no templating is used. 
     #[serde(rename = "Templating")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub templating: Option<Driver>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5172,6 +5354,7 @@ pub struct Service {
     #[serde(rename = "JobStatus")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub job_status: Option<ServiceJobStatus>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5186,6 +5369,7 @@ pub struct ServiceCreateResponse {
     #[serde(rename = "Warning")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warning: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5202,6 +5386,7 @@ pub struct ServiceEndpoint {
     #[serde(rename = "VirtualIPs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub virtual_ips: Option<Vec<ServiceEndpointVirtualIps>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5214,18 +5399,19 @@ pub struct ServiceEndpointVirtualIps {
     #[serde(rename = "Addr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub addr: Option<String>,
+
 }
 
-/// The status of the service when it is in one of ReplicatedJob or GlobalJob modes. Absent on Replicated and Global mode services. The JobIteration is an ObjectVersion, but unlike the Service's version, does not need to be sent with an update request.
+/// The status of the service when it is in one of ReplicatedJob or GlobalJob modes. Absent on Replicated and Global mode services. The JobIteration is an ObjectVersion, but unlike the Service's version, does not need to be sent with an update request. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceJobStatus {
-    /// JobIteration is a value increased each time a Job is executed, successfully or otherwise. \"Executed\", in this case, means the job as a whole has been started, not that an individual Task has been launched. A job is \"Executed\" when its ServiceSpec is updated. JobIteration can be used to disambiguate Tasks belonging to different executions of a job.  Though JobIteration will increase with each subsequent execution, it may not necessarily increase by 1, and so JobIteration should not be used to
+    /// JobIteration is a value increased each time a Job is executed, successfully or otherwise. \"Executed\", in this case, means the job as a whole has been started, not that an individual Task has been launched. A job is \"Executed\" when its ServiceSpec is updated. JobIteration can be used to disambiguate Tasks belonging to different executions of a job.  Though JobIteration will increase with each subsequent execution, it may not necessarily increase by 1, and so JobIteration should not be used to 
     #[serde(rename = "JobIteration")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub job_iteration: Option<ObjectVersion>,
 
-    /// The last time, as observed by the server, that this job was started.
+    /// The last time, as observed by the server, that this job was started. 
     #[serde(rename = "LastExecution")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -5234,26 +5420,28 @@ pub struct ServiceJobStatus {
         serialize_with = "serialize_timestamp"
     )]
     pub last_execution: Option<BollardDate>,
+
 }
 
-/// The status of the service's tasks. Provided only when requested as part of a ServiceList operation.
+/// The status of the service's tasks. Provided only when requested as part of a ServiceList operation. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceServiceStatus {
-    /// The number of tasks for the service currently in the Running state.
+    /// The number of tasks for the service currently in the Running state. 
     #[serde(rename = "RunningTasks")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub running_tasks: Option<u64>,
 
-    /// The number of tasks for the service desired to be running. For replicated services, this is the replica count from the service spec. For global services, this is computed by taking count of all tasks for the service with a Desired State other than Shutdown.
+    /// The number of tasks for the service desired to be running. For replicated services, this is the replica count from the service spec. For global services, this is computed by taking count of all tasks for the service with a Desired State other than Shutdown. 
     #[serde(rename = "DesiredTasks")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub desired_tasks: Option<u64>,
 
-    /// The number of tasks for a job that are in the Completed state. This field must be cross-referenced with the service type, as the value of 0 may mean the service is not in a job mode, or it may mean the job-mode service has no tasks yet Completed.
+    /// The number of tasks for a job that are in the Completed state. This field must be cross-referenced with the service type, as the value of 0 may mean the service is not in a job mode, or it may mean the job-mode service has no tasks yet Completed. 
     #[serde(rename = "CompletedTasks")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub completed_tasks: Option<u64>,
+
 }
 
 /// User modifiable configuration for a service.
@@ -5294,6 +5482,7 @@ pub struct ServiceSpec {
     #[serde(rename = "EndpointSpec")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub endpoint_spec: Option<EndpointSpec>,
+
 }
 
 /// Scheduling mode for the service.
@@ -5312,10 +5501,11 @@ pub struct ServiceSpecMode {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub replicated_job: Option<ServiceSpecModeReplicatedJob>,
 
-    /// The mode used for services which run a task to the completed state on each valid node.
+    /// The mode used for services which run a task to the completed state on each valid node. 
     #[serde(rename = "GlobalJob")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub global_job: Option<EmptyObject>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -5324,62 +5514,65 @@ pub struct ServiceSpecModeReplicated {
     #[serde(rename = "Replicas")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
+
 }
 
-/// The mode used for services with a finite number of tasks that run to a completed state.
+/// The mode used for services with a finite number of tasks that run to a completed state. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecModeReplicatedJob {
-    /// The maximum number of replicas to run simultaneously.
+    /// The maximum number of replicas to run simultaneously. 
     #[serde(rename = "MaxConcurrent")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_concurrent: Option<i64>,
 
-    /// The total number of replicas desired to reach the Completed state. If unset, will default to the value of `MaxConcurrent`
+    /// The total number of replicas desired to reach the Completed state. If unset, will default to the value of `MaxConcurrent` 
     #[serde(rename = "TotalCompletions")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_completions: Option<i64>,
+
 }
 
 /// Specification for the rollback strategy of the service.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecRollbackConfig {
-    /// Maximum number of tasks to be rolled back in one iteration (0 means unlimited parallelism).
+    /// Maximum number of tasks to be rolled back in one iteration (0 means unlimited parallelism). 
     #[serde(rename = "Parallelism")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parallelism: Option<i64>,
 
-    /// Amount of time between rollback iterations, in nanoseconds.
+    /// Amount of time between rollback iterations, in nanoseconds. 
     #[serde(rename = "Delay")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay: Option<i64>,
 
-    /// Action to take if an rolled back task fails to run, or stops running during the rollback.
+    /// Action to take if an rolled back task fails to run, or stops running during the rollback. 
     #[serde(rename = "FailureAction")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_action: Option<ServiceSpecRollbackConfigFailureActionEnum>,
 
-    /// Amount of time to monitor each rolled back task for failures, in nanoseconds.
+    /// Amount of time to monitor each rolled back task for failures, in nanoseconds. 
     #[serde(rename = "Monitor")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub monitor: Option<i64>,
 
-    /// The fraction of tasks that may fail during a rollback before the failure action is invoked, specified as a floating point number between 0 and 1.
+    /// The fraction of tasks that may fail during a rollback before the failure action is invoked, specified as a floating point number between 0 and 1. 
     #[serde(rename = "MaxFailureRatio")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_failure_ratio: Option<f64>,
 
-    /// The order of operations when rolling back a task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down.
+    /// The order of operations when rolling back a task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down. 
     #[serde(rename = "Order")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<ServiceSpecRollbackConfigOrderEnum>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ServiceSpecRollbackConfigFailureActionEnum {
+pub enum ServiceSpecRollbackConfigFailureActionEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "continue")]
@@ -5390,10 +5583,11 @@ pub enum ServiceSpecRollbackConfigFailureActionEnum {
 
 impl ::std::fmt::Display for ServiceSpecRollbackConfigFailureActionEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ServiceSpecRollbackConfigFailureActionEnum::EMPTY => write!(f, ""),
             ServiceSpecRollbackConfigFailureActionEnum::CONTINUE => write!(f, "{}", "continue"),
             ServiceSpecRollbackConfigFailureActionEnum::PAUSE => write!(f, "{}", "pause"),
+
         }
     }
 }
@@ -5401,7 +5595,7 @@ impl ::std::fmt::Display for ServiceSpecRollbackConfigFailureActionEnum {
 impl ::std::str::FromStr for ServiceSpecRollbackConfigFailureActionEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ServiceSpecRollbackConfigFailureActionEnum::EMPTY),
             "continue" => Ok(ServiceSpecRollbackConfigFailureActionEnum::CONTINUE),
             "pause" => Ok(ServiceSpecRollbackConfigFailureActionEnum::PAUSE),
@@ -5412,7 +5606,7 @@ impl ::std::str::FromStr for ServiceSpecRollbackConfigFailureActionEnum {
 
 impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigFailureActionEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ServiceSpecRollbackConfigFailureActionEnum::EMPTY => "",
             ServiceSpecRollbackConfigFailureActionEnum::CONTINUE => "continue",
             ServiceSpecRollbackConfigFailureActionEnum::PAUSE => "pause",
@@ -5423,7 +5617,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigFailureActionEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ServiceSpecRollbackConfigOrderEnum {
+pub enum ServiceSpecRollbackConfigOrderEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "stop-first")]
@@ -5434,10 +5628,11 @@ pub enum ServiceSpecRollbackConfigOrderEnum {
 
 impl ::std::fmt::Display for ServiceSpecRollbackConfigOrderEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ServiceSpecRollbackConfigOrderEnum::EMPTY => write!(f, ""),
             ServiceSpecRollbackConfigOrderEnum::STOP_FIRST => write!(f, "{}", "stop-first"),
             ServiceSpecRollbackConfigOrderEnum::START_FIRST => write!(f, "{}", "start-first"),
+
         }
     }
 }
@@ -5445,7 +5640,7 @@ impl ::std::fmt::Display for ServiceSpecRollbackConfigOrderEnum {
 impl ::std::str::FromStr for ServiceSpecRollbackConfigOrderEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ServiceSpecRollbackConfigOrderEnum::EMPTY),
             "stop-first" => Ok(ServiceSpecRollbackConfigOrderEnum::STOP_FIRST),
             "start-first" => Ok(ServiceSpecRollbackConfigOrderEnum::START_FIRST),
@@ -5456,7 +5651,7 @@ impl ::std::str::FromStr for ServiceSpecRollbackConfigOrderEnum {
 
 impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigOrderEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ServiceSpecRollbackConfigOrderEnum::EMPTY => "",
             ServiceSpecRollbackConfigOrderEnum::STOP_FIRST => "stop-first",
             ServiceSpecRollbackConfigOrderEnum::START_FIRST => "start-first",
@@ -5468,7 +5663,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigOrderEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecUpdateConfig {
-    /// Maximum number of tasks to be updated in one iteration (0 means unlimited parallelism).
+    /// Maximum number of tasks to be updated in one iteration (0 means unlimited parallelism). 
     #[serde(rename = "Parallelism")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parallelism: Option<i64>,
@@ -5478,31 +5673,32 @@ pub struct ServiceSpecUpdateConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay: Option<i64>,
 
-    /// Action to take if an updated task fails to run, or stops running during the update.
+    /// Action to take if an updated task fails to run, or stops running during the update. 
     #[serde(rename = "FailureAction")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_action: Option<ServiceSpecUpdateConfigFailureActionEnum>,
 
-    /// Amount of time to monitor each updated task for failures, in nanoseconds.
+    /// Amount of time to monitor each updated task for failures, in nanoseconds. 
     #[serde(rename = "Monitor")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub monitor: Option<i64>,
 
-    /// The fraction of tasks that may fail during an update before the failure action is invoked, specified as a floating point number between 0 and 1.
+    /// The fraction of tasks that may fail during an update before the failure action is invoked, specified as a floating point number between 0 and 1. 
     #[serde(rename = "MaxFailureRatio")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_failure_ratio: Option<f64>,
 
-    /// The order of operations when rolling out an updated task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down.
+    /// The order of operations when rolling out an updated task. Either the old task is shut down before the new task is started, or the new task is started before the old task is shut down. 
     #[serde(rename = "Order")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<ServiceSpecUpdateConfigOrderEnum>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ServiceSpecUpdateConfigFailureActionEnum {
+pub enum ServiceSpecUpdateConfigFailureActionEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "continue")]
@@ -5515,11 +5711,12 @@ pub enum ServiceSpecUpdateConfigFailureActionEnum {
 
 impl ::std::fmt::Display for ServiceSpecUpdateConfigFailureActionEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ServiceSpecUpdateConfigFailureActionEnum::EMPTY => write!(f, ""),
             ServiceSpecUpdateConfigFailureActionEnum::CONTINUE => write!(f, "{}", "continue"),
             ServiceSpecUpdateConfigFailureActionEnum::PAUSE => write!(f, "{}", "pause"),
             ServiceSpecUpdateConfigFailureActionEnum::ROLLBACK => write!(f, "{}", "rollback"),
+
         }
     }
 }
@@ -5527,7 +5724,7 @@ impl ::std::fmt::Display for ServiceSpecUpdateConfigFailureActionEnum {
 impl ::std::str::FromStr for ServiceSpecUpdateConfigFailureActionEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ServiceSpecUpdateConfigFailureActionEnum::EMPTY),
             "continue" => Ok(ServiceSpecUpdateConfigFailureActionEnum::CONTINUE),
             "pause" => Ok(ServiceSpecUpdateConfigFailureActionEnum::PAUSE),
@@ -5539,7 +5736,7 @@ impl ::std::str::FromStr for ServiceSpecUpdateConfigFailureActionEnum {
 
 impl ::std::convert::AsRef<str> for ServiceSpecUpdateConfigFailureActionEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ServiceSpecUpdateConfigFailureActionEnum::EMPTY => "",
             ServiceSpecUpdateConfigFailureActionEnum::CONTINUE => "continue",
             ServiceSpecUpdateConfigFailureActionEnum::PAUSE => "pause",
@@ -5551,7 +5748,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecUpdateConfigFailureActionEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ServiceSpecUpdateConfigOrderEnum {
+pub enum ServiceSpecUpdateConfigOrderEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "stop-first")]
@@ -5562,10 +5759,11 @@ pub enum ServiceSpecUpdateConfigOrderEnum {
 
 impl ::std::fmt::Display for ServiceSpecUpdateConfigOrderEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ServiceSpecUpdateConfigOrderEnum::EMPTY => write!(f, ""),
             ServiceSpecUpdateConfigOrderEnum::STOP_FIRST => write!(f, "{}", "stop-first"),
             ServiceSpecUpdateConfigOrderEnum::START_FIRST => write!(f, "{}", "start-first"),
+
         }
     }
 }
@@ -5573,7 +5771,7 @@ impl ::std::fmt::Display for ServiceSpecUpdateConfigOrderEnum {
 impl ::std::str::FromStr for ServiceSpecUpdateConfigOrderEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ServiceSpecUpdateConfigOrderEnum::EMPTY),
             "stop-first" => Ok(ServiceSpecUpdateConfigOrderEnum::STOP_FIRST),
             "start-first" => Ok(ServiceSpecUpdateConfigOrderEnum::START_FIRST),
@@ -5584,7 +5782,7 @@ impl ::std::str::FromStr for ServiceSpecUpdateConfigOrderEnum {
 
 impl ::std::convert::AsRef<str> for ServiceSpecUpdateConfigOrderEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ServiceSpecUpdateConfigOrderEnum::EMPTY => "",
             ServiceSpecUpdateConfigOrderEnum::STOP_FIRST => "stop-first",
             ServiceSpecUpdateConfigOrderEnum::START_FIRST => "start-first",
@@ -5599,6 +5797,7 @@ pub struct ServiceUpdateResponse {
     #[serde(rename = "Warnings")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warnings: Option<Vec<String>>,
+
 }
 
 /// The status of a service update.
@@ -5630,12 +5829,13 @@ pub struct ServiceUpdateStatus {
     #[serde(rename = "Message")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ServiceUpdateStatusStateEnum {
+pub enum ServiceUpdateStatusStateEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "updating")]
@@ -5654,16 +5854,15 @@ pub enum ServiceUpdateStatusStateEnum {
 
 impl ::std::fmt::Display for ServiceUpdateStatusStateEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             ServiceUpdateStatusStateEnum::EMPTY => write!(f, ""),
             ServiceUpdateStatusStateEnum::UPDATING => write!(f, "{}", "updating"),
             ServiceUpdateStatusStateEnum::PAUSED => write!(f, "{}", "paused"),
             ServiceUpdateStatusStateEnum::COMPLETED => write!(f, "{}", "completed"),
             ServiceUpdateStatusStateEnum::ROLLBACK_STARTED => write!(f, "{}", "rollback_started"),
             ServiceUpdateStatusStateEnum::ROLLBACK_PAUSED => write!(f, "{}", "rollback_paused"),
-            ServiceUpdateStatusStateEnum::ROLLBACK_COMPLETED => {
-                write!(f, "{}", "rollback_completed")
-            }
+            ServiceUpdateStatusStateEnum::ROLLBACK_COMPLETED => write!(f, "{}", "rollback_completed"),
+
         }
     }
 }
@@ -5671,7 +5870,7 @@ impl ::std::fmt::Display for ServiceUpdateStatusStateEnum {
 impl ::std::str::FromStr for ServiceUpdateStatusStateEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(ServiceUpdateStatusStateEnum::EMPTY),
             "updating" => Ok(ServiceUpdateStatusStateEnum::UPDATING),
             "paused" => Ok(ServiceUpdateStatusStateEnum::PAUSED),
@@ -5686,7 +5885,7 @@ impl ::std::str::FromStr for ServiceUpdateStatusStateEnum {
 
 impl ::std::convert::AsRef<str> for ServiceUpdateStatusStateEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             ServiceUpdateStatusStateEnum::EMPTY => "",
             ServiceUpdateStatusStateEnum::UPDATING => "updating",
             ServiceUpdateStatusStateEnum::PAUSED => "paused",
@@ -5710,7 +5909,7 @@ pub struct Swarm {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<ObjectVersion>,
 
-    /// Date and time at which the swarm was initialised in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the swarm was initialised in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "CreatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -5720,7 +5919,7 @@ pub struct Swarm {
     )]
     pub created_at: Option<BollardDate>,
 
-    /// Date and time at which the swarm was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Date and time at which the swarm was last updated in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "UpdatedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(
@@ -5738,22 +5937,22 @@ pub struct Swarm {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tls_info: Option<TlsInfo>,
 
-    /// Whether there is currently a root CA rotation in progress for the swarm
+    /// Whether there is currently a root CA rotation in progress for the swarm 
     #[serde(rename = "RootRotationInProgress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub root_rotation_in_progress: Option<bool>,
 
-    /// DataPathPort specifies the data path port number for data traffic. Acceptable port range is 1024 to 49151. If no port is set or is set to 0, the default port (4789) is used.
+    /// DataPathPort specifies the data path port number for data traffic. Acceptable port range is 1024 to 49151. If no port is set or is set to 0, the default port (4789) is used. 
     #[serde(rename = "DataPathPort")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_path_port: Option<u32>,
 
-    /// Default Address Pool specifies default subnet pools for global scope networks.
+    /// Default Address Pool specifies default subnet pools for global scope networks. 
     #[serde(rename = "DefaultAddrPool")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_addr_pool: Option<Vec<String>>,
 
-    /// SubnetSize specifies the subnet size of the networks created from the default subnet pool.
+    /// SubnetSize specifies the subnet size of the networks created from the default subnet pool. 
     #[serde(rename = "SubnetSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subnet_size: Option<u32>,
@@ -5761,9 +5960,10 @@ pub struct Swarm {
     #[serde(rename = "JoinTokens")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub join_tokens: Option<JoinTokens>,
+
 }
 
-/// Represents generic information about swarm.
+/// Represents generic information about swarm. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmInfo {
@@ -5772,7 +5972,7 @@ pub struct SwarmInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_id: Option<String>,
 
-    /// IP address at which this node can be reached by other nodes in the swarm.
+    /// IP address at which this node can be reached by other nodes in the swarm. 
     #[serde(rename = "NodeAddr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_addr: Option<String>,
@@ -5789,7 +5989,7 @@ pub struct SwarmInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 
-    /// List of ID's and addresses of other managers in the swarm.
+    /// List of ID's and addresses of other managers in the swarm. 
     #[serde(rename = "RemoteManagers")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_managers: Option<Vec<PeerNode>>,
@@ -5807,32 +6007,33 @@ pub struct SwarmInfo {
     #[serde(rename = "Cluster")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cluster: Option<ClusterInfo>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmInitRequest {
-    /// Listen address used for inter-manager communication, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP). This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the default swarm listening port is used.
+    /// Listen address used for inter-manager communication, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP). This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the default swarm listening port is used. 
     #[serde(rename = "ListenAddr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub listen_addr: Option<String>,
 
-    /// Externally reachable address advertised to other nodes. This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the port number from the listen address is used. If `AdvertiseAddr` is not specified, it will be automatically detected when possible.
+    /// Externally reachable address advertised to other nodes. This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the port number from the listen address is used. If `AdvertiseAddr` is not specified, it will be automatically detected when possible. 
     #[serde(rename = "AdvertiseAddr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub advertise_addr: Option<String>,
 
-    /// Address or interface to use for data path traffic (format: `<ip|interface>`), for example,  `192.168.1.1`, or an interface, like `eth0`. If `DataPathAddr` is unspecified, the same address as `AdvertiseAddr` is used.  The `DataPathAddr` specifies the address that global scope network drivers will publish towards other  nodes in order to reach the containers running on this node. Using this parameter it is possible to separate the container data traffic from the management traffic of the cluster.
+    /// Address or interface to use for data path traffic (format: `<ip|interface>`), for example,  `192.168.1.1`, or an interface, like `eth0`. If `DataPathAddr` is unspecified, the same address as `AdvertiseAddr` is used.  The `DataPathAddr` specifies the address that global scope network drivers will publish towards other  nodes in order to reach the containers running on this node. Using this parameter it is possible to separate the container data traffic from the management traffic of the cluster. 
     #[serde(rename = "DataPathAddr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_path_addr: Option<String>,
 
-    /// DataPathPort specifies the data path port number for data traffic. Acceptable port range is 1024 to 49151. if no port is set or is set to 0, default port 4789 will be used.
+    /// DataPathPort specifies the data path port number for data traffic. Acceptable port range is 1024 to 49151. if no port is set or is set to 0, default port 4789 will be used. 
     #[serde(rename = "DataPathPort")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_path_port: Option<u32>,
 
-    /// Default Address Pool specifies default subnet pools for global scope networks.
+    /// Default Address Pool specifies default subnet pools for global scope networks. 
     #[serde(rename = "DefaultAddrPool")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_addr_pool: Option<Vec<String>>,
@@ -5842,7 +6043,7 @@ pub struct SwarmInitRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub force_new_cluster: Option<bool>,
 
-    /// SubnetSize specifies the subnet size of the networks created from the default subnet pool.
+    /// SubnetSize specifies the subnet size of the networks created from the default subnet pool. 
     #[serde(rename = "SubnetSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subnet_size: Option<u32>,
@@ -5850,27 +6051,28 @@ pub struct SwarmInitRequest {
     #[serde(rename = "Spec")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spec: Option<SwarmSpec>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmJoinRequest {
-    /// Listen address used for inter-manager communication if the node gets promoted to manager, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP).
+    /// Listen address used for inter-manager communication if the node gets promoted to manager, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP). 
     #[serde(rename = "ListenAddr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub listen_addr: Option<String>,
 
-    /// Externally reachable address advertised to other nodes. This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the port number from the listen address is used. If `AdvertiseAddr` is not specified, it will be automatically detected when possible.
+    /// Externally reachable address advertised to other nodes. This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the port number from the listen address is used. If `AdvertiseAddr` is not specified, it will be automatically detected when possible. 
     #[serde(rename = "AdvertiseAddr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub advertise_addr: Option<String>,
 
-    /// Address or interface to use for data path traffic (format: `<ip|interface>`), for example,  `192.168.1.1`, or an interface, like `eth0`. If `DataPathAddr` is unspecified, the same address as `AdvertiseAddr` is used.  The `DataPathAddr` specifies the address that global scope network drivers will publish towards other nodes in order to reach the containers running on this node. Using this parameter it is possible to separate the container data traffic from the management traffic of the cluster.
+    /// Address or interface to use for data path traffic (format: `<ip|interface>`), for example,  `192.168.1.1`, or an interface, like `eth0`. If `DataPathAddr` is unspecified, the same address as `AdvertiseAddr` is used.  The `DataPathAddr` specifies the address that global scope network drivers will publish towards other nodes in order to reach the containers running on this node. Using this parameter it is possible to separate the container data traffic from the management traffic of the cluster. 
     #[serde(rename = "DataPathAddr")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data_path_addr: Option<String>,
 
-    /// Addresses of manager nodes already participating in the swarm.
+    /// Addresses of manager nodes already participating in the swarm. 
     #[serde(rename = "RemoteAddrs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_addrs: Option<Vec<String>>,
@@ -5879,6 +6081,7 @@ pub struct SwarmJoinRequest {
     #[serde(rename = "JoinToken")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub join_token: Option<String>,
+
 }
 
 /// User modifiable swarm configuration.
@@ -5918,6 +6121,7 @@ pub struct SwarmSpec {
     #[serde(rename = "TaskDefaults")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub task_defaults: Option<SwarmSpecTaskDefaults>,
+
 }
 
 /// CA configuration.
@@ -5929,55 +6133,57 @@ pub struct SwarmSpecCaConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_cert_expiry: Option<i64>,
 
-    /// Configuration for forwarding signing requests to an external certificate authority.
+    /// Configuration for forwarding signing requests to an external certificate authority. 
     #[serde(rename = "ExternalCAs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_cas: Option<Vec<SwarmSpecCaConfigExternalCas>>,
 
-    /// The desired signing CA certificate for all swarm node TLS leaf certificates, in PEM format.
+    /// The desired signing CA certificate for all swarm node TLS leaf certificates, in PEM format. 
     #[serde(rename = "SigningCACert")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signing_ca_cert: Option<String>,
 
-    /// The desired signing CA key for all swarm node TLS leaf certificates, in PEM format.
+    /// The desired signing CA key for all swarm node TLS leaf certificates, in PEM format. 
     #[serde(rename = "SigningCAKey")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signing_ca_key: Option<String>,
 
-    /// An integer whose purpose is to force swarm to generate a new signing CA certificate and key, if none have been specified in `SigningCACert` and `SigningCAKey`
+    /// An integer whose purpose is to force swarm to generate a new signing CA certificate and key, if none have been specified in `SigningCACert` and `SigningCAKey` 
     #[serde(rename = "ForceRotate")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub force_rotate: Option<u64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecCaConfigExternalCas {
-    /// Protocol for communication with the external CA (currently only `cfssl` is supported).
+    /// Protocol for communication with the external CA (currently only `cfssl` is supported). 
     #[serde(rename = "Protocol")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub protocol: Option<SwarmSpecCaConfigExternalCasProtocolEnum>,
 
-    /// URL where certificate signing requests should be sent.
+    /// URL where certificate signing requests should be sent. 
     #[serde(rename = "URL")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 
-    /// An object with key/value pairs that are interpreted as protocol-specific options for the external CA driver.
+    /// An object with key/value pairs that are interpreted as protocol-specific options for the external CA driver. 
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<HashMap<String, String>>,
 
-    /// The root CA certificate (in PEM format) this external CA uses to issue TLS certificates (assumed to be to the current swarm root CA certificate if not provided).
+    /// The root CA certificate (in PEM format) this external CA uses to issue TLS certificates (assumed to be to the current swarm root CA certificate if not provided). 
     #[serde(rename = "CACert")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ca_cert: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum SwarmSpecCaConfigExternalCasProtocolEnum {
+pub enum SwarmSpecCaConfigExternalCasProtocolEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "cfssl")]
@@ -5986,9 +6192,10 @@ pub enum SwarmSpecCaConfigExternalCasProtocolEnum {
 
 impl ::std::fmt::Display for SwarmSpecCaConfigExternalCasProtocolEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             SwarmSpecCaConfigExternalCasProtocolEnum::EMPTY => write!(f, ""),
             SwarmSpecCaConfigExternalCasProtocolEnum::CFSSL => write!(f, "{}", "cfssl"),
+
         }
     }
 }
@@ -5996,7 +6203,7 @@ impl ::std::fmt::Display for SwarmSpecCaConfigExternalCasProtocolEnum {
 impl ::std::str::FromStr for SwarmSpecCaConfigExternalCasProtocolEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(SwarmSpecCaConfigExternalCasProtocolEnum::EMPTY),
             "cfssl" => Ok(SwarmSpecCaConfigExternalCasProtocolEnum::CFSSL),
             x => Err(format!("Invalid enum type: {}", x)),
@@ -6006,7 +6213,7 @@ impl ::std::str::FromStr for SwarmSpecCaConfigExternalCasProtocolEnum {
 
 impl ::std::convert::AsRef<str> for SwarmSpecCaConfigExternalCasProtocolEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             SwarmSpecCaConfigExternalCasProtocolEnum::EMPTY => "",
             SwarmSpecCaConfigExternalCasProtocolEnum::CFSSL => "cfssl",
         }
@@ -6017,30 +6224,33 @@ impl ::std::convert::AsRef<str> for SwarmSpecCaConfigExternalCasProtocolEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecDispatcher {
-    /// The delay for an agent to send a heartbeat to the dispatcher.
+    /// The delay for an agent to send a heartbeat to the dispatcher. 
     #[serde(rename = "HeartbeatPeriod")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub heartbeat_period: Option<i64>,
+
 }
 
 /// Parameters related to encryption-at-rest.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecEncryptionConfig {
-    /// If set, generate a key and use it to lock data stored on the managers.
+    /// If set, generate a key and use it to lock data stored on the managers. 
     #[serde(rename = "AutoLockManagers")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_lock_managers: Option<bool>,
+
 }
 
 /// Orchestration configuration.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecOrchestration {
-    /// The number of historic tasks to keep per instance or node. If negative, never remove completed or failed tasks.
+    /// The number of historic tasks to keep per instance or node. If negative, never remove completed or failed tasks. 
     #[serde(rename = "TaskHistoryRetentionLimit")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub task_history_retention_limit: Option<i64>,
+
 }
 
 /// Raft configuration.
@@ -6052,25 +6262,26 @@ pub struct SwarmSpecRaft {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot_interval: Option<u64>,
 
-    /// The number of snapshots to keep beyond the current snapshot.
+    /// The number of snapshots to keep beyond the current snapshot. 
     #[serde(rename = "KeepOldSnapshots")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub keep_old_snapshots: Option<u64>,
 
-    /// The number of log entries to keep around to sync up slow followers after a snapshot is created.
+    /// The number of log entries to keep around to sync up slow followers after a snapshot is created. 
     #[serde(rename = "LogEntriesForSlowFollowers")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub log_entries_for_slow_followers: Option<u64>,
 
-    /// The number of ticks that a follower will wait for a message from the leader before becoming a candidate and starting an election. `ElectionTick` must be greater than `HeartbeatTick`.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed.
+    /// The number of ticks that a follower will wait for a message from the leader before becoming a candidate and starting an election. `ElectionTick` must be greater than `HeartbeatTick`.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed. 
     #[serde(rename = "ElectionTick")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub election_tick: Option<i64>,
 
-    /// The number of ticks between heartbeats. Every HeartbeatTick ticks, the leader will send a heartbeat to the followers.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed.
+    /// The number of ticks between heartbeats. Every HeartbeatTick ticks, the leader will send a heartbeat to the followers.  A tick currently defaults to one second, so these translate directly to seconds currently, but this is NOT guaranteed. 
     #[serde(rename = "HeartbeatTick")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub heartbeat_tick: Option<i64>,
+
 }
 
 /// Defaults for creating tasks in this cluster.
@@ -6080,21 +6291,23 @@ pub struct SwarmSpecTaskDefaults {
     #[serde(rename = "LogDriver")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub log_driver: Option<SwarmSpecTaskDefaultsLogDriver>,
+
 }
 
-/// The log driver to use for tasks created in the orchestrator if unspecified by a service.  Updating this value only affects new tasks. Existing tasks continue to use their previously configured log driver until recreated.
+/// The log driver to use for tasks created in the orchestrator if unspecified by a service.  Updating this value only affects new tasks. Existing tasks continue to use their previously configured log driver until recreated. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecTaskDefaultsLogDriver {
-    /// The log driver to use as a default for new tasks.
+    /// The log driver to use as a default for new tasks. 
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
-    /// Driver-specific options for the selectd log driver, specified as key/value pairs.
+    /// Driver-specific options for the selectd log driver, specified as key/value pairs. 
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<HashMap<String, String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6104,6 +6317,7 @@ pub struct SwarmUnlockRequest {
     #[serde(rename = "UnlockKey")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unlock_key: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6117,6 +6331,7 @@ pub struct SystemAuthResponse {
     #[serde(rename = "IdentityToken")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub identity_token: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6141,12 +6356,13 @@ pub struct SystemDataUsageResponse {
     #[serde(rename = "BuildCache")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub build_cache: Option<Vec<BuildCache>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemInfo {
-    /// Unique identifier of the daemon.  <p><br /></p>  > **Note**: The format of the ID itself is not part of the API, and > should not be considered stable.
+    /// Unique identifier of the daemon.  <p><br /></p>  > **Note**: The format of the ID itself is not part of the API, and > should not be considered stable. 
     #[serde(rename = "ID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -6156,22 +6372,22 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub containers: Option<i64>,
 
-    /// Number of containers with status `\"running\"`.
+    /// Number of containers with status `\"running\"`. 
     #[serde(rename = "ContainersRunning")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub containers_running: Option<i64>,
 
-    /// Number of containers with status `\"paused\"`.
+    /// Number of containers with status `\"paused\"`. 
     #[serde(rename = "ContainersPaused")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub containers_paused: Option<i64>,
 
-    /// Number of containers with status `\"stopped\"`.
+    /// Number of containers with status `\"stopped\"`. 
     #[serde(rename = "ContainersStopped")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub containers_stopped: Option<i64>,
 
-    /// Total number of images on the host.  Both _tagged_ and _untagged_ (dangling) images are counted.
+    /// Total number of images on the host.  Both _tagged_ and _untagged_ (dangling) images are counted. 
     #[serde(rename = "Images")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<i64>,
@@ -6181,12 +6397,12 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver: Option<String>,
 
-    /// Information specific to the storage driver, provided as \"label\" / \"value\" pairs.  This information is provided by the storage driver, and formatted in a way consistent with the output of `docker info` on the command line.  <p><br /></p>  > **Note**: The information returned in this field, including the > formatting of values and labels, should not be considered stable, > and may change without notice.
+    /// Information specific to the storage driver, provided as \"label\" / \"value\" pairs.  This information is provided by the storage driver, and formatted in a way consistent with the output of `docker info` on the command line.  <p><br /></p>  > **Note**: The information returned in this field, including the > formatting of values and labels, should not be considered stable, > and may change without notice. 
     #[serde(rename = "DriverStatus")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver_status: Option<Vec<Vec<String>>>,
 
-    /// Root directory of persistent Docker state.  Defaults to `/var/lib/docker` on Linux, and `C:\\ProgramData\\docker` on Windows.
+    /// Root directory of persistent Docker state.  Defaults to `/var/lib/docker` on Linux, and `C:\\ProgramData\\docker` on Windows. 
     #[serde(rename = "DockerRootDir")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub docker_root_dir: Option<String>,
@@ -6205,27 +6421,27 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub swap_limit: Option<bool>,
 
-    /// Indicates if the host has kernel memory TCP limit support enabled. This field is omitted if not supported.  Kernel memory TCP limits are not supported when using cgroups v2, which does not support the corresponding `memory.kmem.tcp.limit_in_bytes` cgroup.
+    /// Indicates if the host has kernel memory TCP limit support enabled. This field is omitted if not supported.  Kernel memory TCP limits are not supported when using cgroups v2, which does not support the corresponding `memory.kmem.tcp.limit_in_bytes` cgroup. 
     #[serde(rename = "KernelMemoryTCP")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kernel_memory_tcp: Option<bool>,
 
-    /// Indicates if CPU CFS(Completely Fair Scheduler) period is supported by the host.
+    /// Indicates if CPU CFS(Completely Fair Scheduler) period is supported by the host. 
     #[serde(rename = "CpuCfsPeriod")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_cfs_period: Option<bool>,
 
-    /// Indicates if CPU CFS(Completely Fair Scheduler) quota is supported by the host.
+    /// Indicates if CPU CFS(Completely Fair Scheduler) quota is supported by the host. 
     #[serde(rename = "CpuCfsQuota")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_cfs_quota: Option<bool>,
 
-    /// Indicates if CPU Shares limiting is supported by the host.
+    /// Indicates if CPU Shares limiting is supported by the host. 
     #[serde(rename = "CPUShares")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_shares: Option<bool>,
 
-    /// Indicates if CPUsets (cpuset.cpus, cpuset.mems) are supported by the host.  See [cpuset(7)](https://www.kernel.org/doc/Documentation/cgroup-v1/cpusets.txt)
+    /// Indicates if CPUsets (cpuset.cpus, cpuset.mems) are supported by the host.  See [cpuset(7)](https://www.kernel.org/doc/Documentation/cgroup-v1/cpusets.txt) 
     #[serde(rename = "CPUSet")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cpu_set: Option<bool>,
@@ -6255,37 +6471,37 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bridge_nf_ip6tables: Option<bool>,
 
-    /// Indicates if the daemon is running in debug-mode / with debug-level logging enabled.
+    /// Indicates if the daemon is running in debug-mode / with debug-level logging enabled. 
     #[serde(rename = "Debug")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
 
-    /// The total number of file Descriptors in use by the daemon process.  This information is only returned if debug-mode is enabled.
+    /// The total number of file Descriptors in use by the daemon process.  This information is only returned if debug-mode is enabled. 
     #[serde(rename = "NFd")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nfd: Option<i64>,
 
-    /// The  number of goroutines that currently exist.  This information is only returned if debug-mode is enabled.
+    /// The  number of goroutines that currently exist.  This information is only returned if debug-mode is enabled. 
     #[serde(rename = "NGoroutines")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub n_goroutines: Option<i64>,
 
-    /// Current system-time in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.
+    /// Current system-time in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
     #[serde(rename = "SystemTime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub system_time: Option<String>,
 
-    /// The logging driver to use as a default for new containers.
+    /// The logging driver to use as a default for new containers. 
     #[serde(rename = "LoggingDriver")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub logging_driver: Option<String>,
 
-    /// The driver to use for managing cgroups.
+    /// The driver to use for managing cgroups. 
     #[serde(rename = "CgroupDriver")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroup_driver: Option<SystemInfoCgroupDriverEnum>,
 
-    /// The version of the cgroup.
+    /// The version of the cgroup. 
     #[serde(rename = "CgroupVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroup_version: Option<SystemInfoCgroupVersionEnum>,
@@ -6295,42 +6511,42 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub n_events_listener: Option<i64>,
 
-    /// Kernel version of the host.  On Linux, this information obtained from `uname`. On Windows this information is queried from the <kbd>HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\</kbd> registry value, for example _\"10.0 14393 (14393.1198.amd64fre.rs1_release_sec.170427-1353)\"_.
+    /// Kernel version of the host.  On Linux, this information obtained from `uname`. On Windows this information is queried from the <kbd>HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\</kbd> registry value, for example _\"10.0 14393 (14393.1198.amd64fre.rs1_release_sec.170427-1353)\"_. 
     #[serde(rename = "KernelVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kernel_version: Option<String>,
 
-    /// Name of the host's operating system, for example: \"Ubuntu 16.04.2 LTS\" or \"Windows Server 2016 Datacenter\"
+    /// Name of the host's operating system, for example: \"Ubuntu 16.04.2 LTS\" or \"Windows Server 2016 Datacenter\" 
     #[serde(rename = "OperatingSystem")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub operating_system: Option<String>,
 
-    /// Version of the host's operating system  <p><br /></p>  > **Note**: The information returned in this field, including its > very existence, and the formatting of values, should not be considered > stable, and may change without notice.
+    /// Version of the host's operating system  <p><br /></p>  > **Note**: The information returned in this field, including its > very existence, and the formatting of values, should not be considered > stable, and may change without notice. 
     #[serde(rename = "OSVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os_version: Option<String>,
 
-    /// Generic type of the operating system of the host, as returned by the Go runtime (`GOOS`).  Currently returned values are \"linux\" and \"windows\". A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
+    /// Generic type of the operating system of the host, as returned by the Go runtime (`GOOS`).  Currently returned values are \"linux\" and \"windows\". A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment). 
     #[serde(rename = "OSType")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os_type: Option<String>,
 
-    /// Hardware architecture of the host, as returned by the Go runtime (`GOARCH`).  A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
+    /// Hardware architecture of the host, as returned by the Go runtime (`GOARCH`).  A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment). 
     #[serde(rename = "Architecture")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub architecture: Option<String>,
 
-    /// The number of logical CPUs usable by the daemon.  The number of available CPUs is checked by querying the operating system when the daemon starts. Changes to operating system CPU allocation after the daemon is started are not reflected.
+    /// The number of logical CPUs usable by the daemon.  The number of available CPUs is checked by querying the operating system when the daemon starts. Changes to operating system CPU allocation after the daemon is started are not reflected. 
     #[serde(rename = "NCPU")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ncpu: Option<i64>,
 
-    /// Total amount of physical memory available on the host, in bytes.
+    /// Total amount of physical memory available on the host, in bytes. 
     #[serde(rename = "MemTotal")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mem_total: Option<i64>,
 
-    /// Address / URL of the index server that is used for image search, and as a default for user authentication for Docker Hub and Docker Cloud.
+    /// Address / URL of the index server that is used for image search, and as a default for user authentication for Docker Hub and Docker Cloud. 
     #[serde(rename = "IndexServerAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub index_server_address: Option<String>,
@@ -6343,17 +6559,17 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generic_resources: Option<GenericResources>,
 
-    /// HTTP-proxy configured for the daemon. This value is obtained from the [`HTTP_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
+    /// HTTP-proxy configured for the daemon. This value is obtained from the [`HTTP_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration. 
     #[serde(rename = "HttpProxy")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub http_proxy: Option<String>,
 
-    /// HTTPS-proxy configured for the daemon. This value is obtained from the [`HTTPS_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration.
+    /// HTTPS-proxy configured for the daemon. This value is obtained from the [`HTTPS_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable. Credentials ([user info component](https://tools.ietf.org/html/rfc3986#section-3.2.1)) in the proxy URL are masked in the API response.  Containers do not automatically inherit this configuration. 
     #[serde(rename = "HttpsProxy")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub https_proxy: Option<String>,
 
-    /// Comma-separated list of domain extensions for which no proxy should be used. This value is obtained from the [`NO_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable.  Containers do not automatically inherit this configuration.
+    /// Comma-separated list of domain extensions for which no proxy should be used. This value is obtained from the [`NO_PROXY`](https://www.gnu.org/software/wget/manual/html_node/Proxies.html) environment variable.  Containers do not automatically inherit this configuration. 
     #[serde(rename = "NoProxy")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub no_proxy: Option<String>,
@@ -6363,37 +6579,37 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
-    /// User-defined labels (key/value metadata) as set on the daemon.  <p><br /></p>  > **Note**: When part of a Swarm, nodes can both have _daemon_ labels, > set through the daemon configuration, and _node_ labels, set from a > manager node in the Swarm. Node labels are not included in this > field. Node labels can be retrieved using the `/nodes/(id)` endpoint > on a manager node in the Swarm.
+    /// User-defined labels (key/value metadata) as set on the daemon.  <p><br /></p>  > **Note**: When part of a Swarm, nodes can both have _daemon_ labels, > set through the daemon configuration, and _node_ labels, set from a > manager node in the Swarm. Node labels are not included in this > field. Node labels can be retrieved using the `/nodes/(id)` endpoint > on a manager node in the Swarm. 
     #[serde(rename = "Labels")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<String>>,
 
-    /// Indicates if experimental features are enabled on the daemon.
+    /// Indicates if experimental features are enabled on the daemon. 
     #[serde(rename = "ExperimentalBuild")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub experimental_build: Option<bool>,
 
-    /// Version string of the daemon.  > **Note**: the [standalone Swarm API](https://docs.docker.com/swarm/swarm-api/) > returns the Swarm version instead of the daemon  version, for example > `swarm/1.2.8`.
+    /// Version string of the daemon.  > **Note**: the [standalone Swarm API](https://docs.docker.com/swarm/swarm-api/) > returns the Swarm version instead of the daemon  version, for example > `swarm/1.2.8`. 
     #[serde(rename = "ServerVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub server_version: Option<String>,
 
-    /// URL of the distributed storage backend.   The storage backend is used for multihost networking (to store network and endpoint information) and by the node discovery mechanism.  <p><br /></p>  > **Deprecated**: This field is only propagated when using standalone Swarm > mode, and overlay networking using an external k/v store. Overlay > networks with Swarm mode enabled use the built-in raft store, and > this field will be empty.
+    /// URL of the distributed storage backend.   The storage backend is used for multihost networking (to store network and endpoint information) and by the node discovery mechanism.  <p><br /></p>  > **Deprecated**: This field is only propagated when using standalone Swarm > mode, and overlay networking using an external k/v store. Overlay > networks with Swarm mode enabled use the built-in raft store, and > this field will be empty. 
     #[serde(rename = "ClusterStore")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cluster_store: Option<String>,
 
-    /// The network endpoint that the Engine advertises for the purpose of node discovery. ClusterAdvertise is a `host:port` combination on which the daemon is reachable by other hosts.  <p><br /></p>  > **Deprecated**: This field is only propagated when using standalone Swarm > mode, and overlay networking using an external k/v store. Overlay > networks with Swarm mode enabled use the built-in raft store, and > this field will be empty.
+    /// The network endpoint that the Engine advertises for the purpose of node discovery. ClusterAdvertise is a `host:port` combination on which the daemon is reachable by other hosts.  <p><br /></p>  > **Deprecated**: This field is only propagated when using standalone Swarm > mode, and overlay networking using an external k/v store. Overlay > networks with Swarm mode enabled use the built-in raft store, and > this field will be empty. 
     #[serde(rename = "ClusterAdvertise")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cluster_advertise: Option<String>,
 
-    /// List of [OCI compliant](https://github.com/opencontainers/runtime-spec) runtimes configured on the daemon. Keys hold the \"name\" used to reference the runtime.  The Docker daemon relies on an OCI compliant runtime (invoked via the `containerd` daemon) as its interface to the Linux kernel namespaces, cgroups, and SELinux.  The default runtime is `runc`, and automatically configured. Additional runtimes can be configured by the user and will be listed here.
+    /// List of [OCI compliant](https://github.com/opencontainers/runtime-spec) runtimes configured on the daemon. Keys hold the \"name\" used to reference the runtime.  The Docker daemon relies on an OCI compliant runtime (invoked via the `containerd` daemon) as its interface to the Linux kernel namespaces, cgroups, and SELinux.  The default runtime is `runc`, and automatically configured. Additional runtimes can be configured by the user and will be listed here. 
     #[serde(rename = "Runtimes")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub runtimes: Option<HashMap<String, Runtime>>,
 
-    /// Name of the default OCI runtime that is used when starting containers.  The default can be overridden per-container at create time.
+    /// Name of the default OCI runtime that is used when starting containers.  The default can be overridden per-container at create time. 
     #[serde(rename = "DefaultRuntime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_runtime: Option<String>,
@@ -6402,17 +6618,17 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub swarm: Option<SwarmInfo>,
 
-    /// Indicates if live restore is enabled.  If enabled, containers are kept running when the daemon is shutdown or upon daemon start if running containers are detected.
+    /// Indicates if live restore is enabled.  If enabled, containers are kept running when the daemon is shutdown or upon daemon start if running containers are detected. 
     #[serde(rename = "LiveRestoreEnabled")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub live_restore_enabled: Option<bool>,
 
-    /// Represents the isolation technology to use as a default for containers. The supported values are platform-specific.  If no isolation value is specified on daemon start, on Windows client, the default is `hyperv`, and on Windows server, the default is `process`.  This option is currently not used on other platforms.
+    /// Represents the isolation technology to use as a default for containers. The supported values are platform-specific.  If no isolation value is specified on daemon start, on Windows client, the default is `hyperv`, and on Windows server, the default is `process`.  This option is currently not used on other platforms. 
     #[serde(rename = "Isolation")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub isolation: Option<SystemInfoIsolationEnum>,
 
-    /// Name and, optional, path of the `docker-init` binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result.
+    /// Name and, optional, path of the `docker-init` binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result. 
     #[serde(rename = "InitBinary")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub init_binary: Option<String>,
@@ -6429,31 +6645,32 @@ pub struct SystemInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub init_commit: Option<Commit>,
 
-    /// List of security features that are enabled on the daemon, such as apparmor, seccomp, SELinux, user-namespaces (userns), and rootless.  Additional configuration options for each security feature may be present, and are included as a comma-separated list of key/value pairs.
+    /// List of security features that are enabled on the daemon, such as apparmor, seccomp, SELinux, user-namespaces (userns), rootless and no-new-privileges.  Additional configuration options for each security feature may be present, and are included as a comma-separated list of key/value pairs. 
     #[serde(rename = "SecurityOptions")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub security_options: Option<Vec<String>>,
 
-    /// Reports a summary of the product license on the daemon.  If a commercial license has been applied to the daemon, information such as number of nodes, and expiration are included.
+    /// Reports a summary of the product license on the daemon.  If a commercial license has been applied to the daemon, information such as number of nodes, and expiration are included. 
     #[serde(rename = "ProductLicense")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_license: Option<String>,
 
-    /// List of custom default address pools for local networks, which can be specified in the daemon.json file or dockerd option.  Example: a Base \"10.10.0.0/16\" with Size 24 will define the set of 256 10.10.[0-255].0/24 address pools.
+    /// List of custom default address pools for local networks, which can be specified in the daemon.json file or dockerd option.  Example: a Base \"10.10.0.0/16\" with Size 24 will define the set of 256 10.10.[0-255].0/24 address pools. 
     #[serde(rename = "DefaultAddressPools")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_address_pools: Option<Vec<SystemInfoDefaultAddressPools>>,
 
-    /// List of warnings / informational messages about missing features, or issues related to the daemon configuration.  These messages can be printed by the client as information to the user.
+    /// List of warnings / informational messages about missing features, or issues related to the daemon configuration.  These messages can be printed by the client as information to the user. 
     #[serde(rename = "Warnings")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warnings: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum SystemInfoCgroupDriverEnum {
+pub enum SystemInfoCgroupDriverEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "cgroupfs")]
@@ -6466,11 +6683,12 @@ pub enum SystemInfoCgroupDriverEnum {
 
 impl ::std::fmt::Display for SystemInfoCgroupDriverEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             SystemInfoCgroupDriverEnum::EMPTY => write!(f, ""),
             SystemInfoCgroupDriverEnum::CGROUPFS => write!(f, "{}", "cgroupfs"),
             SystemInfoCgroupDriverEnum::SYSTEMD => write!(f, "{}", "systemd"),
             SystemInfoCgroupDriverEnum::NONE => write!(f, "{}", "none"),
+
         }
     }
 }
@@ -6478,7 +6696,7 @@ impl ::std::fmt::Display for SystemInfoCgroupDriverEnum {
 impl ::std::str::FromStr for SystemInfoCgroupDriverEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(SystemInfoCgroupDriverEnum::EMPTY),
             "cgroupfs" => Ok(SystemInfoCgroupDriverEnum::CGROUPFS),
             "systemd" => Ok(SystemInfoCgroupDriverEnum::SYSTEMD),
@@ -6490,7 +6708,7 @@ impl ::std::str::FromStr for SystemInfoCgroupDriverEnum {
 
 impl ::std::convert::AsRef<str> for SystemInfoCgroupDriverEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             SystemInfoCgroupDriverEnum::EMPTY => "",
             SystemInfoCgroupDriverEnum::CGROUPFS => "cgroupfs",
             SystemInfoCgroupDriverEnum::SYSTEMD => "systemd",
@@ -6502,7 +6720,7 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupDriverEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum SystemInfoCgroupVersionEnum {
+pub enum SystemInfoCgroupVersionEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "1")]
@@ -6513,10 +6731,11 @@ pub enum SystemInfoCgroupVersionEnum {
 
 impl ::std::fmt::Display for SystemInfoCgroupVersionEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             SystemInfoCgroupVersionEnum::EMPTY => write!(f, ""),
             SystemInfoCgroupVersionEnum::_1 => write!(f, "{}", "1"),
             SystemInfoCgroupVersionEnum::_2 => write!(f, "{}", "2"),
+
         }
     }
 }
@@ -6524,7 +6743,7 @@ impl ::std::fmt::Display for SystemInfoCgroupVersionEnum {
 impl ::std::str::FromStr for SystemInfoCgroupVersionEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(SystemInfoCgroupVersionEnum::EMPTY),
             "1" => Ok(SystemInfoCgroupVersionEnum::_1),
             "2" => Ok(SystemInfoCgroupVersionEnum::_2),
@@ -6535,7 +6754,7 @@ impl ::std::str::FromStr for SystemInfoCgroupVersionEnum {
 
 impl ::std::convert::AsRef<str> for SystemInfoCgroupVersionEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             SystemInfoCgroupVersionEnum::EMPTY => "",
             SystemInfoCgroupVersionEnum::_1 => "1",
             SystemInfoCgroupVersionEnum::_2 => "2",
@@ -6546,7 +6765,7 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupVersionEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum SystemInfoIsolationEnum {
+pub enum SystemInfoIsolationEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "default")]
@@ -6559,11 +6778,12 @@ pub enum SystemInfoIsolationEnum {
 
 impl ::std::fmt::Display for SystemInfoIsolationEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             SystemInfoIsolationEnum::EMPTY => write!(f, ""),
             SystemInfoIsolationEnum::DEFAULT => write!(f, "{}", "default"),
             SystemInfoIsolationEnum::HYPERV => write!(f, "{}", "hyperv"),
             SystemInfoIsolationEnum::PROCESS => write!(f, "{}", "process"),
+
         }
     }
 }
@@ -6571,7 +6791,7 @@ impl ::std::fmt::Display for SystemInfoIsolationEnum {
 impl ::std::str::FromStr for SystemInfoIsolationEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(SystemInfoIsolationEnum::EMPTY),
             "default" => Ok(SystemInfoIsolationEnum::DEFAULT),
             "hyperv" => Ok(SystemInfoIsolationEnum::HYPERV),
@@ -6583,7 +6803,7 @@ impl ::std::str::FromStr for SystemInfoIsolationEnum {
 
 impl ::std::convert::AsRef<str> for SystemInfoIsolationEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             SystemInfoIsolationEnum::EMPTY => "",
             SystemInfoIsolationEnum::DEFAULT => "default",
             SystemInfoIsolationEnum::HYPERV => "hyperv",
@@ -6604,9 +6824,10 @@ pub struct SystemInfoDefaultAddressPools {
     #[serde(rename = "Size")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
+
 }
 
-/// Response of Engine API: GET \"/version\"
+/// Response of Engine API: GET \"/version\" 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemVersion {
@@ -6614,7 +6835,7 @@ pub struct SystemVersion {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub platform: Option<SystemVersionPlatform>,
 
-    /// Information about system components
+    /// Information about system components 
     #[serde(rename = "Components")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub components: Option<Vec<SystemVersionComponents>>,
@@ -6624,67 +6845,69 @@ pub struct SystemVersion {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 
-    /// The default (and highest) API version that is supported by the daemon
+    /// The default (and highest) API version that is supported by the daemon 
     #[serde(rename = "ApiVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub api_version: Option<String>,
 
-    /// The minimum API version that is supported by the daemon
+    /// The minimum API version that is supported by the daemon 
     #[serde(rename = "MinAPIVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min_api_version: Option<String>,
 
-    /// The Git commit of the source code that was used to build the daemon
+    /// The Git commit of the source code that was used to build the daemon 
     #[serde(rename = "GitCommit")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub git_commit: Option<String>,
 
-    /// The version Go used to compile the daemon, and the version of the Go runtime in use.
+    /// The version Go used to compile the daemon, and the version of the Go runtime in use. 
     #[serde(rename = "GoVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub go_version: Option<String>,
 
-    /// The operating system that the daemon is running on (\"linux\" or \"windows\")
+    /// The operating system that the daemon is running on (\"linux\" or \"windows\") 
     #[serde(rename = "Os")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os: Option<String>,
 
-    /// The architecture that the daemon is running on
+    /// The architecture that the daemon is running on 
     #[serde(rename = "Arch")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arch: Option<String>,
 
-    /// The kernel version (`uname -r`) that the daemon is running on.  This field is omitted when empty.
+    /// The kernel version (`uname -r`) that the daemon is running on.  This field is omitted when empty. 
     #[serde(rename = "KernelVersion")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kernel_version: Option<String>,
 
-    /// Indicates if the daemon is started with experimental features enabled.  This field is omitted when empty / false.
+    /// Indicates if the daemon is started with experimental features enabled.  This field is omitted when empty / false. 
     #[serde(rename = "Experimental")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub experimental: Option<bool>,
 
-    /// The date and time that the daemon was compiled.
+    /// The date and time that the daemon was compiled. 
     #[serde(rename = "BuildTime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub build_time: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemVersionComponents {
-    /// Name of the component
+    /// Name of the component 
     #[serde(rename = "Name")]
     pub name: String,
 
-    /// Version of the component
+    /// Version of the component 
     #[serde(rename = "Version")]
     pub version: String,
 
-    /// Key/value pairs of strings with additional information about the component. These values are intended for informational purposes only, and their content is not defined, and not part of the API specification.  These messages can be printed by the client as information to the user.
+    /// Key/value pairs of strings with additional information about the component. These values are intended for informational purposes only, and their content is not defined, and not part of the API specification.  These messages can be printed by the client as information to the user. 
     #[serde(rename = "Details")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub details: Option<EmptyObject>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6692,6 +6915,7 @@ pub struct SystemVersionComponents {
 pub struct SystemVersionPlatform {
     #[serde(rename = "Name")]
     pub name: String,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -6764,10 +6988,11 @@ pub struct Task {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub desired_state: Option<TaskState>,
 
-    /// If the Service this Task belongs to is a job-mode service, contains the JobIteration of the Service this Task was created for. Absent if the Task was created for a Replicated or Global Service.
+    /// If the Service this Task belongs to is a job-mode service, contains the JobIteration of the Service this Task was created for. Absent if the Task was created for a Replicated or Global Service. 
     #[serde(rename = "JobIteration")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub job_iteration: Option<ObjectVersion>,
+
 }
 
 /// User modifiable task configuration.
@@ -6798,12 +7023,12 @@ pub struct TaskSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub placement: Option<TaskSpecPlacement>,
 
-    /// A counter that triggers an update even if no relevant parameters have been changed.
+    /// A counter that triggers an update even if no relevant parameters have been changed. 
     #[serde(rename = "ForceUpdate")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub force_update: Option<i64>,
 
-    /// Runtime is the type of runtime specified for the task executor.
+    /// Runtime is the type of runtime specified for the task executor. 
     #[serde(rename = "Runtime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub runtime: Option<String>,
@@ -6816,9 +7041,10 @@ pub struct TaskSpec {
     #[serde(rename = "LogDriver")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub log_driver: Option<TaskSpecLogDriver>,
+
 }
 
-/// Container spec for the service.  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`.
+/// Container spec for the service.  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpec {
@@ -6842,12 +7068,12 @@ pub struct TaskSpecContainerSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
 
-    /// The hostname to use for the container, as a valid [RFC 1123](https://tools.ietf.org/html/rfc1123) hostname.
+    /// The hostname to use for the container, as a valid [RFC 1123](https://tools.ietf.org/html/rfc1123) hostname. 
     #[serde(rename = "Hostname")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
 
-    /// A list of environment variables in the form `VAR=value`.
+    /// A list of environment variables in the form `VAR=value`. 
     #[serde(rename = "Env")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<String>>,
@@ -6862,7 +7088,7 @@ pub struct TaskSpecContainerSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 
-    /// A list of additional groups that the container process will run as.
+    /// A list of additional groups that the container process will run as. 
     #[serde(rename = "Groups")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
@@ -6886,7 +7112,7 @@ pub struct TaskSpecContainerSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub read_only: Option<bool>,
 
-    /// Specification for mounts to be added to containers created as part of the service.
+    /// Specification for mounts to be added to containers created as part of the service. 
     #[serde(rename = "Mounts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<Mount>>,
@@ -6896,7 +7122,7 @@ pub struct TaskSpecContainerSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_signal: Option<String>,
 
-    /// Amount of time to wait for the container to terminate before forcefully killing it.
+    /// Amount of time to wait for the container to terminate before forcefully killing it. 
     #[serde(rename = "StopGracePeriod")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_grace_period: Option<i64>,
@@ -6905,7 +7131,7 @@ pub struct TaskSpecContainerSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub health_check: Option<HealthConfig>,
 
-    /// A list of hostname/IP mappings to add to the container's `hosts` file. The format of extra hosts is specified in the [hosts(5)](http://man7.org/linux/man-pages/man5/hosts.5.html) man page:      IP_address canonical_hostname [aliases...]
+    /// A list of hostname/IP mappings to add to the container's `hosts` file. The format of extra hosts is specified in the [hosts(5)](http://man7.org/linux/man-pages/man5/hosts.5.html) man page:      IP_address canonical_hostname [aliases...] 
     #[serde(rename = "Hosts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
@@ -6914,51 +7140,52 @@ pub struct TaskSpecContainerSpec {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dns_config: Option<TaskSpecContainerSpecDnsConfig>,
 
-    /// Secrets contains references to zero or more secrets that will be exposed to the service.
+    /// Secrets contains references to zero or more secrets that will be exposed to the service. 
     #[serde(rename = "Secrets")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<TaskSpecContainerSpecSecrets>>,
 
-    /// Configs contains references to zero or more configs that will be exposed to the service.
+    /// Configs contains references to zero or more configs that will be exposed to the service. 
     #[serde(rename = "Configs")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<TaskSpecContainerSpecConfigs>>,
 
-    /// Isolation technology of the containers running the service. (Windows only)
+    /// Isolation technology of the containers running the service. (Windows only) 
     #[serde(rename = "Isolation")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub isolation: Option<TaskSpecContainerSpecIsolationEnum>,
 
-    /// Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used.
+    /// Run an init inside the container that forwards signals and reaps processes. This field is omitted if empty, and the default (as configured on the daemon) is used. 
     #[serde(rename = "Init")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub init: Option<bool>,
 
-    /// Set kernel namedspaced parameters (sysctls) in the container. The Sysctls option on services accepts the same sysctls as the are supported on containers. Note that while the same sysctls are supported, no guarantees or checks are made about their suitability for a clustered environment, and it's up to the user to determine whether a given sysctl will work properly in a Service.
+    /// Set kernel namedspaced parameters (sysctls) in the container. The Sysctls option on services accepts the same sysctls as the are supported on containers. Note that while the same sysctls are supported, no guarantees or checks are made about their suitability for a clustered environment, and it's up to the user to determine whether a given sysctl will work properly in a Service. 
     #[serde(rename = "Sysctls")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<HashMap<String, String>>,
 
-    /// A list of kernel capabilities to add to the default set for the container.
+    /// A list of kernel capabilities to add to the default set for the container. 
     #[serde(rename = "CapabilityAdd")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capability_add: Option<Vec<String>>,
 
-    /// A list of kernel capabilities to drop from the default set for the container.
+    /// A list of kernel capabilities to drop from the default set for the container. 
     #[serde(rename = "CapabilityDrop")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capability_drop: Option<Vec<String>>,
 
-    /// A list of resource limits to set in the container. For example: `{\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048}`\"
+    /// A list of resource limits to set in the container. For example: `{\"Name\": \"nofile\", \"Soft\": 1024, \"Hard\": 2048}`\" 
     #[serde(rename = "Ulimits")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ulimits: Option<Vec<ResourcesUlimits>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum TaskSpecContainerSpecIsolationEnum {
+pub enum TaskSpecContainerSpecIsolationEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "default")]
@@ -6971,11 +7198,12 @@ pub enum TaskSpecContainerSpecIsolationEnum {
 
 impl ::std::fmt::Display for TaskSpecContainerSpecIsolationEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             TaskSpecContainerSpecIsolationEnum::EMPTY => write!(f, ""),
             TaskSpecContainerSpecIsolationEnum::DEFAULT => write!(f, "{}", "default"),
             TaskSpecContainerSpecIsolationEnum::PROCESS => write!(f, "{}", "process"),
             TaskSpecContainerSpecIsolationEnum::HYPERV => write!(f, "{}", "hyperv"),
+
         }
     }
 }
@@ -6983,7 +7211,7 @@ impl ::std::fmt::Display for TaskSpecContainerSpecIsolationEnum {
 impl ::std::str::FromStr for TaskSpecContainerSpecIsolationEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(TaskSpecContainerSpecIsolationEnum::EMPTY),
             "default" => Ok(TaskSpecContainerSpecIsolationEnum::DEFAULT),
             "process" => Ok(TaskSpecContainerSpecIsolationEnum::PROCESS),
@@ -6995,7 +7223,7 @@ impl ::std::str::FromStr for TaskSpecContainerSpecIsolationEnum {
 
 impl ::std::convert::AsRef<str> for TaskSpecContainerSpecIsolationEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             TaskSpecContainerSpecIsolationEnum::EMPTY => "",
             TaskSpecContainerSpecIsolationEnum::DEFAULT => "default",
             TaskSpecContainerSpecIsolationEnum::PROCESS => "process",
@@ -7011,23 +7239,24 @@ pub struct TaskSpecContainerSpecConfigs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file: Option<TaskSpecContainerSpecFile1>,
 
-    /// Runtime represents a target that is not mounted into the container but is used by the task  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually > exclusive
+    /// Runtime represents a target that is not mounted into the container but is used by the task  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually > exclusive 
     #[serde(rename = "Runtime")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub runtime: Option<EmptyObject>,
 
-    /// ConfigID represents the ID of the specific config that we're referencing.
+    /// ConfigID represents the ID of the specific config that we're referencing. 
     #[serde(rename = "ConfigID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub config_id: Option<String>,
 
-    /// ConfigName is the name of the config that this references, but this is just provided for lookup/display purposes. The config in the reference will be identified by its ID.
+    /// ConfigName is the name of the config that this references, but this is just provided for lookup/display purposes. The config in the reference will be identified by its ID. 
     #[serde(rename = "ConfigName")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub config_name: Option<String>,
+
 }
 
-/// Specification for DNS related configurations in resolver configuration file (`resolv.conf`).
+/// Specification for DNS related configurations in resolver configuration file (`resolv.conf`). 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecDnsConfig {
@@ -7041,17 +7270,18 @@ pub struct TaskSpecContainerSpecDnsConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub search: Option<Vec<String>>,
 
-    /// A list of internal resolver variables to be modified (e.g., `debug`, `ndots:3`, etc.).
+    /// A list of internal resolver variables to be modified (e.g., `debug`, `ndots:3`, etc.). 
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<Vec<String>>,
+
 }
 
-/// File represents a specific target that is backed by a file.
+/// File represents a specific target that is backed by a file. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecFile {
-    /// Name represents the final filename in the filesystem.
+    /// Name represents the final filename in the filesystem. 
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -7070,13 +7300,14 @@ pub struct TaskSpecContainerSpecFile {
     #[serde(rename = "Mode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<u32>,
+
 }
 
-/// File represents a specific target that is backed by a file.  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually exclusive
+/// File represents a specific target that is backed by a file.  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually exclusive 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecFile1 {
-    /// Name represents the final filename in the filesystem.
+    /// Name represents the final filename in the filesystem. 
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -7095,6 +7326,7 @@ pub struct TaskSpecContainerSpecFile1 {
     #[serde(rename = "Mode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<u32>,
+
 }
 
 /// Security options for the container
@@ -7108,26 +7340,28 @@ pub struct TaskSpecContainerSpecPrivileges {
     #[serde(rename = "SELinuxContext")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub se_linux_context: Option<TaskSpecContainerSpecPrivilegesSeLinuxContext>,
+
 }
 
 /// CredentialSpec for managed service account (Windows only)
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecPrivilegesCredentialSpec {
-    /// Load credential spec from a Swarm Config with the given ID. The specified config must also be present in the Configs field with the Runtime property set.  <p><br /></p>   > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, > and `CredentialSpec.Config` are mutually exclusive.
+    /// Load credential spec from a Swarm Config with the given ID. The specified config must also be present in the Configs field with the Runtime property set.  <p><br /></p>   > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, > and `CredentialSpec.Config` are mutually exclusive. 
     #[serde(rename = "Config")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
 
-    /// Load credential spec from this file. The file is read by the daemon, and must be present in the `CredentialSpecs` subdirectory in the docker data directory, which defaults to `C:\\ProgramData\\Docker\\` on Windows.  For example, specifying `spec.json` loads `C:\\ProgramData\\Docker\\CredentialSpecs\\spec.json`.  <p><br /></p>  > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, > and `CredentialSpec.Config` are mutually exclusive.
+    /// Load credential spec from this file. The file is read by the daemon, and must be present in the `CredentialSpecs` subdirectory in the docker data directory, which defaults to `C:\\ProgramData\\Docker\\` on Windows.  For example, specifying `spec.json` loads `C:\\ProgramData\\Docker\\CredentialSpecs\\spec.json`.  <p><br /></p>  > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, > and `CredentialSpec.Config` are mutually exclusive. 
     #[serde(rename = "File")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file: Option<String>,
 
-    /// Load credential spec from this value in the Windows registry. The specified registry value must be located in:  `HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Virtualization\\Containers\\CredentialSpecs`  <p><br /></p>   > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, > and `CredentialSpec.Config` are mutually exclusive.
+    /// Load credential spec from this value in the Windows registry. The specified registry value must be located in:  `HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Virtualization\\Containers\\CredentialSpecs`  <p><br /></p>   > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, > and `CredentialSpec.Config` are mutually exclusive. 
     #[serde(rename = "Registry")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,
+
 }
 
 /// SELinux labels of the container
@@ -7158,6 +7392,7 @@ pub struct TaskSpecContainerSpecPrivilegesSeLinuxContext {
     #[serde(rename = "Level")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -7167,18 +7402,19 @@ pub struct TaskSpecContainerSpecSecrets {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file: Option<TaskSpecContainerSpecFile>,
 
-    /// SecretID represents the ID of the specific secret that we're referencing.
+    /// SecretID represents the ID of the specific secret that we're referencing. 
     #[serde(rename = "SecretID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_id: Option<String>,
 
-    /// SecretName is the name of the secret that this references, but this is just provided for lookup/display purposes. The secret in the reference will be identified by its ID.
+    /// SecretName is the name of the secret that this references, but this is just provided for lookup/display purposes. The secret in the reference will be identified by its ID. 
     #[serde(rename = "SecretName")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_name: Option<String>,
+
 }
 
-/// Specifies the log driver to use for tasks created from this spec. If not present, the default one for the swarm will be used, finally falling back to the engine default if not specified.
+/// Specifies the log driver to use for tasks created from this spec. If not present, the default one for the swarm will be used, finally falling back to the engine default if not specified. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecLogDriver {
@@ -7189,9 +7425,10 @@ pub struct TaskSpecLogDriver {
     #[serde(rename = "Options")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<HashMap<String, String>>,
+
 }
 
-/// Read-only spec type for non-swarm containers attached to swarm overlay networks.  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`.
+/// Read-only spec type for non-swarm containers attached to swarm overlay networks.  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecNetworkAttachmentSpec {
@@ -7199,30 +7436,32 @@ pub struct TaskSpecNetworkAttachmentSpec {
     #[serde(rename = "ContainerID")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub container_id: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecPlacement {
-    /// An array of constraint expressions to limit the set of nodes where a task can be scheduled. Constraint expressions can either use a _match_ (`==`) or _exclude_ (`!=`) rule. Multiple constraints find nodes that satisfy every expression (AND match). Constraints can match node or Docker Engine labels as follows:  node attribute       | matches                        | example ---------------------|--------------------------------|----------------------------------------------- `node.id`            | Node ID                        | `node.id==2ivku8v2gvtg4` `node.hostname`      | Node hostname                  | `node.hostname!=node-2` `node.role`          | Node role (`manager`/`worker`) | `node.role==manager` `node.platform.os`   | Node operating system          | `node.platform.os==windows` `node.platform.arch` | Node architecture              | `node.platform.arch==x86_64` `node.labels`        | User-defined node labels       | `node.labels.security==high` `engine.labels`      | Docker Engine's labels         | `engine.labels.operatingsystem==ubuntu-14.04`  `engine.labels` apply to Docker Engine labels like operating system, drivers, etc. Swarm administrators add `node.labels` for operational purposes by using the [`node update endpoint`](#operation/NodeUpdate).
+    /// An array of constraint expressions to limit the set of nodes where a task can be scheduled. Constraint expressions can either use a _match_ (`==`) or _exclude_ (`!=`) rule. Multiple constraints find nodes that satisfy every expression (AND match). Constraints can match node or Docker Engine labels as follows:  node attribute       | matches                        | example ---------------------|--------------------------------|----------------------------------------------- `node.id`            | Node ID                        | `node.id==2ivku8v2gvtg4` `node.hostname`      | Node hostname                  | `node.hostname!=node-2` `node.role`          | Node role (`manager`/`worker`) | `node.role==manager` `node.platform.os`   | Node operating system          | `node.platform.os==windows` `node.platform.arch` | Node architecture              | `node.platform.arch==x86_64` `node.labels`        | User-defined node labels       | `node.labels.security==high` `engine.labels`      | Docker Engine's labels         | `engine.labels.operatingsystem==ubuntu-14.04`  `engine.labels` apply to Docker Engine labels like operating system, drivers, etc. Swarm administrators add `node.labels` for operational purposes by using the [`node update endpoint`](#operation/NodeUpdate). 
     #[serde(rename = "Constraints")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub constraints: Option<Vec<String>>,
 
-    /// Preferences provide a way to make the scheduler aware of factors such as topology. They are provided in order from highest to lowest precedence.
+    /// Preferences provide a way to make the scheduler aware of factors such as topology. They are provided in order from highest to lowest precedence. 
     #[serde(rename = "Preferences")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferences: Option<Vec<TaskSpecPlacementPreferences>>,
 
-    /// Maximum number of replicas for per node (default value is 0, which is unlimited)
+    /// Maximum number of replicas for per node (default value is 0, which is unlimited) 
     #[serde(rename = "MaxReplicas")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_replicas: Option<i64>,
 
-    /// Platforms stores all the platforms that the service's image can run on. This field is used in the platform filter for scheduling. If empty, then the platform filter is off, meaning there are no scheduling restrictions.
+    /// Platforms stores all the platforms that the service's image can run on. This field is used in the platform filter for scheduling. If empty, then the platform filter is off, meaning there are no scheduling restrictions. 
     #[serde(rename = "Platforms")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<Platform>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -7231,18 +7470,20 @@ pub struct TaskSpecPlacementPreferences {
     #[serde(rename = "Spread")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spread: Option<TaskSpecPlacementSpread>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecPlacementSpread {
-    /// label descriptor, such as `engine.labels.az`.
+    /// label descriptor, such as `engine.labels.az`. 
     #[serde(rename = "SpreadDescriptor")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spread_descriptor: Option<String>,
+
 }
 
-/// Plugin spec for the service.  *(Experimental release only.)*  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`.
+/// Plugin spec for the service.  *(Experimental release only.)*  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecPluginSpec {
@@ -7264,9 +7505,10 @@ pub struct TaskSpecPluginSpec {
     #[serde(rename = "PluginPrivilege")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plugin_privilege: Option<Vec<PluginPrivilege>>,
+
 }
 
-/// Resource requirements which apply to each individual container created as part of the service.
+/// Resource requirements which apply to each individual container created as part of the service. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecResources {
@@ -7279,9 +7521,10 @@ pub struct TaskSpecResources {
     #[serde(rename = "Reservations")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reservations: Option<ResourceObject>,
+
 }
 
-/// Specification for the restart policy which applies to containers created as part of this service.
+/// Specification for the restart policy which applies to containers created as part of this service. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecRestartPolicy {
@@ -7295,21 +7538,22 @@ pub struct TaskSpecRestartPolicy {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay: Option<i64>,
 
-    /// Maximum attempts to restart a given container before giving up (default value is 0, which is ignored).
+    /// Maximum attempts to restart a given container before giving up (default value is 0, which is ignored). 
     #[serde(rename = "MaxAttempts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_attempts: Option<i64>,
 
-    /// Windows is the time window used to evaluate the restart policy (default value is 0, which is unbounded).
+    /// Windows is the time window used to evaluate the restart policy (default value is 0, which is unbounded). 
     #[serde(rename = "Window")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub window: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum TaskSpecRestartPolicyConditionEnum {
+pub enum TaskSpecRestartPolicyConditionEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "none")]
@@ -7322,11 +7566,12 @@ pub enum TaskSpecRestartPolicyConditionEnum {
 
 impl ::std::fmt::Display for TaskSpecRestartPolicyConditionEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             TaskSpecRestartPolicyConditionEnum::EMPTY => write!(f, ""),
             TaskSpecRestartPolicyConditionEnum::NONE => write!(f, "{}", "none"),
             TaskSpecRestartPolicyConditionEnum::ON_FAILURE => write!(f, "{}", "on-failure"),
             TaskSpecRestartPolicyConditionEnum::ANY => write!(f, "{}", "any"),
+
         }
     }
 }
@@ -7334,7 +7579,7 @@ impl ::std::fmt::Display for TaskSpecRestartPolicyConditionEnum {
 impl ::std::str::FromStr for TaskSpecRestartPolicyConditionEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(TaskSpecRestartPolicyConditionEnum::EMPTY),
             "none" => Ok(TaskSpecRestartPolicyConditionEnum::NONE),
             "on-failure" => Ok(TaskSpecRestartPolicyConditionEnum::ON_FAILURE),
@@ -7346,7 +7591,7 @@ impl ::std::str::FromStr for TaskSpecRestartPolicyConditionEnum {
 
 impl ::std::convert::AsRef<str> for TaskSpecRestartPolicyConditionEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             TaskSpecRestartPolicyConditionEnum::EMPTY => "",
             TaskSpecRestartPolicyConditionEnum::NONE => "none",
             TaskSpecRestartPolicyConditionEnum::ON_FAILURE => "on-failure",
@@ -7362,7 +7607,7 @@ impl ::std::convert::AsRef<str> for TaskSpecRestartPolicyConditionEnum {
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum TaskState {
+pub enum TaskState { 
     #[serde(rename = "new")]
     NEW,
     #[serde(rename = "allocated")]
@@ -7397,7 +7642,7 @@ pub enum TaskState {
 
 impl ::std::fmt::Display for TaskState {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             TaskState::NEW => write!(f, "{}", "new"),
             TaskState::ALLOCATED => write!(f, "{}", "allocated"),
             TaskState::PENDING => write!(f, "{}", "pending"),
@@ -7468,6 +7713,7 @@ pub struct TaskStatus {
     #[serde(rename = "ContainerStatus")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub container_status: Option<TaskStatusContainerStatus>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -7484,6 +7730,7 @@ pub struct TaskStatusContainerStatus {
     #[serde(rename = "ExitCode")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exit_code: Option<i64>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -7498,13 +7745,14 @@ pub struct ThrottleDevice {
     #[serde(rename = "Rate")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rate: Option<i64>,
+
 }
 
-/// Information about the issuer of leaf TLS certificates and the trusted root CA certificate.
+/// Information about the issuer of leaf TLS certificates and the trusted root CA certificate. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TlsInfo {
-    /// The root CA certificate(s) that are used to validate leaf TLS certificates.
+    /// The root CA certificate(s) that are used to validate leaf TLS certificates. 
     #[serde(rename = "TrustRoot")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trust_root: Option<String>,
@@ -7514,13 +7762,14 @@ pub struct TlsInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cert_issuer_subject: Option<String>,
 
-    /// The base64-url-safe-encoded raw public key bytes of the issuer.
+    /// The base64-url-safe-encoded raw public key bytes of the issuer. 
     #[serde(rename = "CertIssuerPublicKey")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cert_issuer_public_key: Option<String>,
+
 }
 
-/// A map of topological domains to topological segments. For in depth details, see documentation for the Topology object in the CSI specification.
+/// A map of topological domains to topological segments. For in depth details, see documentation for the Topology object in the CSI specification. 
 // special-casing PortMap, cos swagger-codegen doesn't figure out this type
 pub type Topology = HashMap<String, Option<Vec<PortBinding>>>;
 
@@ -7531,6 +7780,7 @@ pub struct UnlockKeyResponse {
     #[serde(rename = "UnlockKey")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unlock_key: Option<String>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -7558,7 +7808,7 @@ pub struct Volume {
     )]
     pub created_at: Option<BollardDate>,
 
-    /// Low-level details about the volume, provided by the volume driver. Details are returned as a map with key/value pairs: `{\"key\":\"value\",\"key2\":\"value2\"}`.  The `Status` field is optional, and is omitted if the volume driver does not support this feature.
+    /// Low-level details about the volume, provided by the volume driver. Details are returned as a map with key/value pairs: `{\"key\":\"value\",\"key2\":\"value2\"}`.  The `Status` field is optional, and is omitted if the volume driver does not support this feature. 
     #[serde(rename = "Status")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<HashMap<String, EmptyObject>>,
@@ -7568,7 +7818,7 @@ pub struct Volume {
     #[serde(deserialize_with = "deserialize_nonoptional_map")]
     pub labels: HashMap<String, String>,
 
-    /// The level at which the volume exists. Either `global` for cluster-wide, or `local` for machine level.
+    /// The level at which the volume exists. Either `global` for cluster-wide, or `local` for machine level. 
     #[serde(rename = "Scope")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "::serde_with::As::<::serde_with::NoneAsEmptyString>")]
@@ -7578,7 +7828,7 @@ pub struct Volume {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cluster_volume: Option<ClusterVolume>,
 
-    /// The driver specific options used when creating the volume.
+    /// The driver specific options used when creating the volume. 
     #[serde(rename = "Options")]
     #[serde(deserialize_with = "deserialize_nonoptional_map")]
     pub options: HashMap<String, String>,
@@ -7586,12 +7836,13 @@ pub struct Volume {
     #[serde(rename = "UsageData")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_data: Option<VolumeUsageData>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum VolumeScopeEnum {
+pub enum VolumeScopeEnum { 
     #[serde(rename = "")]
     EMPTY,
     #[serde(rename = "local")]
@@ -7602,10 +7853,11 @@ pub enum VolumeScopeEnum {
 
 impl ::std::fmt::Display for VolumeScopeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
+        match *self { 
             VolumeScopeEnum::EMPTY => write!(f, ""),
             VolumeScopeEnum::LOCAL => write!(f, "{}", "local"),
             VolumeScopeEnum::GLOBAL => write!(f, "{}", "global"),
+
         }
     }
 }
@@ -7613,7 +7865,7 @@ impl ::std::fmt::Display for VolumeScopeEnum {
 impl ::std::str::FromStr for VolumeScopeEnum {
     type Err = String;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s { 
             "" => Ok(VolumeScopeEnum::EMPTY),
             "local" => Ok(VolumeScopeEnum::LOCAL),
             "global" => Ok(VolumeScopeEnum::GLOBAL),
@@ -7624,7 +7876,7 @@ impl ::std::str::FromStr for VolumeScopeEnum {
 
 impl ::std::convert::AsRef<str> for VolumeScopeEnum {
     fn as_ref(&self) -> &str {
-        match self {
+        match self { 
             VolumeScopeEnum::EMPTY => "",
             VolumeScopeEnum::LOCAL => "local",
             VolumeScopeEnum::GLOBAL => "global",
@@ -7636,7 +7888,7 @@ impl ::std::convert::AsRef<str> for VolumeScopeEnum {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct VolumeCreateOptions {
-    /// The new volume's name. If not specified, Docker generates a name.
+    /// The new volume's name. If not specified, Docker generates a name. 
     #[serde(rename = "Name")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -7646,7 +7898,7 @@ pub struct VolumeCreateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver: Option<String>,
 
-    /// A mapping of driver options and values. These options are passed directly to the driver and are driver specific.
+    /// A mapping of driver options and values. These options are passed directly to the driver and are driver specific. 
     #[serde(rename = "DriverOpts")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub driver_opts: Option<HashMap<String, String>>,
@@ -7659,6 +7911,7 @@ pub struct VolumeCreateOptions {
     #[serde(rename = "ClusterVolumeSpec")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cluster_volume_spec: Option<ClusterVolumeSpec>,
+
 }
 
 /// Volume list response
@@ -7670,10 +7923,11 @@ pub struct VolumeListResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<Volume>>,
 
-    /// Warnings that occurred when fetching the list of volumes.
+    /// Warnings that occurred when fetching the list of volumes. 
     #[serde(rename = "Warnings")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warnings: Option<Vec<String>>,
+
 }
 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
@@ -7688,17 +7942,19 @@ pub struct VolumePruneResponse {
     #[serde(rename = "SpaceReclaimed")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub space_reclaimed: Option<i64>,
+
 }
 
-/// Usage details about the volume. This information is used by the `GET /system/df` endpoint, and omitted in other endpoints.
+/// Usage details about the volume. This information is used by the `GET /system/df` endpoint, and omitted in other endpoints. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct VolumeUsageData {
-    /// Amount of disk space used by the volume (in bytes). This information is only available for volumes created with the `\"local\"` volume driver. For volumes created with other volume drivers, this field is set to `-1` (\"not available\")
+    /// Amount of disk space used by the volume (in bytes). This information is only available for volumes created with the `\"local\"` volume driver. For volumes created with other volume drivers, this field is set to `-1` (\"not available\") 
     #[serde(rename = "Size")]
     pub size: i64,
 
-    /// The number of containers referencing this volume. This field is set to `-1` if the reference-count is not available.
+    /// The number of containers referencing this volume. This field is set to `-1` if the reference-count is not available. 
     #[serde(rename = "RefCount")]
     pub ref_count: i64,
+
 }
