@@ -345,9 +345,8 @@ pub struct BuildPruneResponse {
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
+#[derive( Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ChangeType {
-    #[default]
     #[serde(rename = "0")]
     _0,
     #[serde(rename = "1")]
@@ -2215,7 +2214,7 @@ pub struct ExecStartConfig {
 
 /// Change in the container's filesystem. 
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FilesystemChange {
     /// Path to file or directory that has changed. 
     #[serde(rename = "Path")]
