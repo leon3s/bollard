@@ -340,16 +340,19 @@ pub struct BuildPruneResponse {
 
 /// Kind of change  Can be one of:  - `0`: Modified (\"C\") - `1`: Added (\"A\") - `2`: Deleted (\"D\") 
 /// Enumeration of values.
-/// Since this enum's variants do not hold data, we can easily define them them as `#[repr(i32)]`
+/// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
-#[repr(i32)]
-#[derive( Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
-pub enum ChangeType {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
+pub enum ChangeType { 
+    #[serde(rename = "0")]
+    _0,
+    #[serde(rename = "1")]
+    _1,
+    #[serde(rename = "2")]
+    _2,
 }
 
 impl ::std::fmt::Display for ChangeType {
@@ -2220,6 +2223,7 @@ pub struct FilesystemChange {
     /// Kind of change.
     #[serde(rename = "Kind")]
     pub kind: ChangeType,
+
 }
 
 /// User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`). 
