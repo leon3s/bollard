@@ -2206,12 +2206,8 @@ pub struct ExecStartConfig {
 }
 
 /// Change in the container's filesystem. 
-<<<<<<< HEAD
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-=======
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
->>>>>>> b139974 (Use codegen from master)
 pub struct FilesystemChange {
     /// Path to file or directory that has changed. 
     #[serde(rename = "Path")]
@@ -2219,7 +2215,6 @@ pub struct FilesystemChange {
     /// Kind of change.
     #[serde(rename = "Kind")]
     pub kind: ChangeType,
-
 }
 
 /// User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`). 
@@ -7705,7 +7700,10 @@ impl std::default::Default for TaskState {
     }
 }
 
+<<<<<<< HEAD
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+=======
+>>>>>>> 8d06c8c (Add integer enum handling for ChangeType)
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskStatus {
     #[serde(rename = "Timestamp")]
