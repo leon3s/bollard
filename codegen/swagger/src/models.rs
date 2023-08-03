@@ -7700,10 +7700,7 @@ impl std::default::Default for TaskState {
     }
 }
 
-<<<<<<< HEAD
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
-=======
->>>>>>> 8d06c8c (Add integer enum handling for ChangeType)
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskStatus {
     #[serde(rename = "Timestamp")]
