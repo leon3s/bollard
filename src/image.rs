@@ -446,6 +446,7 @@ where
 /// Builder Version to use
 #[derive(Default, Clone, Copy, Debug, PartialEq, Serialize_repr)]
 #[repr(u8)]
+#[derive(Default)]
 pub enum BuilderVersion {
     /// BuilderV1 is the first generation builder in docker daemon
     #[default]
