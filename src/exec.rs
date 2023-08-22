@@ -135,7 +135,7 @@ impl Docker {
         container_name: &str,
         config: CreateExecOptions,
     ) -> Result<CreateExecResults, Error> {
-        let url = format!("/containers/{}/exec", container_name);
+        let url = format!("/containers/{container_name}/exec");
 
         let req = self.build_request(
             &url,
@@ -188,7 +188,7 @@ impl Docker {
         exec_id: &str,
         config: Option<StartExecOptions>,
     ) -> Result<StartExecResults, Error> {
-        let url = format!("/exec/{}/start", exec_id);
+        let url = format!("/exec/{exec_id}/start");
 
         match config {
             Some(StartExecOptions { detach: true, .. }) => {
@@ -272,7 +272,7 @@ impl Docker {
     /// };
     /// ```
     pub async fn inspect_exec(&self, exec_id: &str) -> Result<ExecInspectResponse, Error> {
-        let url = format!("/exec/{}/json", exec_id);
+        let url = format!("/exec/{exec_id}/json");
 
         let req = self.build_request(
             &url,
@@ -323,7 +323,7 @@ impl Docker {
         exec_id: &str,
         options: ResizeExecOptions,
     ) -> Result<(), Error> {
-        let url = format!("/exec/{}/resize", exec_id);
+        let url = format!("/exec/{exec_id}/resize");
 
         let req = self.build_request(
             &url,
