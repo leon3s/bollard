@@ -1208,6 +1208,7 @@ impl Docker {
             StreamReader::new(res.into_body().map_err(Error::from)),
             NewlineLogOutputDecoder::new(false),
         )
+        .map_err(Error::from)
     }
 
     async fn decode_into_string(response: Response<Body>) -> Result<String, Error> {
