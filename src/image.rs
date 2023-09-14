@@ -1177,7 +1177,7 @@ impl Docker {
     }
 
     #[cfg(feature = "buildkit")]
-    async fn start_session(&self, id: String) -> Result<(), Error> {
+    async fn start_session(&self, id: String) -> Result<(), crate::grpc::error::GrpcError> {
         use crate::grpc::io::GrpcTransport;
 
         let url = "/session";
