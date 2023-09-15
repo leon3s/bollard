@@ -1,8 +1,8 @@
 [package]
 name = "bollard-buildkit-proto"
 description = "Protobuf definitions to interact with buildkit using Bollard"
-version = "0.1.0"
-authors = ["Bollard contributors"]
+version = "0.2.0"
+authors = [ "Bollard contributors" ]
 license = "Apache-2.0"
 edition = "2021"
 

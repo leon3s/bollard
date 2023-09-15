@@ -18,19 +18,7 @@ members = ["codegen/swagger", "codegen/proto", "."]
 # Enable utoipa support
 utoipa = ["dep:utoipa", "bollard-next-stubs/utoipa"]
 # Enable Buildkit-enabled docker image building
-<<<<<<< HEAD
-buildkit = [
-  "num",
-  "rand",
-  "tower",
-  "tonic",
-  "tower-service",
-  "bollard-next-stubs/buildkit",
-  "bollard-buildkit-proto",
-]
-=======
 buildkit = ["num", "rand", "tokio-stream", "tower", "tonic", "tower-service", "bollard-stubs/buildkit", "bollard-buildkit-proto"]
->>>>>>> 26b4685 (Add export example and grpc endpoint)
 # Enable tests specifically for the http connector
 test_http = []
 # Enable tests specifically for rustls
