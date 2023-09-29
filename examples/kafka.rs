@@ -1,9 +1,9 @@
 //! This example will spin up Zookeeper and two Kafka brokers asynchronously.
 
-use bollard::container::{Config, CreateContainerOptions, LogsOptions, StartContainerOptions};
-use bollard::image::CreateImageOptions;
-use bollard::models::*;
-use bollard::Docker;
+use bollard_next::container::{Config, CreateContainerOptions, LogsOptions, StartContainerOptions};
+use bollard_next::image::CreateImageOptions;
+use bollard_next::models::*;
+use bollard_next::Docker;
 
 use futures_util::stream::select;
 use futures_util::stream::StreamExt;
@@ -20,23 +20,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
     let sd2 = docker.clone();
 
     let zookeeper_config = Config {
-        image: Some(ZOOKEEPER_IMAGE),
+        image: Some(ZOOKEEPER_IMAGE.to_owned()),
         env: Some(vec![
-            "ZOOKEEPER_CLIENT_PORT=32181",
-            "ZOOKEEPER_TICK_TIME=2000",
-            "ZOOKEEPER_SYNC_LIMIT=2",
+            "ZOOKEEPER_CLIENT_PORT=32181".into(),
+            "ZOOKEEPER_TICK_TIME=2000".into(),
+            "ZOOKEEPER_SYNC_LIMIT=2".into(),
         ]),
         ..Default::default()
     };
 
     let broker1_config = Config {
-        image: Some(KAFKA_IMAGE),
-        cmd: Some(vec!["/etc/confluent/docker/run"]),
+        image: Some(KAFKA_IMAGE.to_owned()),
+        cmd: Some(vec!["/etc/confluent/docker/run".into()]),
         env: Some(vec![
-            "KAFKA_ZOOKEEPER_CONNECT=localhost:32181",
-            "KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:19092",
-            "KAFKA_BROKER_ID=1",
-            "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1",
+            "KAFKA_ZOOKEEPER_CONNECT=localhost:32181".into(),
+            "KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:19092".into(),
+            "KAFKA_BROKER_ID=1".into(),
+            "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1".into(),
         ]),
         host_config: Some(HostConfig {
             network_mode: Some(String::from("container:zookeeper")),
@@ -46,13 +46,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
     };
 
     let broker2_config = Config {
-        image: Some(KAFKA_IMAGE),
-        cmd: Some(vec!["/etc/confluent/docker/run"]),
+        image: Some(KAFKA_IMAGE.to_owned()),
+        cmd: Some(vec!["/etc/confluent/docker/run".into()]),
         env: Some(vec![
-            "KAFKA_ZOOKEEPER_CONNECT=localhost:32181",
-            "KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:29092",
-            "KAFKA_BROKER_ID=2",
-            "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1",
+            "KAFKA_ZOOKEEPER_CONNECT=localhost:32181".into(),
+            "KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:29092".into(),
+            "KAFKA_BROKER_ID=2".into(),
+            "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1".into(),
         ]),
         host_config: Some(HostConfig {
             network_mode: Some(String::from("container:zookeeper")),

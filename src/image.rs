@@ -32,7 +32,7 @@ use std::hash::Hash;
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::CreateImageOptions;
+/// use bollard_next::image::CreateImageOptions;
 ///
 /// use std::default::Default;
 ///
@@ -43,7 +43,7 @@ use std::hash::Hash;
 /// ```
 ///
 /// ```rust
-/// # use bollard::image::CreateImageOptions;
+/// # use bollard_next::image::CreateImageOptions;
 /// # use std::default::Default;
 /// CreateImageOptions::<String>{
 ///   ..Default::default()
@@ -85,7 +85,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::ListImagesOptions;
+/// use bollard_next::image::ListImagesOptions;
 ///
 /// use std::collections::HashMap;
 /// use std::default::Default;
@@ -101,7 +101,7 @@ where
 /// ```
 ///
 /// ```rust
-/// # use bollard::image::ListImagesOptions;
+/// # use bollard_next::image::ListImagesOptions;
 /// # use std::default::Default;
 /// ListImagesOptions::<String>{
 ///   ..Default::default()
@@ -132,7 +132,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::PruneImagesOptions;
+/// use bollard_next::image::PruneImagesOptions;
 ///
 /// use std::collections::HashMap;
 ///
@@ -145,7 +145,7 @@ where
 /// ```
 ///
 /// ```rust
-/// # use bollard::image::PruneImagesOptions;
+/// # use bollard_next::image::PruneImagesOptions;
 /// # use std::default::Default;
 /// PruneImagesOptions::<String>{
 ///   ..Default::default()
@@ -175,7 +175,7 @@ where
 /// ## Example
 ///
 /// ```rust
-/// use bollard::image::SearchImagesOptions;
+/// use bollard_next::image::SearchImagesOptions;
 /// use std::default::Default;
 /// use std::collections::HashMap;
 ///
@@ -190,7 +190,7 @@ where
 /// ```
 ///
 /// ```rust
-/// # use bollard::image::SearchImagesOptions;
+/// # use bollard_next::image::SearchImagesOptions;
 /// # use std::default::Default;
 /// SearchImagesOptions::<String> {
 ///     ..Default::default()
@@ -218,7 +218,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::RemoveImageOptions;
+/// use bollard_next::image::RemoveImageOptions;
 /// use std::default::Default;
 ///
 /// RemoveImageOptions {
@@ -239,7 +239,7 @@ pub struct RemoveImageOptions {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::TagImageOptions;
+/// use bollard_next::image::TagImageOptions;
 /// use std::default::Default;
 ///
 /// let tag_options = TagImageOptions {
@@ -249,7 +249,7 @@ pub struct RemoveImageOptions {
 /// ```
 ///
 /// ```rust
-/// # use bollard::image::TagImageOptions;
+/// # use bollard_next::image::TagImageOptions;
 /// # use std::default::Default;
 /// let tag_options = TagImageOptions::<String> {
 ///     ..Default::default()
@@ -271,7 +271,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::PushImageOptions;
+/// use bollard_next::image::PushImageOptions;
 ///
 /// PushImageOptions {
 ///     tag: "v1.0.1",
@@ -279,7 +279,7 @@ where
 /// ```
 ///
 /// ```
-/// # use bollard::image::PushImageOptions;
+/// # use bollard_next::image::PushImageOptions;
 /// # use std::default::Default;
 /// PushImageOptions::<String> {
 ///     ..Default::default()
@@ -299,7 +299,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::CommitContainerOptions;
+/// use bollard_next::image::CommitContainerOptions;
 ///
 /// CommitContainerOptions {
 ///     container: "my-running-container",
@@ -309,7 +309,7 @@ where
 /// ```
 ///
 /// ```
-/// # use bollard::image::CommitContainerOptions;
+/// # use bollard_next::image::CommitContainerOptions;
 /// # use std::default::Default;
 /// CommitContainerOptions::<String> {
 ///     ..Default::default()
@@ -341,7 +341,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::BuildImageOptions;
+/// use bollard_next::image::BuildImageOptions;
 ///
 /// BuildImageOptions {
 ///     dockerfile: "Dockerfile",
@@ -351,7 +351,7 @@ where
 /// ```
 ///
 /// ```
-/// # use bollard::image::BuildImageOptions;
+/// # use bollard_next::image::BuildImageOptions;
 /// # use std::default::Default;
 /// BuildImageOptions::<String> {
 ///     ..Default::default()
@@ -483,9 +483,8 @@ where
 }
 
 /// Builder Version to use
-#[derive(Clone, Copy, Debug, PartialEq, Serialize_repr)]
+#[derive(Default, Clone, Copy, Debug, PartialEq, Serialize_repr)]
 #[repr(u8)]
-#[derive(Default)]
 pub enum BuilderVersion {
     /// BuilderV1 is the first generation builder in docker daemon
     #[default]
@@ -505,7 +504,7 @@ enum ImageBuildBuildkitEither {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::image::ImportImageOptions;
+/// use bollard_next::image::ImportImageOptions;
 /// use std::default::Default;
 ///
 /// ImportImageOptions {
@@ -538,9 +537,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::image::ListImagesOptions;
+    /// use bollard_next::image::ListImagesOptions;
     ///
     /// use std::collections::HashMap;
     /// use std::default::Default;
@@ -595,9 +594,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::image::CreateImageOptions;
+    /// use bollard_next::image::CreateImageOptions;
     ///
     /// use std::default::Default;
     ///
@@ -666,7 +665,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// use std::default::Default;
@@ -741,9 +740,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::image::PruneImagesOptions;
+    /// use bollard_next::image::PruneImagesOptions;
     ///
     /// use std::collections::HashMap;
     ///
@@ -793,7 +792,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.image_history("hello-world");
@@ -829,9 +828,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     ///
-    /// use bollard::image::SearchImagesOptions;
+    /// use bollard_next::image::SearchImagesOptions;
     /// use std::default::Default;
     /// use std::collections::HashMap;
     ///
@@ -885,9 +884,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     ///
-    /// use bollard::image::RemoveImageOptions;
+    /// use bollard_next::image::RemoveImageOptions;
     /// use std::default::Default;
     ///
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
@@ -934,9 +933,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     ///
-    /// use bollard::image::TagImageOptions;
+    /// use bollard_next::image::TagImageOptions;
     /// use std::default::Default;
     ///
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
@@ -986,10 +985,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     ///
-    /// use bollard::auth::DockerCredentials;
-    /// use bollard::image::PushImageOptions;
+    /// use bollard_next::auth::DockerCredentials;
+    /// use bollard_next::image::PushImageOptions;
     ///
     /// use std::default::Default;
     ///
@@ -1057,10 +1056,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::image::CommitContainerOptions;
-    /// use bollard::container::Config;
+    /// use bollard_next::image::CommitContainerOptions;
+    /// use bollard_next::container::Config;
     ///
     /// use std::default::Default;
     ///
@@ -1076,14 +1075,13 @@ impl Docker {
     ///
     /// docker.commit_container(options, config);
     /// ```
-    pub async fn commit_container<T, Z>(
+    pub async fn commit_container<T>(
         &self,
         options: CommitContainerOptions<T>,
-        config: Config<Z>,
+        config: Config,
     ) -> Result<Commit, Error>
     where
         T: Into<String> + Serialize,
-        Z: Into<String> + Eq + Hash + Serialize,
     {
         let url = "/commit";
 
@@ -1124,10 +1122,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::image::BuildImageOptions;
-    /// use bollard::container::Config;
+    /// use bollard_next::image::BuildImageOptions;
+    /// use bollard_next::container::Config;
     ///
     /// use std::default::Default;
     /// use std::fs::File;
@@ -1365,8 +1363,8 @@ impl Docker {
     /// ```rust
     /// # use bollard::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::image::ImportImageOptions;
-    /// use bollard::errors::Error;
+    /// use bollard_next::image::ImportImageOptions;
+    /// use bollard_next::errors::Error;
     ///
     /// use std::default::Default;
     /// use futures_util::stream::{StreamExt, TryStreamExt};
