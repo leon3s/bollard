@@ -1,16 +1,16 @@
 #![type_length_limit = "2097152"]
 
-use bollard::container::{
+use bollard_next::container::{
     AttachContainerOptions, AttachContainerResults, Config, CreateContainerOptions,
     DownloadFromContainerOptions, InspectContainerOptions, KillContainerOptions,
     ListContainersOptions, LogsOptions, PruneContainersOptions, RemoveContainerOptions,
     RenameContainerOptions, ResizeContainerTtyOptions, RestartContainerOptions, StatsOptions,
     TopOptions, UpdateContainerOptions, UploadToContainerOptions, WaitContainerOptions,
 };
-use bollard::errors::Error;
-use bollard::image::{CreateImageOptions, PushImageOptions, TagImageOptions};
-use bollard::models::*;
-use bollard::Docker;
+use bollard_next::errors::Error;
+use bollard_next::image::{CreateImageOptions, PushImageOptions, TagImageOptions};
+use bollard_next::models::*;
+use bollard_next::Docker;
 
 use futures_util::future::ready;
 use futures_util::stream::TryStreamExt;
@@ -582,7 +582,7 @@ async fn archive_container_test(docker: Docker) -> Result<(), Error> {
                 platform: None,
             }),
             Config {
-                image: Some(&image[..]),
+                image: Some(image.to_owned()),
                 ..Default::default()
             },
         )
@@ -669,7 +669,7 @@ async fn inspect_container_test(docker: Docker) -> Result<(), Error> {
 
     assert_eq!(None, result.host_config.as_ref().unwrap().cap_add);
 
-    let config: Config<String> = result.config.as_ref().unwrap().to_owned().into();
+    let config: Config = result.config.as_ref().unwrap().to_owned().into();
 
     assert_eq!(
         config.image.as_ref().unwrap(),
@@ -737,7 +737,7 @@ async fn mount_volume_container_test(docker: Docker) -> Result<(), Error> {
                 platform: None,
             }),
             Config {
-                image: Some(&image[..]),
+                image: Some(image.to_owned()),
                 host_config: Some(host_config),
                 ..Default::default()
             },

@@ -1,12 +1,12 @@
 //! This example will create a container and attach an interactive session to it
 //! passing through input and output into the tty running inside the container
 
-use bollard::container::{
+use bollard_next::container::{
     AttachContainerOptions, AttachContainerResults, Config, RemoveContainerOptions,
 };
-use bollard::Docker;
+use bollard_next::Docker;
 
-use bollard::image::CreateImageOptions;
+use bollard_next::image::CreateImageOptions;
 use futures_util::{StreamExt, TryStreamExt};
 use std::io::{stdout, Read, Write};
 use std::time::Duration;
@@ -37,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
         .await?;
 
     let alpine_config = Config {
-        image: Some(IMAGE),
+        image: Some(IMAGE.to_owned()),
         tty: Some(true),
         attach_stdin: Some(true),
         attach_stdout: Some(true),
@@ -47,7 +47,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
     };
 
     let id = docker
-        .create_container::<&str, &str>(None, alpine_config)
+        .create_container::<&str>(None, alpine_config)
         .await?
         .id;
     docker.start_container::<String>(&id, None).await?;

@@ -61,7 +61,7 @@ pub struct RemoveVolumeOptions {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::volume::PruneVolumesOptions;
+/// use bollard_next::volume::PruneVolumesOptions;
 ///
 /// use std::collections::HashMap;
 ///
@@ -74,7 +74,7 @@ pub struct RemoveVolumeOptions {
 /// ```
 ///
 /// ```rust
-/// # use bollard::volume::PruneVolumesOptions;
+/// # use bollard_next::volume::PruneVolumesOptions;
 /// # use std::default::Default;
 ///
 /// PruneVolumesOptions::<&str>{
@@ -111,10 +111,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::volume::ListVolumesOptions;
+    /// use bollard_next::volume::ListVolumesOptions;
     ///
     /// use std::collections::HashMap;
     ///
@@ -164,10 +164,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::volume::CreateVolumeOptions;
+    /// use bollard_next::volume::CreateVolumeOptions;
     ///
     /// use std::default::Default;
     ///
@@ -210,7 +210,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.inspect_volume("my_volume_name");
@@ -247,10 +247,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::volume::RemoveVolumeOptions;
+    /// use bollard_next::volume::RemoveVolumeOptions;
     ///
     /// let options = RemoveVolumeOptions {
     ///     force: true,
@@ -292,10 +292,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::volume::PruneVolumesOptions;
+    /// use bollard_next::volume::PruneVolumesOptions;
     ///
     /// use std::collections::HashMap;
     ///
