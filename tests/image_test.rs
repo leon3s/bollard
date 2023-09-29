@@ -5,13 +5,13 @@ use futures_util::future::ready;
 use futures_util::stream::{StreamExt, TryStreamExt};
 use tokio::runtime::Runtime;
 
-use bollard::container::{
+use bollard_next::container::{
     Config, CreateContainerOptions, RemoveContainerOptions, StartContainerOptions,
     WaitContainerOptions,
 };
-use bollard::errors::Error;
-use bollard::image::*;
-use bollard::Docker;
+use bollard_next::errors::Error;
+use bollard_next::image::*;
+use bollard_next::Docker;
 
 use std::collections::HashMap;
 use std::default::Default;
@@ -59,7 +59,7 @@ async fn create_image_wasm_test(docker: Docker) -> Result<(), Error> {
         .collect::<Vec<_>>()
         .await
         .into_iter()
-        .collect::<Result<Vec<_>, bollard::errors::Error>>()
+        .collect::<Result<Vec<_>, bollard_next::errors::Error>>()
         .unwrap();
 
     let result = &docker.inspect_image(image).await?;
@@ -201,9 +201,15 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
     };
 
     let cmd = if cfg!(windows) {
-        Some(vec!["cmd.exe", "/C", "copy", "nul", "bollard.txt"])
+        Some(vec![
+            "cmd.exe".into(),
+            "/C".into(),
+            "copy".into(),
+            "nul".into(),
+            "bollard.txt".into(),
+        ])
     } else {
-        Some(vec!["touch", "/bollard.txt"])
+        Some(vec!["touch".into(), "/bollard.txt".into()])
     };
 
     create_image_hello_world(&docker).await?;
@@ -216,7 +222,7 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
             }),
             Config {
                 cmd,
-                image: Some(&image[..]),
+                image: Some(image.to_owned()),
                 ..Default::default()
             },
         )
@@ -245,7 +251,7 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
                 pause: true,
                 ..Default::default()
             },
-            Config::<String> {
+            Config {
                 ..Default::default()
             },
         )
@@ -258,11 +264,16 @@ async fn commit_container_test(docker: Docker) -> Result<(), Error> {
                 platform: None,
             }),
             Config {
-                image: Some("integration_test_commit_container_next"),
+                image: Some("integration_test_commit_container_next".into()),
                 cmd: if cfg!(windows) {
-                    Some(vec!["cmd.exe", "/C", "dir", "bollard.txt"])
+                    Some(vec![
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "dir".into(),
+                        "bollard.txt".into(),
+                    ])
                 } else {
-                    Some(vec!["ls", "/bollard.txt"])
+                    Some(vec!["ls".into(), "/bollard.txt".into()])
                 },
                 ..Default::default()
             },
@@ -376,11 +387,16 @@ RUN touch bollard.txt
                 platform: None,
             }),
             Config {
-                image: Some("integration_test_build_image"),
+                image: Some("integration_test_build_image".into()),
                 cmd: if cfg!(windows) {
-                    Some(vec!["cmd.exe", "/C", "dir", "bollard.txt"])
+                    Some(vec![
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "dir".into(),
+                        "bollard.txt".into(),
+                    ])
                 } else {
-                    Some(vec!["ls", "/bollard.txt"])
+                    Some(vec!["ls".into(), "/bollard.txt".into()])
                 },
                 ..Default::default()
             },
@@ -473,7 +489,7 @@ ENTRYPOINT ls buildkit-bollard.txt
             Some(creds_hsh),
             Some(compressed.into()),
         )
-        .try_collect::<Vec<bollard::models::BuildInfo>>()
+        .try_collect::<Vec<bollard_next::models::BuildInfo>>()
         .await?;
 
     assert!(build
@@ -481,7 +497,7 @@ ENTRYPOINT ls buildkit-bollard.txt
         .flat_map(|build_info| {
             if let Some(aux) = &build_info.aux {
                 match aux {
-                    bollard::models::BuildInfoAux::BuildKit(res) => Vec::clone(&res.statuses),
+                    bollard_next::models::BuildInfoAux::BuildKit(res) => Vec::clone(&res.statuses),
                     _ => vec![],
                 }
             } else {
@@ -578,7 +594,7 @@ ENTRYPOINT ls buildkit-bollard.txt
             None,
             Some(compressed.into()),
         )
-        .try_collect::<Vec<bollard::models::BuildInfo>>()
+        .try_collect::<Vec<bollard_next::models::BuildInfo>>()
         .await;
 
     assert!(build.is_err());

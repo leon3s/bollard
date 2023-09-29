@@ -1,5 +1,5 @@
 [package]
-name = "bollard"
+name = "bollard-next"
 description = "An asynchronous Docker daemon API"
 version = "0.16.1"
 authors = [ "Bollard contributors" ]
@@ -12,16 +12,12 @@ keywords = ["docker"]
 edition = "2021"
 
 [workspace]
-members = [
-  "codegen/swagger",
-  "codegen/proto",
-  "."
-]
+members = ["codegen/swagger", "codegen/proto", "."]
 
 [features]
 default = []
 # Enable Buildkit-enabled docker image building
-buildkit = ["chrono", "num", "rand", "tokio/fs", "tokio-util/io", "tonic", "tower-service", "ssl", "bollard-stubs/buildkit", "bollard-buildkit-proto"]
+buildkit = ["chrono", "num", "rand", "tokio/fs", "tokio-util/io", "tonic", "tower-service", "ssl", "bollard-next-stubs/buildkit", "bollard-buildkit-proto"]
 # Enable tests specifically for the http connector
 test_http = []
 # Enable tests specifically for rustls
@@ -33,12 +29,17 @@ json_data_content = []
 # Enable rustls / ssl
 ssl = ["home", "hyper-rustls", "rustls", "rustls-native-certs", "rustls-pemfile", "rustls-pki-types"]
 webpki = ["ssl", "dep:webpki-roots"]
-chrono = ["dep:chrono", "bollard-stubs/chrono"]
-time = ["dep:time", "bollard-stubs/time"]
+chrono = ["dep:chrono", "bollard-next-stubs/chrono"]
+time = ["dep:time", "bollard-next-stubs/time"]
+
+# Enable utoipa support
+utoipa = ["dep:utoipa", "bollard-next-stubs/utoipa"]
+# Enable schemars support
+schemars = ["dep:schemars", "bollard-next-stubs/schemars"]
 
 [dependencies]
 base64 = "0.22"
-bollard-stubs = { version = "=1.44.0-rc.2", default-features = false }
+bollard-next-stubs = { path = "codegen/swagger", version = "1.44.0-rc.26.0.0", default-features = false }
 bollard-buildkit-proto = { path = "codegen/proto", version = "=0.4.0", optional = true }
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock", "serde"], optional = true }
@@ -72,6 +73,8 @@ tokio-util = { version = "0.7", features = ["codec"] }
 tower-service = { version = "0.3", optional = true }
 url = "2.2"
 webpki-roots = { version = "0.26", optional = true }
+schemars = { version = "0.8", optional = true }
+utoipa = { version = "4.1", features = ["preserve_order"], optional = true }
 
 [dev-dependencies]
 flate2 = "1.0"

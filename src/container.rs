@@ -27,7 +27,7 @@ use crate::read::NewlineLogOutputDecoder;
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::ListContainersOptions;
+/// use bollard_next::container::ListContainersOptions;
 ///
 /// use std::collections::HashMap;
 /// use std::default::Default;
@@ -43,7 +43,7 @@ use crate::read::NewlineLogOutputDecoder;
 /// ```
 ///
 /// ```rust
-/// # use bollard::container::ListContainersOptions;
+/// # use bollard_next::container::ListContainersOptions;
 /// # use std::default::Default;
 /// ListContainersOptions::<String>{
 ///     ..Default::default()
@@ -85,7 +85,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::CreateContainerOptions;
+/// use bollard_next::container::CreateContainerOptions;
 ///
 /// CreateContainerOptions{
 ///     name: "my-new-container",
@@ -93,6 +93,8 @@ where
 /// };
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CreateContainerOptions<T>
 where
     T: Into<String> + Serialize,
@@ -110,30 +112,31 @@ where
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct NetworkingConfig<T: Into<String> + Hash + Eq> {
     pub endpoints_config: HashMap<T, EndpointSettings>,
 }
 
 /// Container to create.
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-pub struct Config<T>
-where
-    T: Into<String> + Eq + Hash,
-{
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+pub struct Config {
     /// The hostname to use for the container, as a valid RFC 1123 hostname.
     #[serde(rename = "Hostname")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hostname: Option<T>,
+    pub hostname: Option<String>,
 
     /// The domain name to use for the container.
     #[serde(rename = "Domainname")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub domainname: Option<T>,
+    pub domainname: Option<String>,
 
     /// The user that commands are run as inside the container.
     #[serde(rename = "User")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<T>,
+    pub user: Option<String>,
 
     /// Whether to attach to `stdin`.
     #[serde(rename = "AttachStdin")]
@@ -153,7 +156,7 @@ where
     /// An object mapping ports to an empty object in the form:  `{\"<port>/<tcp|udp|sctp>\": {}}`
     #[serde(rename = "ExposedPorts")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub exposed_ports: Option<HashMap<T, HashMap<(), ()>>>,
+    pub exposed_ports: Option<HashMap<String, EmptyObject>>,
 
     /// Attach standard streams to a TTY, including `stdin` if it is not closed.
     #[serde(rename = "Tty")]
@@ -173,12 +176,12 @@ where
     /// A list of environment variables to set inside the container in the form `[\"VAR=value\", ...]`. A variable without `=` is removed from the environment, rather than to have an empty value.
     #[serde(rename = "Env")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<T>>,
+    pub env: Option<Vec<String>>,
 
     /// Command to run specified as a string or an array of strings.
     #[serde(rename = "Cmd")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cmd: Option<Vec<T>>,
+    pub cmd: Option<Vec<String>>,
 
     /// A TEST to perform TO Check that the container is healthy.
     #[serde(rename = "Healthcheck")]
@@ -193,22 +196,22 @@ where
     /// The name of the image to use when creating the container
     #[serde(rename = "Image")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub image: Option<T>,
+    pub image: Option<String>,
 
     /// An object mapping mount point paths inside the container to empty objects.
     #[serde(rename = "Volumes")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<HashMap<T, HashMap<(), ()>>>,
+    pub volumes: Option<HashMap<String, EmptyObject>>,
 
     /// The working directory for commands to run in.
     #[serde(rename = "WorkingDir")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub working_dir: Option<T>,
+    pub working_dir: Option<String>,
 
     /// The entry point for the container as a string or an array of strings.  If the array consists of exactly one empty string (`[\"\"]`) then the entry point is reset to system default (i.e., the entry point used by docker when there is no `ENTRYPOINT` instruction in the `Dockerfile`).
     #[serde(rename = "Entrypoint")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub entrypoint: Option<Vec<T>>,
+    pub entrypoint: Option<Vec<String>>,
 
     /// Disable networking for the container.
     #[serde(rename = "NetworkDisabled")]
@@ -218,22 +221,22 @@ where
     /// MAC address of the container.
     #[serde(rename = "MacAddress")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mac_address: Option<T>,
+    pub mac_address: Option<String>,
 
     /// `ONBUILD` metadata that were defined in the image's `Dockerfile`.
     #[serde(rename = "OnBuild")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_build: Option<Vec<T>>,
+    pub on_build: Option<Vec<String>>,
 
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<HashMap<T, T>>,
+    pub labels: Option<HashMap<String, String>>,
 
     /// Signal to stop a container as a string or unsigned integer.
     #[serde(rename = "StopSignal")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub stop_signal: Option<T>,
+    pub stop_signal: Option<String>,
 
     /// Timeout to stop a container in seconds.
     #[serde(rename = "StopTimeout")]
@@ -243,7 +246,7 @@ where
     /// Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell.
     #[serde(rename = "Shell")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shell: Option<Vec<T>>,
+    pub shell: Option<Vec<String>>,
 
     /// Container configuration that depends on the host we are running on.
     /// Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell.
@@ -254,10 +257,10 @@ where
     /// This container's networking configuration.
     #[serde(rename = "NetworkingConfig")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub networking_config: Option<NetworkingConfig<T>>,
+    pub networking_config: Option<NetworkingConfig<String>>,
 }
 
-impl From<ContainerConfig> for Config<String> {
+impl From<ContainerConfig> for Config {
     fn from(container: ContainerConfig) -> Self {
         Config {
             hostname: container.hostname,
@@ -295,12 +298,14 @@ impl From<ContainerConfig> for Config<String> {
 ///
 /// ## Examples
 ///
-/// use bollard::container::StopContainerOptions;
+/// use bollard_next::container::StopContainerOptions;
 ///
 /// StopContainerOptions{
 ///     t: 30,
 /// };
 #[derive(Debug, Copy, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct StopContainerOptions {
     /// Number of seconds to wait before killing the container
     pub t: i64,
@@ -311,7 +316,7 @@ pub struct StopContainerOptions {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::StartContainerOptions;
+/// use bollard_next::container::StartContainerOptions;
 ///
 /// StartContainerOptions{
 ///     detach_keys: "ctrl-^"
@@ -319,6 +324,8 @@ pub struct StopContainerOptions {
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct StartContainerOptions<T>
 where
     T: Into<String> + Serialize,
@@ -333,7 +340,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::RemoveContainerOptions;
+/// use bollard_next::container::RemoveContainerOptions;
 ///
 /// use std::default::Default;
 ///
@@ -343,6 +350,8 @@ where
 /// };
 /// ```
 #[derive(Debug, Copy, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct RemoveContainerOptions {
     /// Remove the volumes associated with the container.
     pub v: bool,
@@ -357,13 +366,15 @@ pub struct RemoveContainerOptions {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::WaitContainerOptions;
+/// use bollard_next::container::WaitContainerOptions;
 ///
 /// WaitContainerOptions{
 ///     condition: "not-running",
 /// };
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct WaitContainerOptions<T>
 where
     T: Into<String> + Serialize,
@@ -392,7 +403,7 @@ impl fmt::Debug for AttachContainerResults {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::AttachContainerOptions;
+/// use bollard_next::container::AttachContainerOptions;
 ///
 /// AttachContainerOptions::<String>{
 ///     stdin: Some(true),
@@ -404,6 +415,8 @@ impl fmt::Debug for AttachContainerResults {
 /// };
 /// ```
 #[derive(Debug, Copy, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct AttachContainerOptions<T>
 where
     T: Into<String> + Serialize + Default,
@@ -431,7 +444,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::ResizeContainerTtyOptions;
+/// use bollard_next::container::ResizeContainerTtyOptions;
 ///
 /// ResizeContainerTtyOptions {
 ///     width: 50,
@@ -439,6 +452,8 @@ where
 /// };
 /// ```
 #[derive(Debug, Copy, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct ResizeContainerTtyOptions {
     /// Width of the TTY session in characters
     #[serde(rename = "w")]
@@ -453,13 +468,15 @@ pub struct ResizeContainerTtyOptions {
 /// ## Example
 ///
 /// ```rust
-/// use bollard::container::RestartContainerOptions;
+/// use bollard_next::container::RestartContainerOptions;
 ///
 /// RestartContainerOptions{
 ///     t: 30,
 /// };
 /// ```
 #[derive(Debug, Copy, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct RestartContainerOptions {
     /// Number of seconds to wait before killing the container.
     pub t: isize,
@@ -470,13 +487,15 @@ pub struct RestartContainerOptions {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::InspectContainerOptions;
+/// use bollard_next::container::InspectContainerOptions;
 ///
 /// InspectContainerOptions{
 ///     size: false,
 /// };
 /// ```
 #[derive(Debug, Copy, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct InspectContainerOptions {
     /// Return the size of container as fields `SizeRw` and `SizeRootFs`
     pub size: bool,
@@ -487,13 +506,15 @@ pub struct InspectContainerOptions {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::TopOptions;
+/// use bollard_next::container::TopOptions;
 ///
 /// TopOptions{
 ///     ps_args: "aux",
 /// };
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct TopOptions<T>
 where
     T: Into<String> + Serialize,
@@ -511,7 +532,7 @@ fn is_zero(val: &i64) -> bool {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::LogsOptions;
+/// use bollard_next::container::LogsOptions;
 ///
 /// use std::default::Default;
 ///
@@ -521,6 +542,8 @@ fn is_zero(val: &i64) -> bool {
 /// };
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct LogsOptions<T>
 where
     T: Into<String> + Serialize,
@@ -547,6 +570,7 @@ where
 /// Result type for the [Logs API](Docker::logs())
 #[derive(Debug, Clone, PartialEq)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 pub enum LogOutput {
     StdErr { message: Bytes },
     StdOut { message: Bytes },
@@ -594,7 +618,7 @@ impl LogOutput {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::StatsOptions;
+/// use bollard_next::container::StatsOptions;
 ///
 /// StatsOptions{
 ///     stream: false,
@@ -602,6 +626,8 @@ impl LogOutput {
 /// };
 /// ```
 #[derive(Debug, Copy, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct StatsOptions {
     /// Stream the output. If false, the stats will be output once and then it will disconnect.
     pub stream: bool,
@@ -614,6 +640,8 @@ pub struct StatsOptions {
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
 #[serde(untagged)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub enum MemoryStatsStats {
     V1(MemoryStatsStatsV1),
     V2(MemoryStatsStatsV2),
@@ -625,6 +653,8 @@ pub enum MemoryStatsStats {
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
 #[serde(deny_unknown_fields)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct MemoryStatsStatsV1 {
     pub cache: u64,
     pub dirty: u64,
@@ -668,6 +698,8 @@ pub struct MemoryStatsStatsV1 {
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
 #[serde(deny_unknown_fields)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct MemoryStatsStatsV2 {
     pub anon: u64,
     pub file: u64,
@@ -705,6 +737,8 @@ pub struct MemoryStatsStatsV2 {
 /// General memory statistics for the container.
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct MemoryStats {
     pub stats: Option<MemoryStatsStats>,
     pub max_usage: Option<u64>,
@@ -721,6 +755,8 @@ pub struct MemoryStats {
 /// Process ID statistics for the container.
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct PidsStats {
     pub current: Option<u64>,
     pub limit: Option<u64>,
@@ -729,6 +765,8 @@ pub struct PidsStats {
 /// I/O statistics for the container.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct BlkioStats {
     pub io_service_bytes_recursive: Option<Vec<BlkioStatsEntry>>,
     pub io_serviced_recursive: Option<Vec<BlkioStatsEntry>>,
@@ -743,6 +781,8 @@ pub struct BlkioStats {
 /// File I/O statistics for the container.
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct StorageStats {
     pub read_count_normalized: Option<u64>,
     pub read_size_bytes: Option<u64>,
@@ -757,6 +797,8 @@ fn empty_string() -> String {
 /// Statistics for the container.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct Stats {
     #[cfg(feature = "time")]
     #[serde(
@@ -798,6 +840,8 @@ pub struct Stats {
 /// Network statistics for the container.
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct NetworkStats {
     pub rx_dropped: u64,
     pub rx_bytes: u64,
@@ -812,6 +856,8 @@ pub struct NetworkStats {
 /// CPU usage statistics for the container.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CPUUsage {
     pub percpu_usage: Option<Vec<u64>>,
     pub usage_in_usermode: u64,
@@ -822,6 +868,8 @@ pub struct CPUUsage {
 /// CPU throttling statistics.
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct ThrottlingData {
     pub periods: u64,
     pub throttled_periods: u64,
@@ -831,6 +879,8 @@ pub struct ThrottlingData {
 /// General CPU statistics for the container.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct CPUStats {
     pub cpu_usage: CPUUsage,
     pub system_cpu_usage: Option<u64>,
@@ -840,6 +890,8 @@ pub struct CPUStats {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[allow(missing_docs)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct BlkioStatsEntry {
     pub major: u64,
     pub minor: u64,
@@ -852,13 +904,15 @@ pub struct BlkioStatsEntry {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::KillContainerOptions;
+/// use bollard_next::container::KillContainerOptions;
 ///
 /// KillContainerOptions{
 ///     signal: "SIGINT",
 /// };
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct KillContainerOptions<T>
 where
     T: Into<String> + Serialize,
@@ -872,7 +926,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::UpdateContainerOptions;
+/// use bollard_next::container::UpdateContainerOptions;
 /// use std::default::Default;
 ///
 /// UpdateContainerOptions::<String> {
@@ -883,6 +937,8 @@ where
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
 #[serde(rename_all = "PascalCase")]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct UpdateContainerOptions<T>
 where
     T: Into<String> + Eq + Hash,
@@ -1059,13 +1115,15 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::RenameContainerOptions;
+/// use bollard_next::container::RenameContainerOptions;
 ///
 /// RenameContainerOptions {
 ///     name: "my_new_container_name"
 /// };
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct RenameContainerOptions<T>
 where
     T: Into<String> + Serialize,
@@ -1079,7 +1137,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::PruneContainersOptions;
+/// use bollard_next::container::PruneContainersOptions;
 ///
 /// use std::collections::HashMap;
 ///
@@ -1110,7 +1168,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::UploadToContainerOptions;
+/// use bollard_next::container::UploadToContainerOptions;
 ///
 /// use std::default::Default;
 ///
@@ -1121,6 +1179,8 @@ where
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct UploadToContainerOptions<T>
 where
     T: Into<String> + Serialize,
@@ -1138,7 +1198,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::container::DownloadFromContainerOptions;
+/// use bollard_next::container::DownloadFromContainerOptions;
 ///
 /// DownloadFromContainerOptions{
 ///     path: "/opt",
@@ -1171,9 +1231,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::ListContainersOptions;
+    /// use bollard_next::container::ListContainersOptions;
     ///
     /// use std::collections::HashMap;
     /// use std::default::Default;
@@ -1226,9 +1286,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::{CreateContainerOptions, Config};
+    /// use bollard_next::container::{CreateContainerOptions, Config};
     ///
     /// use std::default::Default;
     ///
@@ -1245,14 +1305,13 @@ impl Docker {
     ///
     /// docker.create_container(options, config);
     /// ```
-    pub async fn create_container<T, Z>(
+    pub async fn create_container<T>(
         &self,
         options: Option<CreateContainerOptions<T>>,
-        config: Config<Z>,
+        config: Config,
     ) -> Result<ContainerCreateResponse, Error>
     where
         T: Into<String> + Serialize,
-        Z: Into<String> + Hash + Eq + Serialize,
     {
         let url = "/containers/create";
         let req = self.build_request(
@@ -1284,9 +1343,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::StartContainerOptions;
+    /// use bollard_next::container::StartContainerOptions;
     ///
     /// docker.start_container("hello-world", None::<StartContainerOptions<String>>);
     /// ```
@@ -1328,8 +1387,8 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
-    /// use bollard::container::StopContainerOptions;
+    /// # use bollard_next::Docker;
+    /// use bollard_next::container::StopContainerOptions;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// let options = Some(StopContainerOptions{
@@ -1373,10 +1432,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::RemoveContainerOptions;
+    /// use bollard_next::container::RemoveContainerOptions;
     ///
     /// use std::default::Default;
     ///
@@ -1424,10 +1483,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::WaitContainerOptions;
+    /// use bollard_next::container::WaitContainerOptions;
     ///
     /// let options = Some(WaitContainerOptions{
     ///     condition: "not-running",
@@ -1490,10 +1549,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::AttachContainerOptions;
+    /// use bollard_next::container::AttachContainerOptions;
     ///
     /// let options = Some(AttachContainerOptions::<String>{
     ///     stdin: Some(true),
@@ -1549,10 +1608,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::ResizeContainerTtyOptions;
+    /// use bollard_next::container::ResizeContainerTtyOptions;
     ///
     /// let options = ResizeContainerTtyOptions {
     ///     width: 50,
@@ -1596,10 +1655,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::RestartContainerOptions;
+    /// use bollard_next::container::RestartContainerOptions;
     ///
     /// let options = Some(RestartContainerOptions{
     ///     t: 30,
@@ -1642,9 +1701,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::InspectContainerOptions;
+    /// use bollard_next::container::InspectContainerOptions;
     ///
     /// let options = Some(InspectContainerOptions{
     ///     size: false,
@@ -1687,9 +1746,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::TopOptions;
+    /// use bollard_next::container::TopOptions;
     ///
     /// let options = Some(TopOptions{
     ///     ps_args: "aux",
@@ -1736,10 +1795,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::LogsOptions;
+    /// use bollard_next::container::LogsOptions;
     ///
     /// use std::default::Default;
     ///
@@ -1788,7 +1847,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.container_changes("hello-world");
@@ -1828,10 +1887,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::StatsOptions;
+    /// use bollard_next::container::StatsOptions;
     ///
     /// let options = Some(StatsOptions{
     ///     stream: false,
@@ -1875,10 +1934,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::KillContainerOptions;
+    /// use bollard_next::container::KillContainerOptions;
     ///
     /// let options = Some(KillContainerOptions{
     ///     signal: "SIGINT",
@@ -1924,10 +1983,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::UpdateContainerOptions;
+    /// use bollard_next::container::UpdateContainerOptions;
     /// use std::default::Default;
     ///
     /// let config = UpdateContainerOptions::<String> {
@@ -1976,10 +2035,10 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
-    /// use bollard::container::RenameContainerOptions;
+    /// use bollard_next::container::RenameContainerOptions;
     ///
     /// let required = RenameContainerOptions {
     ///     name: "my_new_container_name"
@@ -2024,7 +2083,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.pause_container("postgres");
@@ -2059,7 +2118,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.unpause_container("postgres");
@@ -2094,9 +2153,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::PruneContainersOptions;
+    /// use bollard_next::container::PruneContainersOptions;
     ///
     /// use std::collections::HashMap;
     ///
@@ -2145,9 +2204,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::UploadToContainerOptions;
+    /// use bollard_next::container::UploadToContainerOptions;
     ///
     /// use std::default::Default;
     /// use std::fs::File;
@@ -2205,9 +2264,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::container::DownloadFromContainerOptions;
+    /// use bollard_next::container::DownloadFromContainerOptions;
     ///
     /// let options = Some(DownloadFromContainerOptions{
     ///     path: "/opt",

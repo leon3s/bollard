@@ -104,7 +104,7 @@ pub struct VersionComponents {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::system::EventsOptions;
+/// use bollard_next::system::EventsOptions;
 /// use time::{Duration, OffsetDateTime};
 /// use std::collections::HashMap;
 ///
@@ -177,7 +177,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     /// docker.version();
     /// ```
@@ -205,7 +205,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     /// docker.info();
     /// ```
@@ -228,7 +228,7 @@ impl Docker {
     /// # Returns - A [String](std::string::String), wrapped in a Future. # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.ping();
@@ -260,11 +260,11 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// use bollard::system::EventsOptions;
+    /// use bollard_next::system::EventsOptions;
     /// use time::{Duration, OffsetDateTime};
     /// use std::collections::HashMap;
     ///
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.events(Some(EventsOptions::<String> {
@@ -307,7 +307,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     /// docker.df();
     /// ```
