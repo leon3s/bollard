@@ -18,7 +18,7 @@ members = ["codegen/swagger", "codegen/proto", "."]
 # Enable utoipa support
 utoipa = ["dep:utoipa", "bollard-next-stubs/utoipa"]
 # Enable Buildkit-enabled docker image building
-buildkit = ["num", "rand", "tokio/fs", "tokio-stream", "tokio-util/io", "tower", "tonic", "tower-service", "bollard-stubs/buildkit", "bollard-buildkit-proto"]
+buildkit = ["num", "rand", "tokio/fs", "tokio-stream", "tokio-util/io", "tower", "tonic", "tower-service", "bollard-next-stubs/buildkit", "bollard-buildkit-proto"]
 # Enable tests specifically for the http connector
 test_http = []
 # Enable tests specifically for rustls
@@ -36,7 +36,7 @@ time = ["dep:time", "bollard-next-stubs/time"]
 [dependencies]
 base64 = "0.21"
 bollard-next-stubs = { path = "codegen/swagger", version = "=1.43.0-rc.3", default-features = false }
-bollard-buildkit-proto = { path = "codegen/proto", version = "=0.1.0", optional = true }
+bollard-buildkit-proto = { path = "codegen/proto", version = "=0.2.0", optional = true }
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = [
   "std",
