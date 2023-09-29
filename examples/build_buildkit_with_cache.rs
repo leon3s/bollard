@@ -2,8 +2,8 @@
 #![allow(unused_variables, unused_mut, unused_imports)]
 
 #[cfg(feature = "buildkit")]
-use bollard::grpc::registry::ImageRegistryOutput;
-use bollard::Docker;
+use bollard_next::grpc::registry::ImageRegistryOutput;
+use bollard_next::Docker;
 
 #[cfg(feature = "buildkit")]
 use bollard_buildkit_proto::moby::buildkit::v1::CacheOptionsEntry;

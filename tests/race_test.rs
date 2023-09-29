@@ -1,9 +1,9 @@
-use bollard::{image::ListImagesOptions, Docker};
+use bollard_next::{image::ListImagesOptions, Docker};
 use once_cell::sync::OnceCell;
 
 static DOCKER: OnceCell<Docker> = OnceCell::new();
 #[cfg(all(unix, not(feature = "test_http"), not(feature = "test_ssl")))]
-fn get_docker() -> Result<&'static Docker, bollard::errors::Error> {
+fn get_docker() -> Result<&'static Docker, bollard_next::errors::Error> {
     DOCKER.get_or_try_init(Docker::connect_with_unix_defaults)
 }
 

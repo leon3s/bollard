@@ -9,8 +9,8 @@ use crate::errors::Error;
 use bytes::Bytes;
 use http::header::CONTENT_TYPE;
 use http::request::Builder;
+use http::Method;
 use http_body_util::Full;
-use hyper::Method;
 use serde_derive::Serialize;
 
 use std::{collections::HashMap, hash::Hash};
@@ -22,7 +22,7 @@ use std::{collections::HashMap, hash::Hash};
 /// ```rust
 /// # use std::collections::HashMap;
 /// # use std::default::Default;
-/// use bollard::service::ListServicesOptions;
+/// use bollard_next::service::ListServicesOptions;
 ///
 /// let mut filters = HashMap::new();
 /// filters.insert("mode", vec!["global"]);
@@ -34,7 +34,7 @@ use std::{collections::HashMap, hash::Hash};
 /// ```
 ///
 /// ```rust
-/// # use bollard::service::ListServicesOptions;
+/// # use bollard_next::service::ListServicesOptions;
 /// # use std::default::Default;
 ///
 /// let options: ListServicesOptions<&str> = Default::default();
@@ -61,7 +61,7 @@ where
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::service::InspectServiceOptions;
+/// use bollard_next::service::InspectServiceOptions;
 ///
 /// InspectServiceOptions{
 ///     insert_defaults: true,
@@ -79,7 +79,7 @@ pub struct InspectServiceOptions {
 /// ## Examples
 ///
 /// ```rust
-/// use bollard::service::UpdateServiceOptions;
+/// use bollard_next::service::UpdateServiceOptions;
 ///
 /// UpdateServiceOptions{
 ///     version: 1234,
@@ -140,9 +140,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::service::ListServicesOptions;
+    /// use bollard_next::service::ListServicesOptions;
     ///
     /// use std::collections::HashMap;
     /// use std::default::Default;
@@ -168,7 +168,7 @@ impl Docker {
 
         let req = self.build_request(
             url,
-            Builder::new().method(Method::GET),
+            Builder::new().method(hyper::Method::GET),
             options,
             Ok(BodyType::Left(Full::new(Bytes::new()))),
         );
@@ -195,11 +195,11 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # use std::collections::HashMap;
     /// # use std::default::Default;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::service::{
+    /// use bollard_next::service::{
     ///     ServiceSpec,
     ///     ServiceSpecMode,
     ///     ServiceSpecModeReplicated,
@@ -266,9 +266,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::service::InspectServiceOptions;
+    /// use bollard_next::service::InspectServiceOptions;
     ///
     /// let options = Some(InspectServiceOptions{
     ///     insert_defaults: true,
@@ -285,7 +285,7 @@ impl Docker {
 
         let req = self.build_request(
             &url,
-            Builder::new().method(Method::GET),
+            Builder::new().method(hyper::Method::GET),
             options,
             Ok(BodyType::Left(Full::new(Bytes::new()))),
         );
@@ -310,7 +310,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
     ///
     /// docker.delete_service("my-service");
@@ -320,7 +320,7 @@ impl Docker {
 
         let req = self.build_request(
             &url,
-            Builder::new().method(Method::DELETE),
+            Builder::new().method(hyper::Method::DELETE),
             None::<String>,
             Ok(BodyType::Left(Full::new(Bytes::new()))),
         );
@@ -349,9 +349,9 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust
-    /// # use bollard::Docker;
+    /// # use bollard_next::Docker;
     /// # let docker = Docker::connect_with_http_defaults().unwrap();
-    /// use bollard::service::{
+    /// use bollard_next::service::{
     ///     InspectServiceOptions,
     ///     ServiceSpec,
     ///     ServiceSpecMode,

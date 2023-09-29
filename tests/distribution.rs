@@ -1,4 +1,4 @@
-use bollard::{errors::Error, Docker};
+use bollard_next::{errors::Error, Docker};
 use tokio::runtime::Runtime;
 
 #[macro_use]

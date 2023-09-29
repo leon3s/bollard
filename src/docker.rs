@@ -437,7 +437,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::Docker;
+    /// use bollard_next::Docker;
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -481,7 +481,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::{API_DEFAULT_VERSION, Docker};
+    /// use bollard_next::{API_DEFAULT_VERSION, Docker};
     ///
     /// use std::path::Path;
     ///
@@ -590,7 +590,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::Docker;
+    /// use bollard_next::Docker;
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -614,7 +614,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::{API_DEFAULT_VERSION, Docker};
+    /// use bollard_next::{API_DEFAULT_VERSION, Docker};
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -747,7 +747,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::Docker;
+    /// use bollard_next::Docker;
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -774,7 +774,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::{API_DEFAULT_VERSION, Docker};
+    /// use bollard_next::{API_DEFAULT_VERSION, Docker};
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -896,7 +896,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::Docker;
+    /// use bollard_next::Docker;
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -928,7 +928,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::{API_DEFAULT_VERSION, Docker};
+    /// use bollard_next::{API_DEFAULT_VERSION, Docker};
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -984,7 +984,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::Docker;
+    /// use bollard_next::Docker;
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -1007,7 +1007,7 @@ impl Docker {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use bollard::{API_DEFAULT_VERSION, Docker};
+    /// use bollard_next::{API_DEFAULT_VERSION, Docker};
     ///
     /// use futures_util::future::TryFutureExt;
     ///
@@ -1061,7 +1061,7 @@ impl Docker {
     /// # extern crate futures;
     /// # extern crate yup_hyper_mock;
     /// # fn main () {
-    /// use bollard::{API_DEFAULT_VERSION, Docker};
+    /// use bollard_next::{API_DEFAULT_VERSION, Docker};
     ///
     /// use futures::future::Future;
     ///
@@ -1242,7 +1242,7 @@ impl Docker {
     /// # Examples:
     ///
     /// ```rust,no_run
-    ///     use bollard::Docker;
+    ///     use bollard_next::Docker;
     ///
     ///     let docker = Docker::connect_with_http_defaults().unwrap();
     ///     async move {
