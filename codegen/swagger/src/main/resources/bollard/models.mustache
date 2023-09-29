@@ -36,6 +36,8 @@ pub type BollardDate = chrono::DateTime<chrono::Utc>;
 #[cfg(not(any(feature = "chrono", feature = "time")))]
 pub type BollardDate = String;
 
+pub type EmptyObject = HashMap<(), ()>;
+
 #[cfg(feature = "time")]
 fn deserialize_timestamp<'de, D: Deserializer<'de>>(
     d: D
@@ -104,6 +106,7 @@ pub enum BuildInfoAux {
 /// which helps with FFI.
 #[allow(non_camel_case_types)]{{#vendorExtensions.x-rustgen-numeric-enum}}
 #[repr({{dataType}})]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize_repr, Deserialize_repr, Eq, Ord)]{{#xmlName}}
 #[serde(rename = "{{xmlName}}")]{{/xmlName}}
 pub enum {{classname}} { {{#allowableValues}}{{#enumVars}}
@@ -144,7 +147,8 @@ impl std::default::Default for {{classname}}{{enumName}} {
 pub type {{classname}} = {{{arrayModelType}}};
 {{/arrayModelType}}{{^arrayModelType}}{{#emptyVars}}// special-casing PortMap, cos swagger-codegen doesn't figure out this type
 pub type {{classname}} = HashMap<String, Option<Vec<PortBinding>>>;
-{{/emptyVars}}{{^emptyVars}}{{! general struct}}#[derive(Debug, Clone, Default, PartialEq, {{^vendorExtensions.x-rustgen-grpc-aux}}Serialize, {{/vendorExtensions.x-rustgen-grpc-aux}}Deserialize)]{{#xmlName}}
+{{/emptyVars}}{{^emptyVars}}{{! general struct}}#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[derive(Debug, Clone, Default, PartialEq, {{^vendorExtensions.x-rustgen-grpc-aux}}Serialize, {{/vendorExtensions.x-rustgen-grpc-aux}}Deserialize)]{{#xmlName}}
 #[serde(rename = "{{xmlName}}")]{{/xmlName}}{{#vendorExtensions.x-rustgen-upper-case}}
 #[serde(rename_all = "UPPERCASE")]{{/vendorExtensions.x-rustgen-upper-case}}
 pub struct {{classname}} {
@@ -181,6 +185,7 @@ pub struct {{classname}} {
 {{/vars}}
 }
 {{#vars}}{{#isEnum}}
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]{{#xmlName}}
 #[serde(rename = "{{xmlName}}")]{{/xmlName}}

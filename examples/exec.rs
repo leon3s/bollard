@@ -1,10 +1,10 @@
 //! This example will run a non-interactive command inside the container using `docker exec`
 
-use bollard::container::{Config, RemoveContainerOptions};
-use bollard::Docker;
+use bollard_next::container::{Config, RemoveContainerOptions};
+use bollard_next::Docker;
 
-use bollard::exec::{CreateExecOptions, StartExecResults};
-use bollard::image::CreateImageOptions;
+use bollard_next::exec::{CreateExecOptions, StartExecResults};
+use bollard_next::image::CreateImageOptions;
 use futures_util::stream::StreamExt;
 use futures_util::TryStreamExt;
 
@@ -27,13 +27,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
         .await?;
 
     let alpine_config = Config {
-        image: Some(IMAGE),
+        image: Some(IMAGE.to_owned()),
         tty: Some(true),
         ..Default::default()
     };
 
     let id = docker
-        .create_container::<&str, &str>(None, alpine_config)
+        .create_container::<&str>(None, alpine_config)
         .await?
         .id;
     docker.start_container::<String>(&id, None).await?;
@@ -45,7 +45,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
             CreateExecOptions {
                 attach_stdout: Some(true),
                 attach_stderr: Some(true),
-                cmd: Some(vec!["ls", "-l", "/"]),
+                cmd: Some(vec!["ls".into(), "-l".into(), "/".into()]),
                 ..Default::default()
             },
         )

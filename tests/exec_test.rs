@@ -2,10 +2,10 @@
 
 use std::task::Poll;
 
-use bollard::container::*;
-use bollard::errors::Error;
-use bollard::exec::*;
-use bollard::Docker;
+use bollard_next::container::*;
+use bollard_next::errors::Error;
+use bollard_next::exec::*;
+use bollard_next::Docker;
 
 use futures_util::future;
 use futures_util::stream::TryStreamExt;
@@ -26,13 +26,13 @@ async fn start_exec_test(docker: Docker) -> Result<(), Error> {
                 attach_stdout: Some(true),
                 cmd: if cfg!(windows) {
                     Some(vec![
-                        "cmd.exe",
-                        "/C",
-                        "type",
-                        "C:\\Windows\\System32\\Inetsrv\\Config\\ApplicationHost.config",
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "type".into(),
+                        "C:\\Windows\\System32\\Inetsrv\\Config\\ApplicationHost.config".into(),
                     ])
                 } else {
-                    Some(vec!["/bin/cat", "/etc/config/uhttpd"])
+                    Some(vec!["/bin/cat".into(), "/etc/config/uhttpd".into()])
                 },
                 ..Default::default()
             },
@@ -99,13 +99,13 @@ async fn inspect_exec_test(docker: Docker) -> Result<(), Error> {
                 attach_stdout: Some(true),
                 cmd: if cfg!(windows) {
                     Some(vec![
-                        "cmd.exe",
-                        "/C",
-                        "type",
-                        "C:\\Windows\\System32\\Inetsrv\\Config\\ApplicationHost.config",
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "type".into(),
+                        "C:\\Windows\\System32\\Inetsrv\\Config\\ApplicationHost.config".into(),
                     ])
                 } else {
-                    Some(vec!["/bin/cat", "/etc/config/uhttpd"])
+                    Some(vec!["/bin/cat".into(), "/etc/config/uhttpd".into()])
                 },
                 ..Default::default()
             },
@@ -171,9 +171,14 @@ async fn start_exec_output_capacity_test_short(docker: Docker) -> Result<(), Err
             CreateExecOptions {
                 attach_stdout: Some(true),
                 cmd: if cfg!(windows) {
-                    Some(vec!["cmd.exe", "/C", "echo", &text1])
+                    Some(vec![
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "echo".into(),
+                        text1.clone(),
+                    ])
                 } else {
-                    Some(vec!["/bin/echo", &text1])
+                    Some(vec!["/bin/echo".into(), text1.clone()])
                 },
                 ..Default::default()
             },
@@ -246,9 +251,14 @@ async fn start_exec_output_capacity_test_long(docker: Docker) -> Result<(), Erro
             CreateExecOptions {
                 attach_stdout: Some(true),
                 cmd: if cfg!(windows) {
-                    Some(vec!["cmd.exe", "/C", "echo", &text2])
+                    Some(vec![
+                        "cmd.exe".into(),
+                        "/C".into(),
+                        "echo".into(),
+                        text2.clone(),
+                    ])
                 } else {
-                    Some(vec!["/bin/echo", &text2])
+                    Some(vec!["/bin/echo".into(), text2.clone()])
                 },
                 ..Default::default()
             },

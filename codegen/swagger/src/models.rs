@@ -36,6 +36,8 @@ pub type BollardDate = chrono::DateTime<chrono::Utc>;
 #[cfg(not(any(feature = "chrono", feature = "time")))]
 pub type BollardDate = String;
 
+pub type EmptyObject = HashMap<(), ()>;
+
 #[cfg(feature = "time")]
 fn deserialize_timestamp<'de, D: Deserializer<'de>>(
     d: D
@@ -99,6 +101,7 @@ pub enum BuildInfoAux {
 
 
 /// Address represents an IPv4 or IPv6 IP address.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Address {
     /// IP address.
@@ -113,6 +116,7 @@ pub struct Address {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct AuthConfig {
     #[serde(rename = "username")]
@@ -134,6 +138,7 @@ pub struct AuthConfig {
 }
 
 /// Volume configuration
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Body {
     #[serde(rename = "Spec")]
@@ -143,6 +148,7 @@ pub struct Body {
 }
 
 /// BuildCache contains information about a build cache record. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct BuildCache {
     /// Unique ID of the build cache record. 
@@ -211,6 +217,7 @@ pub struct BuildCache {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum BuildCacheTypeEnum { 
@@ -275,6 +282,7 @@ impl ::std::convert::AsRef<str> for BuildCacheTypeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
 pub struct BuildInfo {
     #[serde(rename = "id")]
@@ -317,6 +325,7 @@ pub struct BuildInfo {
     
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct BuildPruneResponse {
     #[serde(rename = "CachesDeleted")]
@@ -330,10 +339,12 @@ pub struct BuildPruneResponse {
 
 }
 
+
 /// Kind of change  Can be one of:  - `0`: Modified (\"C\") - `1`: Added (\"A\") - `2`: Deleted (\"D\") 
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize_repr, Deserialize_repr, Eq, Ord)]
@@ -360,6 +371,7 @@ impl std::default::Default for ChangeType {
 }
 
 /// ClusterInfo represents information about the swarm as is returned by the \"/info\" endpoint. Join-tokens are not included. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterInfo {
     /// The ID of the swarm.
@@ -422,6 +434,7 @@ pub struct ClusterInfo {
 }
 
 /// Options and information specific to, and only present on, Swarm CSI cluster volumes. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolume {
     /// The Swarm ID of this volume. Because cluster volumes are Swarm objects, they have an ID, unlike non-cluster volumes. This ID can be used to refer to the Volume instead of the name. 
@@ -467,6 +480,7 @@ pub struct ClusterVolume {
 }
 
 /// Information about the global status of the volume. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeInfo {
     /// The capacity of the volume in bytes. A value of 0 indicates that the capacity is unknown. 
@@ -491,6 +505,7 @@ pub struct ClusterVolumeInfo {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumePublishStatus {
     /// The ID of the Swarm node the volume is published on. 
@@ -510,6 +525,7 @@ pub struct ClusterVolumePublishStatus {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumePublishStatusStateEnum { 
@@ -565,6 +581,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumePublishStatusStateEnum {
 }
 
 /// Cluster-specific options used to create the volume. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpec {
     /// Group defines the volume group of this volume. Volumes belonging to the same group can be referred to by group name when creating Services.  Referring to a volume by group instructs Swarm to treat volumes in that group interchangeably for the purpose of scheduling. Volumes with an empty string for a group technically all belong to the same, emptystring group. 
@@ -579,6 +596,7 @@ pub struct ClusterVolumeSpec {
 }
 
 /// Defines how the volume is used by tasks. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessMode {
     /// The set of nodes this volume can be used on at one time. - `single` The volume may only be scheduled to one node at a time. - `multi` the volume may be scheduled to any supported number of nodes at a time. 
@@ -594,7 +612,7 @@ pub struct ClusterVolumeSpecAccessMode {
     /// Options for using this volume as a Mount-type volume.      Either MountVolume or BlockVolume, but not both, must be     present.   properties:     FsType:       type: \"string\"       description: |         Specifies the filesystem type for the mount volume.         Optional.     MountFlags:       type: \"array\"       description: |         Flags to pass when mounting the volume. Optional.       items:         type: \"string\" BlockVolume:   type: \"object\"   description: |     Options for using this volume as a Block-type volume.     Intentionally empty. 
     #[serde(rename = "MountVolume")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mount_volume: Option<HashMap<(), ()>>,
+    pub mount_volume: Option<EmptyObject>,
 
     /// Swarm Secrets that are passed to the CSI storage plugin when operating on this volume. 
     #[serde(rename = "Secrets")]
@@ -616,6 +634,7 @@ pub struct ClusterVolumeSpecAccessMode {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeScopeEnum { 
@@ -660,6 +679,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeScopeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeSharingEnum { 
@@ -714,6 +734,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeSharingEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ClusterVolumeSpecAccessModeAvailabilityEnum { 
@@ -764,6 +785,7 @@ impl ::std::convert::AsRef<str> for ClusterVolumeSpecAccessModeAvailabilityEnum 
 }
 
 /// Requirements for the accessible topology of the volume. These fields are optional. For an in-depth description of what these fields mean, see the CSI specification. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessModeAccessibilityRequirements {
     /// A list of required topologies, at least one of which the volume must be accessible from. 
@@ -779,6 +801,7 @@ pub struct ClusterVolumeSpecAccessModeAccessibilityRequirements {
 }
 
 /// The desired capacity that the volume should be created with. If empty, the plugin will decide the capacity. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessModeCapacityRange {
     /// The volume must be at least this big. The value of 0 indicates an unspecified minimum 
@@ -794,6 +817,7 @@ pub struct ClusterVolumeSpecAccessModeCapacityRange {
 }
 
 /// One cluster volume secret entry. Defines a key-value pair that is passed to the plugin. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ClusterVolumeSpecAccessModeSecrets {
     /// Key is the name of the key of the key-value pair passed to the plugin. 
@@ -809,6 +833,7 @@ pub struct ClusterVolumeSpecAccessModeSecrets {
 }
 
 /// Commit holds the Git-commit (SHA1) that a binary was built from, as reported in the version-string of external tools, such as `containerd`, or `runC`. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Commit {
     /// Actual commit ID of external tool.
@@ -823,6 +848,7 @@ pub struct Commit {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Config {
     #[serde(rename = "ID")]
@@ -857,6 +883,7 @@ pub struct Config {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ConfigSpec {
     /// User-defined name of the config.
@@ -882,6 +909,7 @@ pub struct ConfigSpec {
 }
 
 /// Configuration for a container that is portable between hosts.  When used as `ContainerConfig` field in an image, `ContainerConfig` is an optional field containing the configuration of the container that was last committed when creating the image.  Previous versions of Docker builder used this field to store build cache, and it is not in active use anymore. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerConfig {
     /// The hostname to use for the container, as a valid RFC 1123 hostname. 
@@ -917,7 +945,7 @@ pub struct ContainerConfig {
     /// An object mapping ports to an empty object in the form:  `{\"<port>/<tcp|udp|sctp>\": {}}` 
     #[serde(rename = "ExposedPorts")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub exposed_ports: Option<HashMap<String, HashMap<(), ()>>>,
+    pub exposed_ports: Option<HashMap<String, EmptyObject>>,
 
     /// Attach standard streams to a TTY, including `stdin` if it is not closed. 
     #[serde(rename = "Tty")]
@@ -961,7 +989,7 @@ pub struct ContainerConfig {
     /// An object mapping mount point paths inside the container to empty objects. 
     #[serde(rename = "Volumes")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<HashMap<String, HashMap<(), ()>>>,
+    pub volumes: Option<HashMap<String, EmptyObject>>,
 
     /// The working directory for commands to run in.
     #[serde(rename = "WorkingDir")]
@@ -1011,6 +1039,7 @@ pub struct ContainerConfig {
 }
 
 /// OK response to ContainerCreate operation
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerCreateResponse {
     /// The ID of the created container
@@ -1024,6 +1053,7 @@ pub struct ContainerCreateResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerInspectResponse {
     /// The ID of the container
@@ -1136,6 +1166,7 @@ pub struct ContainerInspectResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerPruneResponse {
     /// Container IDs that were deleted
@@ -1151,6 +1182,7 @@ pub struct ContainerPruneResponse {
 }
 
 /// ContainerState stores container's running state. It's part of ContainerJSONBase and will be returned by the \"inspect\" command. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerState {
     /// String representation of the container state. Can be one of \"created\", \"running\", \"paused\", \"restarting\", \"removing\", \"exited\", or \"dead\". 
@@ -1212,6 +1244,7 @@ pub struct ContainerState {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ContainerStateStatusEnum { 
@@ -1281,6 +1314,7 @@ impl ::std::convert::AsRef<str> for ContainerStateStatusEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerSummary {
     /// The ID of this container
@@ -1357,6 +1391,7 @@ pub struct ContainerSummary {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerSummaryHostConfig {
     #[serde(rename = "NetworkMode")]
@@ -1366,6 +1401,7 @@ pub struct ContainerSummaryHostConfig {
 }
 
 /// A summary of the container's network settings
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerSummaryNetworkSettings {
     #[serde(rename = "Networks")]
@@ -1375,6 +1411,7 @@ pub struct ContainerSummaryNetworkSettings {
 }
 
 /// OK response to ContainerTop operation
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerTopResponse {
     /// The ps column titles
@@ -1390,6 +1427,7 @@ pub struct ContainerTopResponse {
 }
 
 /// OK response to ContainerUpdate operation
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerUpdateResponse {
     #[serde(rename = "Warnings")]
@@ -1399,6 +1437,7 @@ pub struct ContainerUpdateResponse {
 }
 
 /// container waiting error, if any
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerWaitExitError {
     /// Details of an error
@@ -1409,6 +1448,7 @@ pub struct ContainerWaitExitError {
 }
 
 /// OK response to ContainerWait operation
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ContainerWaitResponse {
     /// Exit code of the container
@@ -1421,6 +1461,7 @@ pub struct ContainerWaitResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct CreateImageInfo {
     #[serde(rename = "id")]
@@ -1450,6 +1491,7 @@ pub struct CreateImageInfo {
 }
 
 /// A device mapping between the host and container
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct DeviceMapping {
     #[serde(rename = "PathOnHost")]
@@ -1467,6 +1509,7 @@ pub struct DeviceMapping {
 }
 
 /// A request for devices to be sent to device drivers
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct DeviceRequest {
     #[serde(rename = "Driver")]
@@ -1494,6 +1537,7 @@ pub struct DeviceRequest {
 }
 
 /// Describes the result obtained from contacting the registry to retrieve image metadata. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct DistributionInspect {
     #[serde(rename = "Descriptor")]
@@ -1507,6 +1551,7 @@ pub struct DistributionInspect {
 }
 
 /// Driver represents a driver (network, logging, secrets).
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Driver {
     /// Name of the driver.
@@ -1521,6 +1566,7 @@ pub struct Driver {
 }
 
 /// EndpointIPAMConfig represents an endpoint's IPAM configuration. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EndpointIpamConfig {
     #[serde(rename = "IPv4Address")]
@@ -1537,6 +1583,7 @@ pub struct EndpointIpamConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EndpointPortConfig {
     #[serde(rename = "Name")]
@@ -1564,6 +1611,7 @@ pub struct EndpointPortConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointPortConfigProtocolEnum { 
@@ -1613,6 +1661,7 @@ impl ::std::convert::AsRef<str> for EndpointPortConfigProtocolEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointPortConfigPublishModeEnum { 
@@ -1658,6 +1707,7 @@ impl ::std::convert::AsRef<str> for EndpointPortConfigPublishModeEnum {
 }
 
 /// Configuration for a network endpoint.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EndpointSettings {
     #[serde(rename = "IPAMConfig")]
@@ -1725,6 +1775,7 @@ pub struct EndpointSettings {
 }
 
 /// Properties that can be configured to access and load balance a service.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EndpointSpec {
     /// The mode of resolution to use for internal load balancing between tasks. 
@@ -1739,6 +1790,7 @@ pub struct EndpointSpec {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EndpointSpecModeEnum { 
@@ -1784,6 +1836,7 @@ impl ::std::convert::AsRef<str> for EndpointSpecModeEnum {
 }
 
 /// EngineDescription provides information about an engine.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EngineDescription {
     #[serde(rename = "EngineVersion")]
@@ -1800,6 +1853,7 @@ pub struct EngineDescription {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EngineDescriptionPlugins {
     #[serde(rename = "Type")]
@@ -1812,6 +1866,7 @@ pub struct EngineDescriptionPlugins {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ErrorDetail {
     #[serde(rename = "code")]
@@ -1825,6 +1880,7 @@ pub struct ErrorDetail {
 }
 
 /// Represents an error.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ErrorResponse {
     /// The error message.
@@ -1834,6 +1890,7 @@ pub struct ErrorResponse {
 }
 
 /// Actor describes something that generates events, like a container, network, or a volume. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EventActor {
     /// The ID of the object emitting the event
@@ -1849,6 +1906,7 @@ pub struct EventActor {
 }
 
 /// EventMessage represents the information an event contains. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct EventMessage {
     /// The type of object emitting the event
@@ -1882,6 +1940,7 @@ pub struct EventMessage {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EventMessageTypeEnum { 
@@ -1971,6 +2030,7 @@ impl ::std::convert::AsRef<str> for EventMessageTypeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum EventMessageScopeEnum { 
@@ -2015,6 +2075,7 @@ impl ::std::convert::AsRef<str> for EventMessageScopeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ExecConfig {
     /// Attach to `stdin` of the exec command.
@@ -2074,6 +2135,7 @@ pub struct ExecConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ExecInspectResponse {
     #[serde(rename = "CanRemove")]
@@ -2123,6 +2185,7 @@ pub struct ExecInspectResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ExecStartConfig {
     /// Detach from the command.
@@ -2143,21 +2206,21 @@ pub struct ExecStartConfig {
 }
 
 /// Change in the container's filesystem. 
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FilesystemChange {
     /// Path to file or directory that has changed. 
     #[serde(rename = "Path")]
     pub path: String,
-
+    /// Kind of change.
     #[serde(rename = "Kind")]
     pub kind: ChangeType,
-
 }
 
 /// User-defined resources can be either Integer resources (e.g, `SSD=3`) or String resources (e.g, `GPU=UUID1`). 
-
 pub type GenericResources = GenericResourcesInner;
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct GenericResourcesInner {
     #[serde(rename = "NamedResourceSpec")]
@@ -2170,6 +2233,7 @@ pub struct GenericResourcesInner {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct GenericResourcesInnerDiscreteResourceSpec {
     #[serde(rename = "Kind")]
@@ -2182,6 +2246,7 @@ pub struct GenericResourcesInnerDiscreteResourceSpec {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct GenericResourcesInnerNamedResourceSpec {
     #[serde(rename = "Kind")]
@@ -2195,6 +2260,7 @@ pub struct GenericResourcesInnerNamedResourceSpec {
 }
 
 /// Information about the storage driver used to store the container's and image's filesystem. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct GraphDriverData {
     /// Name of the storage driver.
@@ -2209,6 +2275,7 @@ pub struct GraphDriverData {
 }
 
 /// Health stores information about the container's healthcheck results. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Health {
     /// Status is one of `none`, `starting`, `healthy` or `unhealthy`  - \"none\"      Indicates there is no healthcheck - \"starting\"  Starting indicates that the container is not yet ready - \"healthy\"   Healthy indicates that the container is running correctly - \"unhealthy\" Unhealthy indicates that the container has a problem 
@@ -2228,6 +2295,7 @@ pub struct Health {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HealthStatusEnum { 
@@ -2283,6 +2351,7 @@ impl ::std::convert::AsRef<str> for HealthStatusEnum {
 }
 
 /// A test to perform to check that the container is healthy.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HealthConfig {
     /// The test to perform. Possible values are:  - `[]` inherit healthcheck from image or parent image - `[\"NONE\"]` disable healthcheck - `[\"CMD\", args...]` exec arguments directly - `[\"CMD-SHELL\", command]` run command with system's default shell 
@@ -2313,6 +2382,7 @@ pub struct HealthConfig {
 }
 
 /// HealthcheckResult stores information about a single run of a healthcheck probe 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HealthcheckResult {
     /// Date and time at which this check started in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds. 
@@ -2348,6 +2418,7 @@ pub struct HealthcheckResult {
 }
 
 /// individual image layer information in response to ImageHistory operation
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HistoryResponseItem {
     #[serde(rename = "Id")]
@@ -2372,6 +2443,7 @@ pub struct HistoryResponseItem {
 }
 
 /// Container configuration that depends on the host we are running on
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HostConfig {
     /// An integer value representing this container's relative CPU weight versus other containers. 
@@ -2723,6 +2795,7 @@ pub struct HostConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HostConfigCgroupnsModeEnum { 
@@ -2767,6 +2840,7 @@ impl ::std::convert::AsRef<str> for HostConfigCgroupnsModeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum HostConfigIsolationEnum { 
@@ -2817,6 +2891,7 @@ impl ::std::convert::AsRef<str> for HostConfigIsolationEnum {
 }
 
 /// The logging configuration for this container
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct HostConfigLogConfig {
     #[serde(rename = "Type")]
@@ -2830,6 +2905,7 @@ pub struct HostConfigLogConfig {
 }
 
 /// Response to an API call that returns just an Id
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct IdResponse {
@@ -2839,6 +2915,7 @@ pub struct IdResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageDeleteResponseItem {
     /// The image ID of an image that was untagged
@@ -2854,6 +2931,7 @@ pub struct ImageDeleteResponseItem {
 }
 
 /// Image ID or Digest
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageId {
     #[serde(rename = "ID")]
@@ -2863,6 +2941,7 @@ pub struct ImageId {
 }
 
 /// Information about an image in the local image cache. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageInspect {
     /// ID is the content-addressable ID of an image.  This identifier is a content-addressable digest calculated from the image's configuration (which includes the digests of layers used by the image).  Note that this digest differs from the `RepoDigests` below, which holds digests of image manifests that reference the image. 
@@ -2963,6 +3042,7 @@ pub struct ImageInspect {
 }
 
 /// Additional metadata of the image in the local cache. This information is local to the daemon, and not part of the image itself. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageInspectMetadata {
     /// Date and time at which the image was last tagged in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format with nano-seconds.  This information is only available if the image was tagged locally, and omitted otherwise. 
@@ -2978,6 +3058,7 @@ pub struct ImageInspectMetadata {
 }
 
 /// Information about the image's RootFS, including the layer IDs. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageInspectRootFs {
     #[serde(rename = "Type")]
@@ -2989,6 +3070,7 @@ pub struct ImageInspectRootFs {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImagePruneResponse {
     /// Images that were deleted
@@ -3003,6 +3085,7 @@ pub struct ImagePruneResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageSearchResponseItem {
     #[serde(rename = "description")]
@@ -3027,6 +3110,7 @@ pub struct ImageSearchResponseItem {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ImageSummary {
     /// ID is the content-addressable ID of an image.  This identifier is a content-addressable digest calculated from the image's configuration (which includes the digests of layers used by the image).  Note that this digest differs from the `RepoDigests` below, which holds digests of image manifests that reference the image. 
@@ -3076,6 +3160,7 @@ pub struct ImageSummary {
 }
 
 /// IndexInfo contains information about a registry.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct IndexInfo {
     /// Name of the registry, such as \"docker.io\". 
@@ -3100,6 +3185,7 @@ pub struct IndexInfo {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Ipam {
     /// Name of the IPAM driver to use.
@@ -3119,6 +3205,7 @@ pub struct Ipam {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct IpamConfig {
     #[serde(rename = "Subnet")]
@@ -3140,6 +3227,7 @@ pub struct IpamConfig {
 }
 
 /// JoinTokens contains the tokens workers and managers need to join the swarm. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct JoinTokens {
     /// The token workers can use to join the swarm. 
@@ -3155,6 +3243,7 @@ pub struct JoinTokens {
 }
 
 /// An object describing a limit on resources which can be requested by a task. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Limit {
     #[serde(rename = "NanoCPUs")]
@@ -3176,6 +3265,7 @@ pub struct Limit {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -3229,6 +3319,7 @@ impl std::default::Default for LocalNodeState {
 }
 
 /// ManagerStatus represents the status of a manager.  It provides the current status of a node's manager component, if the node is a manager. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ManagerStatus {
     #[serde(rename = "Leader")]
@@ -3246,6 +3337,7 @@ pub struct ManagerStatus {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Mount {
     /// Container path.
@@ -3287,6 +3379,7 @@ pub struct Mount {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountTypeEnum { 
@@ -3347,6 +3440,7 @@ impl ::std::convert::AsRef<str> for MountTypeEnum {
 }
 
 /// Optional configuration for the `bind` type.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct MountBindOptions {
     /// A propagation mode with the value `[r]private`, `[r]shared`, or `[r]slave`.
@@ -3366,6 +3460,7 @@ pub struct MountBindOptions {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountBindOptionsPropagationEnum { 
@@ -3431,6 +3526,7 @@ impl ::std::convert::AsRef<str> for MountBindOptionsPropagationEnum {
 }
 
 /// MountPoint represents a mount point configuration inside the container. This is used for reporting the mountpoints in use by a container. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct MountPoint {
     /// The mount type:  - `bind` a mount of a file or directory from the host into the container. - `volume` a docker volume with the given `Name`. - `tmpfs` a `tmpfs`. - `npipe` a named pipe from the host into the container. - `cluster` a Swarm cluster volume 
@@ -3475,6 +3571,7 @@ pub struct MountPoint {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum MountPointTypeEnum { 
@@ -3535,6 +3632,7 @@ impl ::std::convert::AsRef<str> for MountPointTypeEnum {
 }
 
 /// Optional configuration for the `tmpfs` type.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct MountTmpfsOptions {
     /// The size for the tmpfs mount in bytes.
@@ -3550,6 +3648,7 @@ pub struct MountTmpfsOptions {
 }
 
 /// Optional configuration for the `volume` type.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct MountVolumeOptions {
     /// Populate volume with data from the target.
@@ -3569,6 +3668,7 @@ pub struct MountVolumeOptions {
 }
 
 /// Map of driver specific options
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct MountVolumeOptionsDriverConfig {
     /// Name of the driver to use to create the volume.
@@ -3583,6 +3683,7 @@ pub struct MountVolumeOptionsDriverConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Network {
     #[serde(rename = "Name")]
@@ -3645,6 +3746,7 @@ pub struct Network {
 }
 
 /// Specifies how a service should be attached to a particular network. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkAttachmentConfig {
     /// The target network for attachment. Must be a network name or ID. 
@@ -3664,6 +3766,7 @@ pub struct NetworkAttachmentConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkConnectRequest {
     /// The ID or name of the container to connect to the network.
@@ -3677,6 +3780,7 @@ pub struct NetworkConnectRequest {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkContainer {
     #[serde(rename = "Name")]
@@ -3701,6 +3805,7 @@ pub struct NetworkContainer {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkCreateRequest {
     /// The network's name.
@@ -3754,6 +3859,7 @@ pub struct NetworkCreateRequest {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkCreateResponse {
     /// The ID of the created network.
@@ -3767,6 +3873,7 @@ pub struct NetworkCreateResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkDisconnectRequest {
     /// The ID or name of the container to disconnect from the network. 
@@ -3781,6 +3888,7 @@ pub struct NetworkDisconnectRequest {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkPruneResponse {
     /// Networks that were deleted
@@ -3791,6 +3899,7 @@ pub struct NetworkPruneResponse {
 }
 
 /// NetworkSettings exposes the network settings in the API
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkSettings {
     /// Name of the network's bridge (for example, `docker0`).
@@ -3885,6 +3994,7 @@ pub struct NetworkSettings {
 }
 
 /// NetworkingConfig represents the container's networking configuration for each of its interfaces. It is used for the networking configs specified in the `docker create` and `docker network connect` commands. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NetworkingConfig {
     /// A mapping of network name to endpoint configuration for that network. 
@@ -3894,6 +4004,7 @@ pub struct NetworkingConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Node {
     #[serde(rename = "ID")]
@@ -3943,6 +4054,7 @@ pub struct Node {
 }
 
 /// NodeDescription encapsulates the properties of the Node as reported by the agent. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NodeDescription {
     #[serde(rename = "Hostname")]
@@ -3967,6 +4079,7 @@ pub struct NodeDescription {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NodeSpec {
     /// Name for the node.
@@ -3991,6 +4104,7 @@ pub struct NodeSpec {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum NodeSpecRoleEnum { 
@@ -4035,6 +4149,7 @@ impl ::std::convert::AsRef<str> for NodeSpecRoleEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum NodeSpecAvailabilityEnum { 
@@ -4088,6 +4203,7 @@ impl ::std::convert::AsRef<str> for NodeSpecAvailabilityEnum {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -4133,6 +4249,7 @@ impl std::default::Default for NodeState {
 }
 
 /// NodeStatus represents the status of a node.  It provides the current status of the node, as seen by the manager. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct NodeStatus {
     #[serde(rename = "State")]
@@ -4151,6 +4268,7 @@ pub struct NodeStatus {
 }
 
 /// The version number of the object such as node, service, etc. This is needed to avoid conflicting writes. The client must send the version number along with the modified specification when updating these objects.  This approach ensures safe concurrency and determinism in that the change on the object may not be applied if the version number has changed from the last read. In other words, if two update requests specify the same base version, only one of the requests can succeed. As a result, two separate update requests that happen at the same time will not unintentionally overwrite each other. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ObjectVersion {
     #[serde(rename = "Index")]
@@ -4160,6 +4278,7 @@ pub struct ObjectVersion {
 }
 
 /// A descriptor struct containing digest, media type, and size, as defined in the [OCI Content Descriptors Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/descriptor.md). 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct OciDescriptor {
     /// The media type of the object this schema refers to. 
@@ -4180,6 +4299,7 @@ pub struct OciDescriptor {
 }
 
 /// Describes the platform which the image in the manifest runs on, as defined in the [OCI Image Index Specification](https://github.com/opencontainers/image-spec/blob/v1.0.1/image-index.md). 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct OciPlatform {
     /// The CPU architecture, for example `amd64` or `ppc64`. 
@@ -4210,6 +4330,7 @@ pub struct OciPlatform {
 }
 
 /// Represents a peer-node in the swarm
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PeerNode {
     /// Unique identifier of for this node in the swarm.
@@ -4225,6 +4346,7 @@ pub struct PeerNode {
 }
 
 /// Platform represents the platform (Arch/OS). 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Platform {
     /// Architecture represents the hardware architecture (for example, `x86_64`). 
@@ -4240,6 +4362,7 @@ pub struct Platform {
 }
 
 /// A plugin for the Engine API
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Plugin {
     #[serde(rename = "Id")]
@@ -4267,6 +4390,7 @@ pub struct Plugin {
 }
 
 /// The config of a plugin.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginConfig {
     /// Docker Version used to create the plugin
@@ -4326,6 +4450,7 @@ pub struct PluginConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginConfigArgs {
     #[serde(rename = "Name")]
@@ -4345,6 +4470,7 @@ pub struct PluginConfigArgs {
 }
 
 /// The interface between Docker and the plugin
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginConfigInterface {
     #[serde(rename = "Types")]
@@ -4361,6 +4487,7 @@ pub struct PluginConfigInterface {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum PluginConfigInterfaceProtocolSchemeEnum { 
@@ -4400,6 +4527,7 @@ impl ::std::convert::AsRef<str> for PluginConfigInterfaceProtocolSchemeEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginConfigLinux {
     #[serde(rename = "Capabilities")]
@@ -4415,6 +4543,7 @@ pub struct PluginConfigLinux {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginConfigNetwork {
     #[serde(rename = "Type")]
@@ -4422,6 +4551,7 @@ pub struct PluginConfigNetwork {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginConfigRootfs {
     #[serde(rename = "type")]
@@ -4434,6 +4564,7 @@ pub struct PluginConfigRootfs {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginConfigUser {
     #[serde(rename = "UID")]
@@ -4446,6 +4577,7 @@ pub struct PluginConfigUser {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginDevice {
     #[serde(rename = "Name")]
@@ -4463,6 +4595,7 @@ pub struct PluginDevice {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginEnv {
     #[serde(rename = "Name")]
@@ -4480,6 +4613,7 @@ pub struct PluginEnv {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginInterfaceType {
     #[serde(rename = "Prefix")]
@@ -4493,6 +4627,7 @@ pub struct PluginInterfaceType {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginMount {
     #[serde(rename = "Name")]
@@ -4521,6 +4656,7 @@ pub struct PluginMount {
 }
 
 /// Describes a permission the user has to accept upon installing the plugin. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginPrivilege {
     #[serde(rename = "Name")]
@@ -4538,6 +4674,7 @@ pub struct PluginPrivilege {
 }
 
 /// Settings that can be modified by users.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginSettings {
     #[serde(rename = "Mounts")]
@@ -4559,6 +4696,7 @@ pub struct PluginSettings {
 }
 
 /// Available plugins per type.  <p><br /></p>  > **Note**: Only unmanaged (V1) plugins are included in this list. > V1 plugins are \"lazily\" loaded, and are not returned in this list > if there is no resource using the plugin. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PluginsInfo {
     /// Names of available volume-drivers, and network-driver plugins.
@@ -4584,6 +4722,7 @@ pub struct PluginsInfo {
 }
 
 /// An open port on a container
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Port {
     /// Host IP address that the container's port is mapped to
@@ -4607,6 +4746,7 @@ pub struct Port {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum PortTypeEnum { 
@@ -4657,6 +4797,7 @@ impl ::std::convert::AsRef<str> for PortTypeEnum {
 }
 
 /// PortBinding represents a binding between a host IP address and a host port. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PortBinding {
     /// Host IP address that the container's port is mapped to.
@@ -4675,6 +4816,7 @@ pub struct PortBinding {
 // special-casing PortMap, cos swagger-codegen doesn't figure out this type
 pub type PortMap = HashMap<String, Option<Vec<PortBinding>>>;
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ProcessConfig {
     #[serde(rename = "privileged")]
@@ -4699,6 +4841,7 @@ pub struct ProcessConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ProgressDetail {
     #[serde(rename = "current")]
@@ -4711,6 +4854,7 @@ pub struct ProgressDetail {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct PushImageInfo {
     #[serde(rename = "error")]
@@ -4735,6 +4879,7 @@ pub struct PushImageInfo {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -4776,6 +4921,7 @@ impl std::default::Default for Reachability {
 }
 
 /// RegistryServiceConfig stores daemon registry services configuration. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct RegistryServiceConfig {
     /// List of IP ranges to which nondistributable artifacts can be pushed, using the CIDR syntax [RFC 4632](https://tools.ietf.org/html/4632).  Some images (for example, Windows base images) contain artifacts whose distribution is restricted by license. When these images are pushed to a registry, restricted artifacts are not included.  This configuration override this behavior, and enables the daemon to push nondistributable artifacts to all registries whose resolved IP address is within the subnet described by the CIDR syntax.  This option is useful when pushing images containing nondistributable artifacts to a registry on an air-gapped network so hosts on that network can pull the images without connecting to another server.  > **Warning**: Nondistributable artifacts typically have restrictions > on how and where they can be distributed and shared. Only use this > feature to push artifacts to private registries and ensure that you > are in compliance with any terms that cover redistributing > nondistributable artifacts. 
@@ -4805,6 +4951,7 @@ pub struct RegistryServiceConfig {
 }
 
 /// An object describing the resources which can be advertised by a node and requested by a task. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ResourceObject {
     #[serde(rename = "NanoCPUs")]
@@ -4822,6 +4969,7 @@ pub struct ResourceObject {
 }
 
 /// A container's resources (cgroups config, ulimits, etc)
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Resources {
     /// An integer value representing this container's relative CPU weight versus other containers. 
@@ -4981,6 +5129,7 @@ pub struct Resources {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ResourcesBlkioWeightDevice {
     #[serde(rename = "Path")]
@@ -4993,6 +5142,7 @@ pub struct ResourcesBlkioWeightDevice {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ResourcesUlimits {
     /// Name of ulimit
@@ -5013,6 +5163,7 @@ pub struct ResourcesUlimits {
 }
 
 /// The behavior to apply when the container exits. The default is not to restart.  An ever increasing delay (double the previous delay, starting at 100ms) is added before each restart to prevent flooding the server. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct RestartPolicy {
     /// - Empty string means not to restart - `no` Do not automatically restart - `always` Always restart - `unless-stopped` Restart always except when the user has manually stopped the container - `on-failure` Restart only when the container exit code is non-zero 
@@ -5027,6 +5178,7 @@ pub struct RestartPolicy {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum RestartPolicyNameEnum { 
@@ -5082,6 +5234,7 @@ impl ::std::convert::AsRef<str> for RestartPolicyNameEnum {
 }
 
 /// Runtime describes an [OCI compliant](https://github.com/opencontainers/runtime-spec) runtime.  The runtime is invoked by the daemon via the `containerd` daemon. OCI runtimes act as an interface to the Linux kernel namespaces, cgroups, and SELinux. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Runtime {
     /// Name and, optional, path, of the OCI executable binary.  If the path is omitted, the daemon searches the host's `$PATH` for the binary and uses the first result. 
@@ -5096,6 +5249,7 @@ pub struct Runtime {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Secret {
     #[serde(rename = "ID")]
@@ -5130,6 +5284,7 @@ pub struct Secret {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SecretSpec {
     /// User-defined name of the secret.
@@ -5159,6 +5314,7 @@ pub struct SecretSpec {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Service {
     #[serde(rename = "ID")]
@@ -5209,6 +5365,7 @@ pub struct Service {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceCreateResponse {
     /// The ID of the created service.
@@ -5223,6 +5380,7 @@ pub struct ServiceCreateResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceEndpoint {
     #[serde(rename = "Spec")]
@@ -5239,6 +5397,7 @@ pub struct ServiceEndpoint {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceEndpointVirtualIps {
     #[serde(rename = "NetworkID")]
@@ -5252,6 +5411,7 @@ pub struct ServiceEndpointVirtualIps {
 }
 
 /// The status of the service when it is in one of ReplicatedJob or GlobalJob modes. Absent on Replicated and Global mode services. The JobIteration is an ObjectVersion, but unlike the Service's version, does not need to be sent with an update request. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceJobStatus {
     /// JobIteration is a value increased each time a Job is executed, successfully or otherwise. \"Executed\", in this case, means the job as a whole has been started, not that an individual Task has been launched. A job is \"Executed\" when its ServiceSpec is updated. JobIteration can be used to disambiguate Tasks belonging to different executions of a job.  Though JobIteration will increase with each subsequent execution, it may not necessarily increase by 1, and so JobIteration should not be used to 
@@ -5272,6 +5432,7 @@ pub struct ServiceJobStatus {
 }
 
 /// The status of the service's tasks. Provided only when requested as part of a ServiceList operation. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceServiceStatus {
     /// The number of tasks for the service currently in the Running state. 
@@ -5292,6 +5453,7 @@ pub struct ServiceServiceStatus {
 }
 
 /// User modifiable configuration for a service.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpec {
     /// Name of the service.
@@ -5332,6 +5494,7 @@ pub struct ServiceSpec {
 }
 
 /// Scheduling mode for the service.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecMode {
     #[serde(rename = "Replicated")]
@@ -5340,7 +5503,7 @@ pub struct ServiceSpecMode {
 
     #[serde(rename = "Global")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub global: Option<HashMap<(), ()>>,
+    pub global: Option<EmptyObject>,
 
     #[serde(rename = "ReplicatedJob")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5349,10 +5512,11 @@ pub struct ServiceSpecMode {
     /// The mode used for services which run a task to the completed state on each valid node. 
     #[serde(rename = "GlobalJob")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub global_job: Option<HashMap<(), ()>>,
+    pub global_job: Option<EmptyObject>,
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecModeReplicated {
     #[serde(rename = "Replicas")]
@@ -5362,6 +5526,7 @@ pub struct ServiceSpecModeReplicated {
 }
 
 /// The mode used for services with a finite number of tasks that run to a completed state. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecModeReplicatedJob {
     /// The maximum number of replicas to run simultaneously. 
@@ -5377,6 +5542,7 @@ pub struct ServiceSpecModeReplicatedJob {
 }
 
 /// Specification for the rollback strategy of the service.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecRollbackConfig {
     /// Maximum number of tasks to be rolled back in one iteration (0 means unlimited parallelism). 
@@ -5411,6 +5577,7 @@ pub struct ServiceSpecRollbackConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecRollbackConfigFailureActionEnum { 
@@ -5455,6 +5622,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigFailureActionEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecRollbackConfigOrderEnum { 
@@ -5500,6 +5668,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecRollbackConfigOrderEnum {
 }
 
 /// Specification for the update strategy of the service.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceSpecUpdateConfig {
     /// Maximum number of tasks to be updated in one iteration (0 means unlimited parallelism). 
@@ -5534,6 +5703,7 @@ pub struct ServiceSpecUpdateConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecUpdateConfigFailureActionEnum { 
@@ -5583,6 +5753,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecUpdateConfigFailureActionEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceSpecUpdateConfigOrderEnum { 
@@ -5627,6 +5798,7 @@ impl ::std::convert::AsRef<str> for ServiceSpecUpdateConfigOrderEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceUpdateResponse {
     /// Optional warning messages
@@ -5637,6 +5809,7 @@ pub struct ServiceUpdateResponse {
 }
 
 /// The status of a service update.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ServiceUpdateStatus {
     #[serde(rename = "State")]
@@ -5667,6 +5840,7 @@ pub struct ServiceUpdateStatus {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum ServiceUpdateStatusStateEnum { 
@@ -5731,6 +5905,7 @@ impl ::std::convert::AsRef<str> for ServiceUpdateStatusStateEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Swarm {
     /// The ID of the swarm.
@@ -5797,6 +5972,7 @@ pub struct Swarm {
 }
 
 /// Represents generic information about swarm. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmInfo {
     /// Unique identifier of for this node in the swarm.
@@ -5842,6 +6018,7 @@ pub struct SwarmInfo {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmInitRequest {
     /// Listen address used for inter-manager communication, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP). This can either be an address/port combination in the form `192.168.1.1:4567`, or an interface followed by a port number, like `eth0:4567`. If the port number is omitted, the default swarm listening port is used. 
@@ -5885,6 +6062,7 @@ pub struct SwarmInitRequest {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmJoinRequest {
     /// Listen address used for inter-manager communication if the node gets promoted to manager, as well as determining the networking interface used for the VXLAN Tunnel Endpoint (VTEP). 
@@ -5915,6 +6093,7 @@ pub struct SwarmJoinRequest {
 }
 
 /// User modifiable swarm configuration.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpec {
     /// Name of the swarm.
@@ -5954,6 +6133,7 @@ pub struct SwarmSpec {
 }
 
 /// CA configuration.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecCaConfig {
     /// The duration node certificates are issued for.
@@ -5983,6 +6163,7 @@ pub struct SwarmSpecCaConfig {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecCaConfigExternalCas {
     /// Protocol for communication with the external CA (currently only `cfssl` is supported). 
@@ -6007,6 +6188,7 @@ pub struct SwarmSpecCaConfigExternalCas {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SwarmSpecCaConfigExternalCasProtocolEnum { 
@@ -6047,6 +6229,7 @@ impl ::std::convert::AsRef<str> for SwarmSpecCaConfigExternalCasProtocolEnum {
 }
 
 /// Dispatcher configuration.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecDispatcher {
     /// The delay for an agent to send a heartbeat to the dispatcher. 
@@ -6057,6 +6240,7 @@ pub struct SwarmSpecDispatcher {
 }
 
 /// Parameters related to encryption-at-rest.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecEncryptionConfig {
     /// If set, generate a key and use it to lock data stored on the managers. 
@@ -6067,6 +6251,7 @@ pub struct SwarmSpecEncryptionConfig {
 }
 
 /// Orchestration configuration.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecOrchestration {
     /// The number of historic tasks to keep per instance or node. If negative, never remove completed or failed tasks. 
@@ -6077,6 +6262,7 @@ pub struct SwarmSpecOrchestration {
 }
 
 /// Raft configuration.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecRaft {
     /// The number of log entries between snapshots.
@@ -6107,6 +6293,7 @@ pub struct SwarmSpecRaft {
 }
 
 /// Defaults for creating tasks in this cluster.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecTaskDefaults {
     #[serde(rename = "LogDriver")]
@@ -6116,6 +6303,7 @@ pub struct SwarmSpecTaskDefaults {
 }
 
 /// The log driver to use for tasks created in the orchestrator if unspecified by a service.  Updating this value only affects new tasks. Existing tasks continue to use their previously configured log driver until recreated. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmSpecTaskDefaultsLogDriver {
     /// The log driver to use as a default for new tasks. 
@@ -6130,6 +6318,7 @@ pub struct SwarmSpecTaskDefaultsLogDriver {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SwarmUnlockRequest {
     /// The swarm's unlock key.
@@ -6139,6 +6328,7 @@ pub struct SwarmUnlockRequest {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemAuthResponse {
     /// The status of the authentication
@@ -6152,6 +6342,7 @@ pub struct SystemAuthResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemDataUsageResponse {
     #[serde(rename = "LayersSize")]
@@ -6176,6 +6367,7 @@ pub struct SystemDataUsageResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemInfo {
     /// Unique identifier of the daemon.  <p><br /></p>  > **Note**: The format of the ID itself is not part of the API, and > should not be considered stable. 
@@ -6483,6 +6675,7 @@ pub struct SystemInfo {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoCgroupDriverEnum { 
@@ -6532,6 +6725,7 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupDriverEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoCgroupVersionEnum { 
@@ -6576,6 +6770,7 @@ impl ::std::convert::AsRef<str> for SystemInfoCgroupVersionEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum SystemInfoIsolationEnum { 
@@ -6625,6 +6820,7 @@ impl ::std::convert::AsRef<str> for SystemInfoIsolationEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemInfoDefaultAddressPools {
     /// The network address in CIDR format
@@ -6640,6 +6836,7 @@ pub struct SystemInfoDefaultAddressPools {
 }
 
 /// Response of Engine API: GET \"/version\" 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemVersion {
     #[serde(rename = "Platform")]
@@ -6703,6 +6900,7 @@ pub struct SystemVersion {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemVersionComponents {
     /// Name of the component 
@@ -6716,10 +6914,11 @@ pub struct SystemVersionComponents {
     /// Key/value pairs of strings with additional information about the component. These values are intended for informational purposes only, and their content is not defined, and not part of the API specification.  These messages can be printed by the client as information to the user. 
     #[serde(rename = "Details")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub details: Option<HashMap<(), ()>>,
+    pub details: Option<EmptyObject>,
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct SystemVersionPlatform {
     #[serde(rename = "Name")]
@@ -6727,6 +6926,7 @@ pub struct SystemVersionPlatform {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Task {
     /// The ID of the task.
@@ -6804,6 +7004,7 @@ pub struct Task {
 }
 
 /// User modifiable task configuration.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpec {
     #[serde(rename = "PluginSpec")]
@@ -6852,6 +7053,7 @@ pub struct TaskSpec {
 }
 
 /// Container spec for the service.  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpec {
     /// The image name to use for the container
@@ -6988,6 +7190,7 @@ pub struct TaskSpecContainerSpec {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum TaskSpecContainerSpecIsolationEnum { 
@@ -7037,6 +7240,7 @@ impl ::std::convert::AsRef<str> for TaskSpecContainerSpecIsolationEnum {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecConfigs {
     #[serde(rename = "File")]
@@ -7046,7 +7250,7 @@ pub struct TaskSpecContainerSpecConfigs {
     /// Runtime represents a target that is not mounted into the container but is used by the task  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually > exclusive 
     #[serde(rename = "Runtime")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub runtime: Option<HashMap<(), ()>>,
+    pub runtime: Option<EmptyObject>,
 
     /// ConfigID represents the ID of the specific config that we're referencing. 
     #[serde(rename = "ConfigID")]
@@ -7061,6 +7265,7 @@ pub struct TaskSpecContainerSpecConfigs {
 }
 
 /// Specification for DNS related configurations in resolver configuration file (`resolv.conf`). 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecDnsConfig {
     /// The IP addresses of the name servers.
@@ -7081,6 +7286,7 @@ pub struct TaskSpecContainerSpecDnsConfig {
 }
 
 /// File represents a specific target that is backed by a file. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecFile {
     /// Name represents the final filename in the filesystem. 
@@ -7106,6 +7312,7 @@ pub struct TaskSpecContainerSpecFile {
 }
 
 /// File represents a specific target that is backed by a file.  <p><br /><p>  > **Note**: `Configs.File` and `Configs.Runtime` are mutually exclusive 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecFile1 {
     /// Name represents the final filename in the filesystem. 
@@ -7131,6 +7338,7 @@ pub struct TaskSpecContainerSpecFile1 {
 }
 
 /// Security options for the container
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecPrivileges {
     #[serde(rename = "CredentialSpec")]
@@ -7144,6 +7352,7 @@ pub struct TaskSpecContainerSpecPrivileges {
 }
 
 /// CredentialSpec for managed service account (Windows only)
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecPrivilegesCredentialSpec {
     /// Load credential spec from a Swarm Config with the given ID. The specified config must also be present in the Configs field with the Runtime property set.  <p><br /></p>   > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`, > and `CredentialSpec.Config` are mutually exclusive. 
@@ -7164,6 +7373,7 @@ pub struct TaskSpecContainerSpecPrivilegesCredentialSpec {
 }
 
 /// SELinux labels of the container
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecPrivilegesSeLinuxContext {
     /// Disable SELinux
@@ -7193,6 +7403,7 @@ pub struct TaskSpecContainerSpecPrivilegesSeLinuxContext {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecContainerSpecSecrets {
     #[serde(rename = "File")]
@@ -7212,6 +7423,7 @@ pub struct TaskSpecContainerSpecSecrets {
 }
 
 /// Specifies the log driver to use for tasks created from this spec. If not present, the default one for the swarm will be used, finally falling back to the engine default if not specified. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecLogDriver {
     #[serde(rename = "Name")]
@@ -7225,6 +7437,7 @@ pub struct TaskSpecLogDriver {
 }
 
 /// Read-only spec type for non-swarm containers attached to swarm overlay networks.  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecNetworkAttachmentSpec {
     /// ID of the container represented by this task
@@ -7234,6 +7447,7 @@ pub struct TaskSpecNetworkAttachmentSpec {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecPlacement {
     /// An array of constraint expressions to limit the set of nodes where a task can be scheduled. Constraint expressions can either use a _match_ (`==`) or _exclude_ (`!=`) rule. Multiple constraints find nodes that satisfy every expression (AND match). Constraints can match node or Docker Engine labels as follows:  node attribute       | matches                        | example ---------------------|--------------------------------|----------------------------------------------- `node.id`            | Node ID                        | `node.id==2ivku8v2gvtg4` `node.hostname`      | Node hostname                  | `node.hostname!=node-2` `node.role`          | Node role (`manager`/`worker`) | `node.role==manager` `node.platform.os`   | Node operating system          | `node.platform.os==windows` `node.platform.arch` | Node architecture              | `node.platform.arch==x86_64` `node.labels`        | User-defined node labels       | `node.labels.security==high` `engine.labels`      | Docker Engine's labels         | `engine.labels.operatingsystem==ubuntu-14.04`  `engine.labels` apply to Docker Engine labels like operating system, drivers, etc. Swarm administrators add `node.labels` for operational purposes by using the [`node update endpoint`](#operation/NodeUpdate). 
@@ -7258,6 +7472,7 @@ pub struct TaskSpecPlacement {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecPlacementPreferences {
     #[serde(rename = "Spread")]
@@ -7266,6 +7481,7 @@ pub struct TaskSpecPlacementPreferences {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecPlacementSpread {
     /// label descriptor, such as `engine.labels.az`. 
@@ -7276,6 +7492,7 @@ pub struct TaskSpecPlacementSpread {
 }
 
 /// Plugin spec for the service.  *(Experimental release only.)*  <p><br /></p>  > **Note**: ContainerSpec, NetworkAttachmentSpec, and PluginSpec are > mutually exclusive. PluginSpec is only used when the Runtime field > is set to `plugin`. NetworkAttachmentSpec is used when the Runtime > field is set to `attachment`. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecPluginSpec {
     /// The name or 'alias' to use for the plugin.
@@ -7300,6 +7517,7 @@ pub struct TaskSpecPluginSpec {
 }
 
 /// Resource requirements which apply to each individual container created as part of the service. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecResources {
     /// Define resources limits.
@@ -7315,6 +7533,7 @@ pub struct TaskSpecResources {
 }
 
 /// Specification for the restart policy which applies to containers created as part of this service. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskSpecRestartPolicy {
     /// Condition for restart.
@@ -7339,6 +7558,7 @@ pub struct TaskSpecRestartPolicy {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum TaskSpecRestartPolicyConditionEnum { 
@@ -7391,6 +7611,7 @@ impl ::std::convert::AsRef<str> for TaskSpecRestartPolicyConditionEnum {
 /// Enumeration of values.
 /// Since this enum's variants do not hold data, we can easily define them them as `#[repr(C)]`
 /// which helps with FFI.
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
@@ -7479,6 +7700,7 @@ impl std::default::Default for TaskState {
     }
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskStatus {
     #[serde(rename = "Timestamp")]
@@ -7508,6 +7730,7 @@ pub struct TaskStatus {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TaskStatusContainerStatus {
     #[serde(rename = "ContainerID")]
@@ -7524,6 +7747,7 @@ pub struct TaskStatusContainerStatus {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ThrottleDevice {
     /// Device path
@@ -7539,6 +7763,7 @@ pub struct ThrottleDevice {
 }
 
 /// Information about the issuer of leaf TLS certificates and the trusted root CA certificate. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct TlsInfo {
     /// The root CA certificate(s) that are used to validate leaf TLS certificates. 
@@ -7562,6 +7787,7 @@ pub struct TlsInfo {
 // special-casing PortMap, cos swagger-codegen doesn't figure out this type
 pub type Topology = HashMap<String, Option<Vec<PortBinding>>>;
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct UnlockKeyResponse {
     /// The swarm's unlock key.
@@ -7571,6 +7797,7 @@ pub struct UnlockKeyResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Volume {
     /// Name of the volume.
@@ -7598,7 +7825,7 @@ pub struct Volume {
     /// Low-level details about the volume, provided by the volume driver. Details are returned as a map with key/value pairs: `{\"key\":\"value\",\"key2\":\"value2\"}`.  The `Status` field is optional, and is omitted if the volume driver does not support this feature. 
     #[serde(rename = "Status")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<HashMap<String, HashMap<(), ()>>>,
+    pub status: Option<HashMap<String, EmptyObject>>,
 
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
@@ -7626,6 +7853,7 @@ pub struct Volume {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 pub enum VolumeScopeEnum { 
@@ -7671,6 +7899,7 @@ impl ::std::convert::AsRef<str> for VolumeScopeEnum {
 }
 
 /// Volume configuration
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct VolumeCreateOptions {
     /// The new volume's name. If not specified, Docker generates a name. 
@@ -7700,6 +7929,7 @@ pub struct VolumeCreateOptions {
 }
 
 /// Volume list response
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct VolumeListResponse {
     /// List of volumes
@@ -7714,6 +7944,7 @@ pub struct VolumeListResponse {
 
 }
 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct VolumePruneResponse {
     /// Volumes that were deleted
@@ -7729,6 +7960,7 @@ pub struct VolumePruneResponse {
 }
 
 /// Usage details about the volume. This information is used by the `GET /system/df` endpoint, and omitted in other endpoints. 
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct VolumeUsageData {
     /// Amount of disk space used by the volume (in bytes). This information is only available for volumes created with the `\"local\"` volume driver. For volumes created with other volume drivers, this field is set to `-1` (\"not available\") 

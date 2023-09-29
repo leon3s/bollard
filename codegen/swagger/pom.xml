@@ -26,7 +26,7 @@
                 <templateDirectory>${project.basedir}/src/main/resources/bollard</templateDirectory>
                 <supportingFilesToGenerate>models.rs,lib.rs,Cargo.toml,config,README.md</supportingFilesToGenerate>
                 <configOptions>
-                  <packageName>bollard-stubs</packageName>
+                  <packageName>bollard-next-stubs</packageName>
                   <packageVersion>1.43.0-rc.2</packageVersion>
                 </configOptions>
               </configuration>

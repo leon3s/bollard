@@ -80,7 +80,7 @@ public class BollardCodegen extends RustServerCodegen {
         // This is a "fallback" type, and allows some parts of the Docker API
         // that receive an empty JSON '{}' value.
         if ("object".equals(type)) {
-            type = "HashMap<(), ()>";
+            type = "EmptyObject";
         }
 
         return type;
